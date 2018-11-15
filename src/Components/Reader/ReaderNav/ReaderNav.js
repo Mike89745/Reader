@@ -6,9 +6,7 @@ import BottomNav from './BottomNav/BottomNav';
 
 
 export default class ReaderNav extends Component {
-    showSettings(){
-        console.log("showSettings");
-    }
+
     state={
         pages: null,
         currentPage: null
@@ -19,8 +17,9 @@ export default class ReaderNav extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TopNav nav={this.props.nav} showSettings={this.showSettings}/>
+                <TopNav nav={this.props.nav} showSettings={this.props.showSettings}/>
                 <BottomNav 
+                    
                     pages={this.state.pages} 
                     setPage={this.props.setPage} 
                     nextChapter={this.props.nextChapter}

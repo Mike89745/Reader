@@ -11,14 +11,17 @@ export default class BottomNav extends Component {
     }
 
     setPage(value){
-        this.props.setPage(value.value);
-        this.setState({value:value.value});
+        this.props.setPage(value-1);
+        this.setState({value:value});
     }
     setValue(value){
-        this.setState({value:value.value});
+        this.setState({value:value});
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ maxValue: nextProps.pages,value:nextProps.currentPage});  
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextState.value != this.state.value;
     }
     render() {
         return (
@@ -29,7 +32,7 @@ export default class BottomNav extends Component {
                     <Slider
                         style={{width:200}}
                         value={this.state.value}
-                        onSlidingComplete={(value) => this.setPage({value})}
+                        onSlidingComplete={(value) => this.setPage(value)}
                         minimumValue={1}
                         onValueChange={value => {
                             this.setValue(value)

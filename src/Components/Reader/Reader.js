@@ -6,22 +6,28 @@ import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker
 import RNFS from "react-native-fs"
 import axios from 'react-native-axios';
 import ReaderNav from './ReaderNav/ReaderNav';
+import ReaderSettingsModal from './ReaderSettingsModal/ReaderSettingsModal';
+
 const defHeight = Dimensions.get('window').height/2;
 export default class Reader extends Component {
     state = {
         uri: null,
-        currentPage: 1,
-        currentImages : null,
-        prevImages : null,
+        
         Images : null,
-        ImagesHeight: null,
-        fromWeb: false,
+        fromWeb: false, 
+
+        lastScrollHeight: null,
+
         title: null,
         chapterName: null,
+        
         chapter: 0,
         pages: null,
-        isPrevChapter:false,
+        currentPage: 1,
 
+        horizontal:false,
+        horizontalInv: false,
+        settingsVisible : false,
     }
     _viewabilityConfig = {
         itemVisiblePercentThreshold: 50,
@@ -83,11 +89,16 @@ export default class Reader extends Component {
         const images = this.state.Images
         if(!this.state.isPrevChapter) page += this.state.prevImages ? this.state.prevImages.length : 0;
         for (i = 0; i < page; i++) {
-            if(images[i].height){
-                x += images[i].height;
-            }else{
-                x += defHeight;
+            if(!this.state.horizontal){
+                if(images[i].height){
+                    x += images[i].height;
+                }else{
+                    x += defHeight;
+                }
             }
+           else{
+               x += Dimensions.get("screen").width;
+           }
         }
         this.ScrollRef.scrollToOffset({
             offset: x,
@@ -100,7 +111,16 @@ export default class Reader extends Component {
         let images = this.state.isPrevChapter ? this.state.Images : this.state.prevImages;
         if(!images) images = this.state.Images
         for (i = 0; i < images.length-1; i++) { 
-            x += images[i].height;
+            if(!this.state.horizontal){
+                if(images[i].height){
+                    x += images[i].height;
+                }else{
+                    x += defHeight;
+                }
+            }
+           else{
+               x += Dimensions.get("screen").width;
+           }
         }
         this.ScrollRef.scrollToOffset({
             offset: x,
@@ -116,23 +136,22 @@ export default class Reader extends Component {
     nextChapter = () =>{
        
         let chapter = this.state.chapter + 1;
-        let pageToScroll = this.state.currentImages ? this.state.currentImages.length - 1 : 0; 
         RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
             if(result === true){
                 this.setState({chapter: chapter});
                 this.loadChapter(this.state.uri + "/" + chapter,true);
+                this.scrollToStart(false);
             }
         });
     }
     prevChapter = () =>{
-
-        let chapter = 0;
-        let pageToScroll = this.state.prevImages ? this.state.prevImages.length - 1 : 0;
+        let chapter = this.state.chapter - 1;
         if(chapter >= 0 && !this.state.isPrevChapter){
             RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
                 if(result === true){
                     this.setState({chapter: chapter});
                     this.loadChapter(this.state.uri + "/" + chapter,false);
+                    this.scrollToStart(false);
                 }
             });
            
@@ -152,28 +171,8 @@ export default class Reader extends Component {
                 element.key = element.path;
                 element.height = Height;
             });  
-            console.log(result.length,"check");
-            let newData =  Array.from(result);
-            let currentData = null;
-
-            if(this.state.currentImages){
-                currentData = this.state.currentImages;
-                currentData.forEach((element) => { element.key = element.path; });
-                if(next){
-                    newData.unshift(...currentData);
-                    this.state.prevImages ? this.scrollToPage(currentData.length-1,false) : this.scrollToPage(currentData.length,false);
-                    console.log(currentData.length,"NEXT");
-                }else{
-                    newData.push(...this.state.prevImages);
-                    this.state.prevImages ? this.scrollToPage(result.length-1,false) : this.scrollToPage(result.length,false);
-                    console.log(result.length,"PREV");
-                }
-            }
-            console.log(currentData)
             this.setState({
-                Images: newData,
-                prevImages: currentData,
-                currentImages: result,
+                Images: result,
                 currentPage:1,
                 fromWeb:false,
                 pages:result.length,
@@ -185,11 +184,19 @@ export default class Reader extends Component {
         .catch((err) => {
             console.log(err.message, err.code);
         });
+       
     }
     startReached(e){
-        if(e.nativeEvent.contentOffset.y == 0){
-            this.prevChapter();
+        let lastScrollHeight = this.state.lastScrollHeight
+        let offset = this.state.horizontal ? e.nativeEvent.contentOffset.x : e.nativeEvent.contentOffset.y;
+        if(offset == 0){
+            this.state.horizontalInv ? this.nextChapter() : this.prevChapter();
         }
+        else if(lastScrollHeight == offset){
+            this.state.horizontalInv ? this.prevChapter() : this.nextChapter();
+        }
+        this.setState({lastScrollHeight: offset})
+
     }
     onViewableItemsChanged = ({ viewableItems, changed }) => {
         if(viewableItems.length > 0){
@@ -197,23 +204,12 @@ export default class Reader extends Component {
             if(index < 0){
                 index = 0;
             }
-            if(this.state.prevImages){
-                if(viewableItems[index].index + 1 > this.state.prevImages.length){
-                    viewableItems[index].index -= this.state.prevImages.length - 1;
-                    this.setState({isPrevChapter: true,pages:this.state.currentImages.length});
-                }else{
-                    viewableItems[index].index += 1;
-                    this.setState({isPrevChapter: false,pages:this.state.prevImages.length});
-                } 
-            }else{
-                viewableItems[index].index += 1;
-            }
-            this.setState({currentPage: viewableItems[index].index});
+            this.setState({currentPage: viewableItems[index].index + 1});
         }
         
     }
     xd(){
-        console.log(this.state.Images);
+        console.log("loaded");
     }
     setHeight=(height,index)=>{
         let images = this.state.Images;
@@ -222,7 +218,23 @@ export default class Reader extends Component {
         }else{
             images[index].height = defHeight;
         }
+      
         this.setState({images : images});
+    }
+    showSettings=()=>{
+        this.SettingsModal.toggleModal();
+    }
+    ChangeSettings=(setting)=>{
+        switch(setting) {
+            case "H":
+                this.setState({horizontal:true,horizontalInv:false});
+                break;
+            case "Hrtl":
+                this.setState({horizontal:true,horizontalInv:true});
+                break;
+            default:
+                this.setState({horizontal:false,horizontalInv:false});
+        }
     }
     render() {
         return (
@@ -230,17 +242,16 @@ export default class Reader extends Component {
                 <View style={styles.container}>
                         <FlatList 
                             scrollEventThrottle={16}
-                            extraData={this.state.Images}
+                            horizontal = {this.state.horizontal}
                             onViewableItemsChanged={this.onViewableItemsChanged }
                             viewabilityConfig={this._viewabilityConfig}
                             ref={(ref) => { this.ScrollRef = ref; }}
                             data={this.state.Images}
-                            onEndReached={() => this.nextChapter()}
-                            onEndReachedThreshold={0.001}
-                            initialNumToRender={this.state.Images ? this.state.Images.length : 21}
-                            maxToRenderPerBatch={1}
+                            pagingEnabled= {this.state.horizontal}
+                            inverted={this.state.horizontalInv}
+                            initialNumToRender={3}
                             windowSize={this.state.Images ? this.state.Images.length : 21}
-                            showsVerticalScrollIndicator={false}
+                            maxToRenderPerBatch={1}
                             removeClippedSubviews={true}
                             onScrollEndDrag={(e) => this.startReached(e)}
                             renderItem={({item,index}) =>
@@ -254,17 +265,20 @@ export default class Reader extends Component {
                         />
                 </View>
                 <ReaderNav 
+                
                     nav={this.props.navigation} 
                     pages={this.state.pages ? this.state.pages : 1} 
                     setPage={this.scrollToPage}
                     nextChapter={this.nextChapter}
                     prevChapter={this.prevChapter}
                     currentPage={this.state.currentPage}
+                    showSettings={this.showSettings}
                 />
                 <View style={{flex:1,position: 'absolute', top: 50}}>
                     <Button title="Open" onPress={() => this.openFileSelector()}/>
                     <Button title="test" onPress={() => this.xd()}/>
                 </View>
+                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/>
             </View>
         )
     }

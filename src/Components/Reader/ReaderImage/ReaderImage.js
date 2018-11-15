@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,Dimensions,Image} from 'react-native';
+import { StyleSheet, View,Dimensions,Image,Text} from 'react-native';
 import PhotoView from 'react-native-photo-view';
 
 import GiftedSpinner from '../../../../node_modules/react-native-gifted-spinner';
@@ -30,28 +30,32 @@ export default class ReaderImage extends Component {
         
         
         return (
-            <View 
-                styles = {styles.container}
-            >
-                        <View>
-                            <PhotoView
-                            loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
-                            source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
-                            minimumZoomScale={1}
-                            maximumZoomScale={3}
-                            androidScaleType="fitCenter"
-                            fadeDuration = {200}
-                            style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "black"}}
-                        />
-                        
-                     </View> 
-                
+            <View styles={styles.container}>
+                <View style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "black"}}>
+                    <PhotoView
+                        loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
+                        source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
+                        minimumZoomScale={1}
+                        maximumZoomScale={3}
+                        androidScaleType="fitCenter"
+                        fadeDuration = {200}
+                        style={{width: this.state.width, height:this.state.height,flex: 1}}
+                    />
+                </View> 
             </View>
         )
 
     }
 }
-
+/*<PhotoView
+loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
+source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
+minimumZoomScale={1}
+maximumZoomScale={3}
+androidScaleType="fitCenter"
+fadeDuration = {200}
+style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "red"}}
+/>*/
 const styles = StyleSheet.create({
     container:{
         flex: 1,
