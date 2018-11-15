@@ -1,9 +1,10 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,Button} from 'react-native';
+import { StyleSheet, ScrollView, Text,Button,Dimensions} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import { DrawerActions } from 'react-navigation';
 import ButtonIcon from '../Icon/Icon';
+import HistoryItem from './HistoryItem/HistoryItem';
 export default class HistoryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -22,16 +23,24 @@ export default class HistoryScreen extends Component {
       };   
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.textHeader}>HISTORY</Text>
-            </View>
+            <ScrollView style={styles.container}>
+            
+               <HistoryItem/>
+               <HistoryItem/>
+               <HistoryItem/>
+               <HistoryItem/>
+               <HistoryItem/>
+               <HistoryItem/>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        width: Dimensions.get("screen").width,
+        height: Dimensions.get("screen").height,
+        flex: 1
     },
     textStyle:{
         fontSize: RF(2.5),
