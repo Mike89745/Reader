@@ -11,26 +11,32 @@ export default class ReaderImage extends Component {
         canLoad: false,
     }
    
-    calcImageSize(canLoad){
-        //console.log(this.props.imageIndex + " - " + canLoad);
+    calcImageSize(){
+       
         Image.getSize(this.props.fromWeb ? this.props.source : "file://" + this.props.source, (width, height) => {
+            
             const maxWidth = Dimensions.get('window').width;
+            console.log(maxWidth,Dimensions.get('screen').width);
             const ratio = maxWidth / width;
-            this.setState({ width: Math.floor(width * ratio), height: Math.floor(height * ratio),canLoad:canLoad});
+            this.setState({ width: Math.floor(width * ratio), height: Math.floor(height * ratio)});
             this.props.setHeight(Math.floor(height * ratio),this.props.imageIndex);
         },(err)=>{console.log(err)});
        
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        if(nextState.width != this.state.width || nextState.height != this.state.height) console.log(this.props.imageIndex," - ");
+        return nextState.width != this.state.width || nextState.height != this.state.height ;
+    }
     componentDidMount() {
-        this.calcImageSize();
     }
     componentWillUnmount(){
+        console.log(this.props.imageIndex,"unmounted");
     }
     render() {
         
         
         return (
-            <View styles={styles.container}>
+            <View styles={styles.container} onLayout={() => this.calcImageSize()}>
                 <View style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "black"}}>
                     <PhotoView
                         loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
@@ -39,7 +45,9 @@ export default class ReaderImage extends Component {
                         maximumZoomScale={3}
                         androidScaleType="fitCenter"
                         fadeDuration = {200}
+                        resizeMethod ={'resize'}
                         style={{width: this.state.width, height:this.state.height,flex: 1}}
+                        onError={(e) => console.log(e,this.props.imageIndex)}
                     />
                 </View> 
             </View>

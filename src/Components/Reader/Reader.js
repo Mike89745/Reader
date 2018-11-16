@@ -249,7 +249,7 @@ export default class Reader extends Component {
                             data={this.state.Images}
                             pagingEnabled= {this.state.horizontal}
                             inverted={this.state.horizontalInv}
-                            initialNumToRender={3}
+                            initialNumToRender={this.state.Images ? this.state.Images.length : 21}
                             windowSize={this.state.Images ? this.state.Images.length : 21}
                             maxToRenderPerBatch={1}
                             removeClippedSubviews={true}

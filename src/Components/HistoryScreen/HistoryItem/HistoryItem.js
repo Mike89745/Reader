@@ -42,6 +42,8 @@ export default class HistoryItem extends Component  {
 }
 const styles = StyleSheet.create({
   container: {
+    alignSelf: "stretch",
+    flex: 1,
     backgroundColor: '#fff',
     borderWidth: 1,
     height: 200,

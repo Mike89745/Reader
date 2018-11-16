@@ -28,20 +28,25 @@ export default class BottomNav extends Component {
             <View style={styles.container}>
                 <ButtonIcon name="skip-back" Color="#fff" onPress={() => this.props.prevChapter()}/>
                 <View style={styles.SliderContainer}>
-                    <Text style={styles.text}>{this.state.value}</Text>
-                    <Slider
-                        style={{width:200}}
-                        value={this.state.value}
-                        onSlidingComplete={(value) => this.setPage(value)}
-                        minimumValue={1}
-                        onValueChange={value => {
-                            this.setValue(value)
-                        }}
-                        maximumValue={this.state.maxValue}
-                        step={1} 
-                        thumbTintColor = {"#fff"}
+                    <View>
+                        <Text style={styles.text}>{this.state.value}</Text>
+                    </View>
+                    <View style={{flex: 1, alignSelf:"stretch"}}>
+                        <Slider
+                            value={this.state.value}
+                            onSlidingComplete={(value) => this.setPage(value)}
+                            minimumValue={1}
+                            onValueChange={value => {
+                                this.setValue(value)
+                            }}
+                            maximumValue={this.state.maxValue}
+                            step={1} 
+                            thumbTintColor = {"#fff"}
                         />
-                    <Text style={styles.text}>{this.state.maxValue}</Text>
+                    </View>
+                    <View>
+                        <Text style={styles.text}>{this.state.maxValue}</Text>
+                    </View>
                 </View>
                 <ButtonIcon style={{alignItems: "flex-end",}} name="skip-forward" Color="#FFF" onPress={() => this.props.nextChapter()}/>  
             </View>
@@ -62,6 +67,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexWrap: 'wrap',
         flexDirection: "row",
+        
     },
     SliderContainer:{
         flex: 1, 

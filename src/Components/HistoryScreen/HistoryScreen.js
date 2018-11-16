@@ -24,7 +24,6 @@ export default class HistoryScreen extends Component {
     render() {
         return (
             <ScrollView style={styles.container}>
-            
                <HistoryItem/>
                <HistoryItem/>
                <HistoryItem/>
@@ -38,8 +37,6 @@ export default class HistoryScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        width: Dimensions.get("screen").width,
-        height: Dimensions.get("screen").height,
         flex: 1
     },
     textStyle:{
