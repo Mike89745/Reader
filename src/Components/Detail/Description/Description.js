@@ -23,7 +23,7 @@ export default class Description extends Component {
                     </View> 
                 </View>
                 <View style={styles.container}>
-                    <Text numberOfLines={this.state.Lines} style={styles.textStyle}>{this.props.info.descriprion}{this.props.info.descriprion}{this.props.info.descriprion}</Text>
+                    <Text numberOfLines={this.state.Lines} style={styles.textStyle}>{this.props.description}</Text>
                 </View>
                
             </View>

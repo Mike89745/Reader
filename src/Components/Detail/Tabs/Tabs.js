@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-import { createTabNavigator } from 'react-navigation';
 import ChapterList from "./ChapterList/ChapterList"
 import ReviewList from "./ReviewList/ReviewList"
 import {createMaterialTopTabNavigator } from "react-navigation"
@@ -20,9 +19,13 @@ export default class Tabs extends Component {
     onLayout(e) {
         this.setState({deviceHeight : Dimensions.get('window').height - 80,});
     }
+    componentDidMount(){
+        console.log(this.props.tags);
+    }
     componentWillMount() {
         this.setState({deviceHeight : Dimensions.get('window').height - 80,});
     }
+
     render() {
         return (
             <View style={[styles.container,{height: this.state.deviceHeight}]} onLayout={this.onLayout.bind(this)}>
@@ -33,8 +36,8 @@ export default class Tabs extends Component {
 }
 const TabsNav = createMaterialTopTabNavigator (
     {
-        Chapter: ChapterList,
-        Review: ReviewList,
+        Chapter: { screen: props => <ChapterList {...props}/>},
+        Review: { screen: props => <ReviewList {...props}/>},
     },
     { 
         tabBarOptions: {
@@ -48,7 +51,6 @@ const TabsNav = createMaterialTopTabNavigator (
               color:"#FFF"
             },
             indicatorStyle:{
-                
                 backgroundColor: "#FFF"
             },
         },

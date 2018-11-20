@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,Dimensions,TouchableHighlight,Button,Text} from 'react-native';
+import { StyleSheet, View,Dimensions,TouchableHighlight} from 'react-native';
 import GridView from 'react-native-super-grid';
 import axios from 'react-native-axios';
 import GridItem from "../../Components/GridItems/GridItem/GridItem";
@@ -8,8 +8,11 @@ import Orientation from 'react-native-orientation';
 import { DrawerActions } from 'react-navigation';
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
 import ButtonIcon from "../Icon/Icon"
+import PouchDB from 'pouchdb-react-native';
+const db = new PouchDB('Library');
+
 const ItemSpacing = 6;
-const ItemsPerRow = 3;
+const ItemsPerRow = 2;
 
 
 export default  class GridItems extends Component {
@@ -37,22 +40,22 @@ export default  class GridItems extends Component {
     }
 
     LoadItems = () => {
-        this.setState({loading : true});
-        axios.request("https://mangareader-5f322.firebaseio.com/Thumbnails.json").then(Response => {
-            let NewItems = Object.keys(Response.data).map(key => {return Response.data[key] ? Response.data[key] : null});
-            let temp = [];
-            for(let i of NewItems){
-                i && temp.push(i);
-            }
-            const CurrentState = this.state.items;
-            if(CurrentState != null){
-                this.setState({items : [...CurrentState,...temp,...temp,...temp,...temp,...temp], loading : false});
-
-            }else{
-                this.setState({items : [...temp,...temp,...temp,...temp,...temp], loading : false});
-            }
-        })
-        .catch(error => console.log(error));
+        if(this.props.isLibrary){
+            db.allDocs().then((Response) => {
+                let temp = [];
+                for(let i of Response.rows){
+                    i && temp.push({Link: i.doc.source,_id : i.id,title: i.doc.Name});
+                }
+              
+                this.setState({items : [...temp], loading : false});
+            }).catch(error => console.log(error));
+        }else{
+            this.setState({loading : true});
+            axios.get('http://localhost:8000/getBooks/10').then((response) => {
+                this.setState({items : response.data.rows, loading : false});
+            }).catch(error => console.log(error));;
+        }
+      
     }
    
     componentWillMount() {
@@ -83,9 +86,11 @@ export default  class GridItems extends Component {
                         spacing ={ItemSpacing}
                         style={styles.gridView}
                         renderItem={items => (
-                            <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details')} underlayColor="red">
+                            <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} underlayColor="red">
                                 <View style={[styles.ItemContainer,{width:this.state.size},{height: this.state.size * 2}]} >
-                                    <GridItem source={{uri: items.Link}} height={this.state.size * 2} width={this.state.size}/>
+                                    <GridItem 
+                                    source={{uri: "http://localhost:8000/getThumbNail/" + items.doc._id + ".png"}} 
+                                    title={items.doc._id}/>
                                 </View>
                             </TouchableHighlight>
                         )}

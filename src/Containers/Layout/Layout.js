@@ -21,6 +21,7 @@ export default class Layout extends Component{
 const LibraryStack = createStackNavigator(
     {
         LibraryScreen: {screen : LibraryScreen},
+        Details: {screen : Detail},
     },
     {
         drawerLabel: 'Knihovna',
@@ -31,7 +32,7 @@ const LibraryStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
+                    name="magic"
                     Color="#fff"
                 />
             )
@@ -52,7 +53,7 @@ const HistoryStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
+                    name="magic"
                     Color="#fff"
                 />
             )
@@ -87,7 +88,7 @@ const CatalogStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
+                    name="magic"
                     Color="#fff"
                 />
             )
@@ -111,11 +112,14 @@ const Drawer = createDrawerNavigator(
     
 );
 
-const RootStack = createStackNavigator(
+
+const RootStack = createDrawerNavigator(
     {
         Drawer: { screen: Drawer },
+        
     },
     {
+        drawerPosition: 'right',
         initialRouteName: 'Drawer',
         headerVisible: false,
         headerMode: 'none',

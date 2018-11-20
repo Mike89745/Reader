@@ -8,7 +8,7 @@ export default class TagList extends Component {
         let Tags = null
         if(this.props.tags){
              Tags = Object.keys( this.props.tags ).map( key => { 
-                return <Text style={styles.tag}>{this.props.tags[key]}</Text>;
+                return <Text style={styles.tag} key={this.props.tags[key]}>{this.props.tags[key]}</Text>;
             });
         }
         return (

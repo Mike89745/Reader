@@ -8,13 +8,12 @@ export default class ThumbNail extends Component  {
       return (
         <View style={styles.container}>
           <Image
-            source={this.props.source}
+            source={{uri: "http://localhost:8000/getthumbnail/XD.png"}}
             onLoad={() => this._onLoad()}
-            style={{height: this.props.height, width: this.props.width}}
             resizeMode="cover"
             />
             <LinearGradient style={styles.TitleContainer} colors={['transparent', '#3b424c']}>
-              <Text numberOfLines={2} style={{color:"#FFF"}}>Sample Title Sample Title XDDDDD</Text>
+              <Text numberOfLines={2} style={{color:"#FFF"}}>{this.props.title ? this.props.title : 'Sample Title Sample Title XDDDDD'}</Text>
             </LinearGradient>
             {!this.state.loaded ? <Spinner style={styles.Spinner}/> : null}
         </View>

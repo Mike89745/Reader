@@ -11,14 +11,15 @@ export default class Chapter extends Component {
             <TouchableHighlight underlayColor="#ccc" onPress={this.onPress}>
                 <View style={styles.container} >
                     <View style={{flex:0.8}}>
-                        <Text style={styles.textHeader}>Chapter {this.props.chapterName} - {this.props.chapterCount}</Text>
+                        <Text style={styles.textHeader}>{this.props.chapterName} - {this.props.chapterCount}</Text>
                         <Text style={styles.textDate}>{this.props.dateAdded}</Text>
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
                         <ButtonIcon
                             onPress={() => this.onPress()}
-                            name="more-vertical"
+                            name="dots-vertical"
                             Color="#000"
+                            size={15}
                         />
                     </View>
                 </View>

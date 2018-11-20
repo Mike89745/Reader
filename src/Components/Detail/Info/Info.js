@@ -6,14 +6,11 @@ export default class Info extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.textStyle}>Name : {this.props.info.Name}</Text>
-                <Text style={styles.textStyle}>Author : {this.props.info.Author}</Text>
-                <Text style={styles.textStyle}>Rating : {this.props.info.Rating}</Text>
-                <Text style={styles.textStyle}>Rating : {this.props.info.Rating}</Text>
-                <Text style={styles.textStyle}>Rating : {this.props.info.Rating}</Text>
-                <Text style={styles.textStyle}>Rating : {this.props.info.Rating}</Text>
-                <Text style={styles.textStyle}>Rating : {this.props.info.Rating}</Text>
-                <Text style={styles.textStyle}>Rating : {this.props.info.Rating}</Text>
+                <Text style={styles.textStyle}>title : {this.props.info._id}</Text>
+                <Text style={styles.textStyle}>author : {this.props.info.author}</Text>
+                <Text style={styles.textStyle}>artist : {this.props.info.artist}</Text>
+                <Text style={styles.textStyle}>Rating : {this.props.info.rating}</Text>
+                <Text style={styles.textStyle}>status : {this.props.info.status}</Text>
             </View>
         )
     }

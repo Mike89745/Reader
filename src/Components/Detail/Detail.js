@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions,BackHandler,Text,ScrollView } from 'react-native';
+import { StyleSheet, View, Dimensions,Button,Text,ScrollView } from 'react-native';
 import Info from "./Info/Info";
 import ThumbNail from "./ThumbNail/ThumbNail";
-import Axios from 'react-native-axios';
-import Loading from "react-native-gifted-spinner";
+import axios from 'react-native-axios';
 import Description from "./Description/Description";
 import TagList from "./TagList/TagList";
-import { HeaderBackButton } from 'react-navigation';
-import Tabs from "./Tabs/Tabs"
+import Tabs from "./Tabs/Tabs";
 import Spinner from 'react-native-gifted-spinner';
 import ButtonIcon from '../Icon/Icon';
+import PouchDB from 'pouchdb-react-native';
+
+const Library = new PouchDB('Library');
+const Chapters = new PouchDB('Chapters');
+
 export default class Detail extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -33,18 +36,31 @@ export default class Detail extends Component {
       };
     state ={
         info : " ",
-        thumbNailSource : {uri : "https://firebasestorage.googleapis.com/v0/b/mangareader-5f322.appspot.com/o/22916.jpg?alt=media&token=18749891-1693-4f4c-9499-4f55bf00fd54"},
+        inLibrary : false,
         infoLoading : false,
         size : 150,
         height : 0,
     }
     getInfo = () => {
-        this.setState({infoLoading : true});
-        Axios.request("https://mangareader-5f322.firebaseio.com/Info.json").then(Response => {
-            this.setState({info : Response.data, infoLoading : false});
-            this.props.navigation.setParams({title: Response.data.Name});
-        })
-        .catch(error => console.log(error));
+       // console.log(this.props.navigation.getParam("_id",null))
+        axios.get('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
+            this.setState({info : response.data.docs, infoLoading : false,inLibrary:false,added:false});
+            this.props.navigation.setParams({title:response.data.docs[0]._id});
+        }).catch(error => console.log(error));;
+        /*Library.get(this.props._id ? this.props._id : "Marry Grave").then((response) => {
+            this.setState({info : response, infoLoading : false,inLibrary:true,added:true});
+            this.props.navigation.setParams({title: response.Name});
+        }).catch((error) => {
+            if(error.status == 404){
+                this.setState({infoLoading : true});
+                Axios.request("https://mangareader-5f322.firebaseio.com/Info.json").then(Response => {
+                    this.setState({info : Response.data, infoLoading : false,inLibrary:false,added:false});
+                    this.props.navigation.setParams({title: Response.data.Name});
+                })
+                .catch(error => console.log(error));
+            }
+        });*/
+      
     }
     componentDidMount(){
         this.getInfo();
@@ -57,6 +73,27 @@ export default class Detail extends Component {
         }
         this.setState({size : size, height: height});
     }
+    addToLibrary = () => {
+       /* console.log(this.state.info[0]._id,"add");
+        Library.get(this.state.info[0]._id).then((response) => {
+            console.log(response,"get");
+        }).catch((error) => {
+            console.log(error)
+            if(error.status == 404){
+                console.log("addToLibrary");
+                const book = this.state.info;
+              
+                console.log(book);
+                Library.put(book).then((response) => {
+                    console.log(response);
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            }
+        });
+       */
+       
+    }
     componentWillUnmount() {
     }
     render() {
@@ -66,18 +103,20 @@ export default class Detail extends Component {
                 <View> 
                     <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
                         <View style={{width : this.state.size,paddingRight: 10}}>
-                            <ThumbNail source={this.state.thumbNailSource}/>
+                            <ThumbNail source={this.state.info[0].source}/>
                         </View>
-                        <Info style={styles.Info} info={this.state.info}/>
+                        <Info style={styles.Info} info={this.state.info[0]}/>
                     </View>
                     <View style={styles.content}>
-                        <Description info={this.state.info}/>
-                        <TagList tags={this.state.info.Tag}/>
+                        <Description description={this.state.info[0].description}/>
+                        <View style={{flex:1,alignSelf:"flex-end",flexDirection:"row",paddingTop: 8}}>
+                            <ButtonIcon name={this.state.added ? "bookmark-minus" : "bookmark-plus"} backgroundColor="#3b424c" borderRadius={50} Color="#fff" onPress={() => this.addToLibrary()}/>
+                        </View>
+                        <TagList tags={this.state.info[0].tags}/>
                     </View>
                     <Tabs/>
                 </View>
                 }
-               
             </ScrollView>
         )
     }
