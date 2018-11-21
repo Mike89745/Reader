@@ -42,24 +42,22 @@ export default class Detail extends Component {
         height : 0,
     }
     getInfo = () => {
-       // console.log(this.props.navigation.getParam("_id",null))
-        axios.get('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
-            this.setState({info : response.data.docs, infoLoading : false,inLibrary:false,added:false});
-            this.props.navigation.setParams({title:response.data.docs[0]._id});
-        }).catch(error => console.log(error));;
-        /*Library.get(this.props._id ? this.props._id : "Marry Grave").then((response) => {
-            this.setState({info : response, infoLoading : false,inLibrary:true,added:true});
-            this.props.navigation.setParams({title: response.Name});
+        Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
+            let data = [];
+            data.push(response)
+            console.log(data,"get")
+            this.setState({info : data, infoLoading : false,inLibrary:true,added:true});
+            this.props.navigation.setParams({title: data[0]._id});
         }).catch((error) => {
             if(error.status == 404){
                 this.setState({infoLoading : true});
-                Axios.request("https://mangareader-5f322.firebaseio.com/Info.json").then(Response => {
-                    this.setState({info : Response.data, infoLoading : false,inLibrary:false,added:false});
-                    this.props.navigation.setParams({title: Response.data.Name});
-                })
-                .catch(error => console.log(error));
+                axios.get('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
+                    console.log(response,"axios get")
+                    this.setState({info : response.data.docs, infoLoading : false,inLibrary:false,added:false});
+                    this.props.navigation.setParams({title:response.data.docs[0]._id});
+                }).catch(error => console.log(error));;
             }
-        });*/
+        });
       
     }
     componentDidMount(){
@@ -74,24 +72,35 @@ export default class Detail extends Component {
         this.setState({size : size, height: height});
     }
     addToLibrary = () => {
-       /* console.log(this.state.info[0]._id,"add");
+      //  console.log(this.state.info[0]._id,"add");
         Library.get(this.state.info[0]._id).then((response) => {
-            console.log(response,"get");
+            Library.remove(response).then(response =>{
+                //console.log(response,"delete");
+            }).catch(function (err) {
+                //console.log(err,"delete");
+            });;
         }).catch((error) => {
-            console.log(error)
+            //console.log(error,1)
             if(error.status == 404){
-                console.log("addToLibrary");
-                const book = this.state.info;
-              
-                console.log(book);
+              //  console.log("addToLibrary",2);
+                const book ={
+                    _id :this.state.info[0]._id, 
+                    author :  this.state.info[0].author,
+                    artist :  this.state.info[0].artist,
+                    rating : this.state.info[0].rating,
+                    status : this.state.info[0].status,
+                    description : this.state.info[0].description,
+                    tags: this.state.info[0].tags,
+                  }
+              //  console.log(book,3);
                 Library.put(book).then((response) => {
-                    console.log(response);
+                    //console.log(response,4);
                 }).catch(function (err) {
-                    console.log(err);
+                   // console.log(err,5);
                 });
             }
         });
-       */
+       
        
     }
     componentWillUnmount() {
@@ -103,7 +112,7 @@ export default class Detail extends Component {
                 <View> 
                     <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
                         <View style={{width : this.state.size,paddingRight: 10}}>
-                            <ThumbNail source={this.state.info[0].source}/>
+                            <ThumbNail source={{uri: "http://localhost:8000/public/thumbnails/" + this.state.info[0]._id}}/>
                         </View>
                         <Info style={styles.Info} info={this.state.info[0]}/>
                     </View>

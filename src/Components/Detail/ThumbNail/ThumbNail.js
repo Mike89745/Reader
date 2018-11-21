@@ -7,7 +7,7 @@ export default class ThumbNail extends Component  {
       return (
         <View style={{flex: 1}}>
           <Image
-            source={{uri : "https://firebasestorage.googleapis.com/v0/b/mangareader-5f322.appspot.com/o/22916.jpg?alt=media&token=18749891-1693-4f4c-9499-4f55bf00fd54"}}
+            source={ this.props.source}
             onLoad={() => this._onLoad()} 
             style ={{flex: 1}}
             resizeMode={"contain"}

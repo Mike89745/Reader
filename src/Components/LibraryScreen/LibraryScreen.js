@@ -89,7 +89,7 @@ export default class LibraryScreen extends Component {
         
         return (
             <View style={styles.container}>
-                {this.state.categories ? <Tabs/> : <GridItems isLibrary={true}/>}
+                {this.state.categories ? <Tabs/> : <GridItems isLibrary={true} navigation={this.props.navigation}/>}
             </View>
         )
     }

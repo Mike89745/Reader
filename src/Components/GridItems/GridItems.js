@@ -9,6 +9,7 @@ import { DrawerActions } from 'react-navigation';
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
 import ButtonIcon from "../Icon/Icon"
 import PouchDB from 'pouchdb-react-native';
+
 const db = new PouchDB('Library');
 
 const ItemSpacing = 6;
@@ -42,12 +43,7 @@ export default  class GridItems extends Component {
     LoadItems = () => {
         if(this.props.isLibrary){
             db.allDocs().then((Response) => {
-                let temp = [];
-                for(let i of Response.rows){
-                    i && temp.push({Link: i.doc.source,_id : i.id,title: i.doc.Name});
-                }
-              
-                this.setState({items : [...temp], loading : false});
+                this.setState({items : Response.rows, loading : false});
             }).catch(error => console.log(error));
         }else{
             this.setState({loading : true});
@@ -87,9 +83,9 @@ export default  class GridItems extends Component {
                         style={styles.gridView}
                         renderItem={items => (
                             <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} underlayColor="red">
-                                <View style={[styles.ItemContainer,{width:this.state.size},{height: this.state.size * 2}]} >
+                                <View style={[styles.ItemContainer,{height: 250}]} >
                                     <GridItem 
-                                    source={{uri: "http://localhost:8000/getThumbNail/" + items.doc._id + ".png"}} 
+                                    source={{uri: "http://localhost:8000/public/thumbnails/" + items.doc._id}} 
                                     title={items.doc._id}/>
                                 </View>
                             </TouchableHighlight>
@@ -118,7 +114,7 @@ const styles = StyleSheet.create({
         backgroundColor : "#FFF",
         borderWidth: 0.5,
         borderColor: '#d6d7da',
-        
+        maxHeight: 250,
     }, 
     gridView: {
         paddingTop: 10,

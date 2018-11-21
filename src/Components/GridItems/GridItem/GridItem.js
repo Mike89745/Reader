@@ -8,7 +8,8 @@ export default class ThumbNail extends Component  {
       return (
         <View style={styles.container}>
           <Image
-            source={{uri: "http://localhost:8000/getthumbnail/XD.png"}}
+            source={this.props.source}
+            style={{flex:1}}
             onLoad={() => this._onLoad()}
             resizeMode="cover"
             />
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     flex : 1,
+    maxHeight: 250,
   },
   TitleContainer: {
     paddingTop: 5,
