@@ -7,9 +7,18 @@ import RNFS from "react-native-fs"
 import axios from 'react-native-axios';
 import ReaderNav from './ReaderNav/ReaderNav';
 import ReaderSettingsModal from './ReaderSettingsModal/ReaderSettingsModal';
-
+import { Viewport } from '@skele/components'
 const defHeight = Dimensions.get('window').height/2;
 export default class Reader extends Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerStyle: {
+                backgroundColor: '#3b424c',
+            },
+            headerMode: 'none',
+            
+        };
+      };
     state = {
         uri: null,
         
@@ -42,7 +51,7 @@ export default class Reader extends Component {
                     let path = stat.originalFilepath;
                     path = path.substring(0, path.lastIndexOf("/"));
                     path = path.substring(0, path.lastIndexOf("/"));
-                    this.loadChapter(path + "/" + this.state.chapter);
+                    this.loadChapter(path + "/" + this.state.chapter,false);
                 }).catch((err) => {
                     console.log(err.message, err.code);
                 });
@@ -57,33 +66,22 @@ export default class Reader extends Component {
           });
     }
     getChapterImages(){
-        axios.request("https://mangareader-5f322.firebaseio.com/Thumbnails.json").then(Response => {
-            let NewItems = Object.keys(Response.data).map(key => {return Response.data[key] ? Response.data[key] : null});
-            let temp = [];
-            for(let i of NewItems){
-                i && temp.push({path: i.Link});
+        axios.get(this.state.uri + "/" + this.state.chapter).then((response) => {
+            console.log(response.data);
+            let images = [];
+            for (let index = 0; index < response.data; index++) {
+                images.push({path : this.props.source + index})
             }
-            let CurrentState = this.state.result;
-            if(CurrentState != null){
-                CurrentState = [...CurrentState,...temp,...temp,...temp,...temp,...temp];
-                this.setState({
-                    currentImages : CurrentState,currentPage:1,
-                    fromWeb:true,
-                    pages:CurrentState.length,
-                });
-            }else{
-                CurrentState = [...temp,...temp,...temp,...temp,...temp];
-                this.setState({
-                    currentImages : [...temp,...temp,...temp,...temp,...temp],
-                    currentPage:1,
-                    fromWeb:true,
-                    pages:CurrentState.length,
-                });
-            }
-        })
-        .catch(error => console.log(error));
+            this.setState({
+                Images: images,
+                currentPage:1,
+                fromWeb:true,
+                pages: response.data,
+            });
+        }).catch(error => console.log(error));;
     
     }
+   
     scrollToPage = (page,animated = true) =>{
         let x = 0;
         const images = this.state.Images
@@ -136,54 +134,91 @@ export default class Reader extends Component {
     nextChapter = () =>{
        
         let chapter = this.state.chapter + 1;
-        RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
-            if(result === true){
-                this.setState({chapter: chapter});
-                this.loadChapter(this.state.uri + "/" + chapter,true);
-                this.scrollToStart(false);
-            }
-        });
+        if(this.state.fromWeb){
+            this.setState({chapter: chapter},() => this.loadChapter(this.state.uri));
+            this.scrollToStart(false);
+        }else{
+            RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
+                if(result === true){
+                    this.setState({chapter: chapter});
+                    this.loadChapter(this.state.uri + "/" + chapter);
+                    this.scrollToStart(false);
+                }
+            });
+        }
+        
     }
     prevChapter = () =>{
         let chapter = this.state.chapter - 1;
         if(chapter >= 0 && !this.state.isPrevChapter){
-            RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
-                if(result === true){
-                    this.setState({chapter: chapter});
-                    this.loadChapter(this.state.uri + "/" + chapter,false);
-                    this.scrollToStart(false);
-                }
-            });
-           
-
+            if(this.state.fromWeb){
+                this.setState({chapter: chapter},() => this.loadChapter(this.state.uri));
+                this.scrollToStart(false);
+            }else{
+                RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
+                    if(result === true){
+                        this.setState({chapter: chapter});
+                        this.loadChapter(this.state.uri + "/" + chapter);
+                        this.scrollToStart(false);
+                    }
+                });
+            }
         }
     }
-
-    loadChapter(path,next){
-        RNFS.readDir(path).then((result) => {
-            result.sort(function(a, b){
-                if(a.path < b.path) { return -1; }
-                if(a.path > b.path) { return 1; }
-                return 0;
+    componentWillMount(){
+        this.setState({
+            uri : "http://localhost:8000/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/" ,
+            chapter : parseInt(this.props.navigation.getParam("chapter",null)),
+            title : this.props.navigation.getParam("title",null)
+        },() => this.loadChapter("http://localhost:8000/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/",true));
+       
+    }
+    loadChapter(path,fromWeb = this.state.fromWeb){
+        if(fromWeb){
+            axios.get("http://localhost:8000/getChapterPages/" + this.state.title + "/" + this.state.chapter).then((response) => {
+                let images = [];
+                for (let index = 0; index < response.data.pages; index++) {
+                    images.push({path : path + this.state.chapter + "-" + response.data.chapterTitle.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + index});
+                }
+                const Height = Dimensions.get('window').height/2;
+                images.forEach((element) => { 
+                    element.key = element.path;
+                    element.height = Height;
+                });  
+                this.setState({
+                    Images: images,
+                    currentPage:1,
+                    fromWeb:true,
+                    pages: response.data.pages,
+                });
+            }).catch(error => console.log(error));
+        }else{
+            RNFS.readDir(path).then((result) => {
+                result.sort(function(a, b){
+                    if(a.path < b.path) { return -1; }
+                    if(a.path > b.path) { return 1; }
+                    return 0;
+                })
+                const Height = Dimensions.get('window').height/2;
+                result.forEach((element) => { 
+                    element.key = element.path;
+                    element.height = Height;
+                });  
+                this.setState({
+                    Images: result,
+                    currentPage:1,
+                    fromWeb:false,
+                    pages:result.length,
+                    uri:path.substring(0, path.lastIndexOf("/"))
+                });
+    
+                return Promise.all([RNFS.stat(result[0].path), result[0].path]);
             })
-            const Height = Dimensions.get('window').height/2;
-            result.forEach((element) => { 
-                element.key = element.path;
-                element.height = Height;
-            });  
-            this.setState({
-                Images: result,
-                currentPage:1,
-                fromWeb:false,
-                pages:result.length,
-                uri:path.substring(0, path.lastIndexOf("/"))
+            .catch((err) => {
+                console.log(err.message, err.code);
             });
-
-            return Promise.all([RNFS.stat(result[0].path), result[0].path]);
-        })
-        .catch((err) => {
-            console.log(err.message, err.code);
-        });
+        }
+        
        
     }
     startReached(e){
@@ -239,7 +274,7 @@ export default class Reader extends Component {
     render() {
         return (
             <View style={{flex:1}}>
-                <View style={styles.container}>
+                <Viewport.Tracker style={styles.container} preTriggerRatio={0.5}>
                         <FlatList 
                             scrollEventThrottle={16}
                             horizontal = {this.state.horizontal}
@@ -263,9 +298,8 @@ export default class Reader extends Component {
                                 />
                             }
                         />
-                </View>
+                </Viewport.Tracker>
                 <ReaderNav 
-                
                     nav={this.props.navigation} 
                     pages={this.state.pages ? this.state.pages : 1} 
                     setPage={this.scrollToPage}

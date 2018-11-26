@@ -9,7 +9,9 @@ import Tabs from "./Tabs/Tabs";
 import Spinner from 'react-native-gifted-spinner';
 import ButtonIcon from '../Icon/Icon';
 import PouchDB from 'pouchdb-react-native';
+import find from 'pouchdb-find';
 
+PouchDB.plugin(find)
 const Library = new PouchDB('Library');
 const Chapters = new PouchDB('Chapters');
 
@@ -35,24 +37,39 @@ export default class Detail extends Component {
         };
       };
     state ={
-        info : " ",
+        info : null,
         inLibrary : false,
         infoLoading : false,
         size : 150,
         height : 0,
+        chapters: null,
+        added : false,
     }
     getInfo = () => {
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
             let data = [];
             data.push(response)
-            console.log(data,"get")
+            Chapters.createIndex({
+                index: {
+                    fields: ['book_id','number']
+                }
+            }).then(() => {
+                return Chapters.find({
+                    selector: {
+                        book_id : {$eq : data[0]._id},
+                    }
+                }).then(response => {
+                    this.setState({chapters: response.docs})
+                }).catch(err => console.log(err));
+            }).catch(function (err) {
+                console.log(err);
+            });
             this.setState({info : data, infoLoading : false,inLibrary:true,added:true});
             this.props.navigation.setParams({title: data[0]._id});
         }).catch((error) => {
             if(error.status == 404){
                 this.setState({infoLoading : true});
                 axios.get('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
-                    console.log(response,"axios get")
                     this.setState({info : response.data.docs, infoLoading : false,inLibrary:false,added:false});
                     this.props.navigation.setParams({title:response.data.docs[0]._id});
                 }).catch(error => console.log(error));;
@@ -72,17 +89,14 @@ export default class Detail extends Component {
         this.setState({size : size, height: height});
     }
     addToLibrary = () => {
-      //  console.log(this.state.info[0]._id,"add");
         Library.get(this.state.info[0]._id).then((response) => {
             Library.remove(response).then(response =>{
-                //console.log(response,"delete");
-            }).catch(function (err) {
-                //console.log(err,"delete");
+                this.setState({added : false});
+            }).catch((err) => {
+                console.log(err,"delete");
             });;
         }).catch((error) => {
-            //console.log(error,1)
             if(error.status == 404){
-              //  console.log("addToLibrary",2);
                 const book ={
                     _id :this.state.info[0]._id, 
                     author :  this.state.info[0].author,
@@ -91,28 +105,71 @@ export default class Detail extends Component {
                     status : this.state.info[0].status,
                     description : this.state.info[0].description,
                     tags: this.state.info[0].tags,
-                  }
-              //  console.log(book,3);
+                }
                 Library.put(book).then((response) => {
-                    //console.log(response,4);
-                }).catch(function (err) {
-                   // console.log(err,5);
+                    if(!this.state.chapters){
+                        axios.get('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
+                            let chapters = [];
+                            response.data.docs.map((chapter) =>{
+                                chapters.push({
+                                    book_id : chapter.book_id,
+                                    number : chapter.number,
+                                    title : chapter.title,
+                                    dateAdded : chapter.dateAdded,
+                                    read : false,
+                                    lastRead : null,
+                                })
+                            })
+                            this.setState({chapters:chapters},() =>  {
+                                Chapters.bulkDocs(this.state.chapters).then((response) => {
+                                    //console.log(response,"chapters");
+                                }).catch((err) => {
+                                    console.log(err,"chapters");
+                                });
+                            });
+                        });
+                    }else{
+                        Chapters.bulkDocs(this.state.chapters).then((response) => {
+                            //console.log(response,"chapters");
+                        }).catch((err) => {
+                            console.log(err,"chapters");
+                        });
+                    } 
+                    this.setState({added : true});
+                }).catch((err) => {
+                    console.log(err,5);
                 });
             }
         });
        
        
     }
-    componentWillUnmount() {
+    getChapters=()=>{
+        axios.get('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
+            let chapters = [];
+            response.data.docs.map((chapter) =>{
+                chapters.push({
+                    book_id : chapter.book_id,
+                    number : chapter.number,
+                    title : chapter.title,
+                    dateAdded : chapter.dateAdded,
+                    read : false,
+                    lastRead : null,
+                })
+            })
+            this.setState({chapters:chapters});
+        }); 
+        
     }
+
     render() {
         return (
             <ScrollView>
-                {this.state.loading ? <Spinner style={styles.Spinner}/> :
+                {this.state.info ? 
                 <View> 
                     <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
                         <View style={{width : this.state.size,paddingRight: 10}}>
-                            <ThumbNail source={{uri: "http://localhost:8000/public/thumbnails/" + this.state.info[0]._id}}/>
+                            <ThumbNail source={{uri: ("http://localhost:8000/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}/>
                         </View>
                         <Info style={styles.Info} info={this.state.info[0]}/>
                     </View>
@@ -123,8 +180,10 @@ export default class Detail extends Component {
                         </View>
                         <TagList tags={this.state.info[0].tags}/>
                     </View>
-                    <Tabs/>
-                </View>
+                    <Tabs bookID={this.state.info[0]._id} nav={this.props.navigation} getChapters={this.getChapters} chapters={this.state.chapters}/>
+                </View> 
+                :
+                <Spinner style={styles.Spinner}/>
                 }
             </ScrollView>
         )

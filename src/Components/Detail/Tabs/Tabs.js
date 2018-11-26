@@ -4,10 +4,10 @@ import RF from "react-native-responsive-fontsize"
 import ChapterList from "./ChapterList/ChapterList"
 import ReviewList from "./ReviewList/ReviewList"
 import {createMaterialTopTabNavigator } from "react-navigation"
-
 export default class Tabs extends Component {
     state = {
         deviceHeight: null,
+        chapters: null,
     }
     static navigationOptions = ({ navigation }) => {
         return {
@@ -20,16 +20,19 @@ export default class Tabs extends Component {
         this.setState({deviceHeight : Dimensions.get('window').height - 80,});
     }
     componentDidMount(){
-        console.log(this.props.tags);
+        
     }
     componentWillMount() {
         this.setState({deviceHeight : Dimensions.get('window').height - 80,});
+       // console.log(this.props.bookID);
     }
-
+    componentWillReceiveProps(nextProps) {
+        this.setState({ chapters: nextProps.chapters});  
+    }
     render() {
         return (
             <View style={[styles.container,{height: this.state.deviceHeight}]} onLayout={this.onLayout.bind(this)}>
-                <TabsNav/>
+                <TabsNav screenProps={{bookID: this.props.bookID,nav:this.props.nav,getChapters: this.props.getChapters,chapters : this.state.chapters}}/>
             </View>
         )
     }

@@ -26,7 +26,7 @@ export default class BottomNav extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <ButtonIcon name="skip-back" Color="#fff" onPress={() => this.props.prevChapter()}/>
+                <ButtonIcon name="skip-previous" Color="#fff" onPress={() => this.props.prevChapter()}/>
                 <View style={styles.SliderContainer}>
                     <View>
                         <Text style={styles.text}>{this.state.value}</Text>
@@ -48,7 +48,7 @@ export default class BottomNav extends Component {
                         <Text style={styles.text}>{this.state.maxValue}</Text>
                     </View>
                 </View>
-                <ButtonIcon style={{alignItems: "flex-end",}} name="skip-forward" Color="#FFF" onPress={() => this.props.nextChapter()}/>  
+                <ButtonIcon style={{alignItems: "flex-end",}} name="skip-next" Color="#FFF" onPress={() => this.props.nextChapter()}/>  
             </View>
         )
     }

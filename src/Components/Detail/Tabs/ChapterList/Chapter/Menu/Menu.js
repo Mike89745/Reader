@@ -2,30 +2,31 @@
 import React, { Component } from 'react';
 import {View,Text,StyleSheet,Dimensions} from 'react-native';
 import {
-    Menu,
-    MenuOptions,
-    MenuOption,
-    MenuTrigger,
-    renderers,
-  } from 'react-native-popup-menu';
-const MenuHeight = Dimensions.get('window').height;
-const MenuWidth = Math.floor(Dimensions.get('window').width/2.5);
-export default class ToolBar extends Component {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+import ButtonIcon from '../../../../../Icon/Icon';
+export default class ChapterPopUp extends Component {
     render() {
         return (
-        <View style={styles.container}>
-            <Text>WEED</Text>
             <Menu>
-                <MenuTrigger text='Select action' customStyles={triggerStyles} />
-                <MenuOptions customStyles={optionsStyles}>
-                    <MenuOption onSelect={() => alert(`Save`)} text='Save' />
+                <MenuTrigger>
+                  <ButtonIcon
+                    name="dots-vertical"
+                    Color="#000"
+                    size={15}
+                  />
+                </MenuTrigger>
+                <MenuOptions>
+                    <MenuOption onSelect={() => alert(`Download`)} text='Download' />
+                    <MenuOption onSelect={() => alert(`Marked as read`)} text='Mark as read'/>
                     <MenuOption onSelect={() => alert(`Delete`)} >
-                        <Text style={{color: 'red'}}>Delete</Text>
+                        <Text>Delete</Text>
                     </MenuOption>
-                <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' />
                 </MenuOptions>
             </Menu>
-        </View>
         )
     }
 }
@@ -60,9 +61,7 @@ const triggerStyles = {
   };
 const styles = StyleSheet.create({
     Menu: {
-        height: MenuHeight,
-        width : MenuWidth,
-        backgroundColor: "black",
+      backgroundColor: "black",
     }, 
     container: {
         paddingTop: 10,
@@ -73,7 +72,6 @@ const styles = StyleSheet.create({
 const optionsStyles = {
     optionsContainer: {
         padding: 10,
-        height: MenuHeight,
         backgroundColor: "black",
     },
     optionsWrapper: {

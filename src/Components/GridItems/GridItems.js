@@ -37,24 +37,29 @@ export default  class GridItems extends Component {
         size : 100,
         items : [],
         loading : false,
-       
+        page : 0
     }
 
     LoadItems = () => {
+        let page = this.state.page + 1;
         if(this.props.isLibrary){
             db.allDocs().then((Response) => {
                 this.setState({items : Response.rows, loading : false});
             }).catch(error => console.log(error));
         }else{
             this.setState({loading : true});
-            axios.get('http://localhost:8000/getBooks/10').then((response) => {
-                this.setState({items : response.data.rows, loading : false});
+            
+            axios.get('http://localhost:8000/getBooks/'+ page).then((response) => {
+                data = this.state.items;
+                response.data.rows.map(el => data.push(el));
+                this.setState({items : data, loading : false,page:page});
             }).catch(error => console.log(error));;
         }
       
     }
    
     componentWillMount() {
+       // console.log(this.props.nav,this.props.navigation);
         const initial = Orientation.getInitialOrientation();
         let size = this.state.size;
         if (initial === 'PORTRAIT') {
@@ -85,7 +90,7 @@ export default  class GridItems extends Component {
                             <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} underlayColor="red">
                                 <View style={[styles.ItemContainer,{height: 250}]} >
                                     <GridItem 
-                                    source={{uri: "http://localhost:8000/public/thumbnails/" + items.doc._id}} 
+                                    source={{uri: "http://localhost:8000/public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}} 
                                     title={items.doc._id}/>
                                 </View>
                             </TouchableHighlight>

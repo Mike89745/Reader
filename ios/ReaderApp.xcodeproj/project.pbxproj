@@ -62,6 +62,7 @@
 		33C9E7EE53D14089A6AA4BB2 /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F81BAB49B2C42B3A7C712EB /* libRNDocumentPicker.a */; };
 		E61F37B5C0624D6396F70556 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A214774CF634B5D81B0768E /* libRNFS.a */; };
 		EEADB8072FA540C681CE72A4 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D46321020EF4BBABB42B22D /* libBVLinearGradient.a */; };
+		F8CFBDFD02184CD1A9E862E2 /* libRNBackgroundDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6676CDF2728D4353B93B1012 /* libRNBackgroundDownloader.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -401,6 +402,8 @@
 		5A214774CF634B5D81B0768E /* libRNFS.a */ = {isa = PBXFileReference; name = "libRNFS.a"; path = "libRNFS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		8C1B4B47DE2744A7BD80F07E /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; name = "BVLinearGradient.xcodeproj"; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		2D46321020EF4BBABB42B22D /* libBVLinearGradient.a */ = {isa = PBXFileReference; name = "libBVLinearGradient.a"; path = "libBVLinearGradient.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		4CA44F910EE94863AD704DE4 /* RNBackgroundDownloader.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundDownloader.xcodeproj"; path = "../node_modules/react-native-background-downloader/ios/RNBackgroundDownloader.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		6676CDF2728D4353B93B1012 /* libRNBackgroundDownloader.a */ = {isa = PBXFileReference; name = "libRNBackgroundDownloader.a"; path = "libRNBackgroundDownloader.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -437,6 +440,7 @@
 				33C9E7EE53D14089A6AA4BB2 /* libRNDocumentPicker.a in Frameworks */,
 				E61F37B5C0624D6396F70556 /* libRNFS.a in Frameworks */,
 				EEADB8072FA540C681CE72A4 /* libBVLinearGradient.a in Frameworks */,
+				F8CFBDFD02184CD1A9E862E2 /* libRNBackgroundDownloader.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,6 +637,7 @@
 				F61C4F178DCB4009A2D6D66A /* RNDocumentPicker.xcodeproj */,
 				299F5940EB0340C8BA4A4565 /* RNFS.xcodeproj */,
 				8C1B4B47DE2744A7BD80F07E /* BVLinearGradient.xcodeproj */,
+				4CA44F910EE94863AD704DE4 /* RNBackgroundDownloader.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1309,6 +1314,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1321,6 +1327,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Debug;
@@ -1352,6 +1359,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1364,6 +1372,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Release;
@@ -1395,6 +1404,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Debug;
@@ -1425,6 +1435,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Release;
@@ -1464,6 +1475,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1476,6 +1488,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Debug;
@@ -1515,6 +1528,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1527,6 +1541,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Release;
@@ -1565,6 +1580,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1577,6 +1593,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Debug;
@@ -1615,6 +1632,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1627,6 +1645,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-document-picker\ios\RNDocumentPicker",
 					"$(SRCROOT)\..\node_modules\react-native-fs/**",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
+					"$(SRCROOT)\..\node_modules\react-native-background-downloader\ios",
 				);
 			};
 			name = Release;

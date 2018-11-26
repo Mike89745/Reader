@@ -2,25 +2,24 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text,TouchableHighlight} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from "../../../../Icon/Icon"
+import ChapterPopUp from './Menu/Menu';
+import { MenuProvider } from 'react-native-popup-menu';
 export default class Chapter extends Component {
-    onPress = () => {
-        //console.log("Touched")
-    }
+
     render() {
         return ( 
-            <TouchableHighlight underlayColor="#ccc" onPress={this.onPress}>
+            <TouchableHighlight underlayColor="#ccc" onPress={() => this.props.nav.navigate('Reader',{
+                title: this.props.bookID,
+                chapter: this.props.chapterCount,
+                })}
+                onLongPress={() => console.log("Long Press")}>
                 <View style={styles.container} >
                     <View style={{flex:0.8}}>
-                        <Text style={styles.textHeader}>{this.props.chapterName} - {this.props.chapterCount}</Text>
+                        <Text style={styles.textHeader}>Chapter {this.props.chapterCount} - {this.props.chapterName}</Text>
                         <Text style={styles.textDate}>{this.props.dateAdded}</Text>
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
-                        <ButtonIcon
-                            onPress={() => this.onPress()}
-                            name="dots-vertical"
-                            Color="#000"
-                            size={15}
-                        />
+                        <ChapterPopUp/>
                     </View>
                 </View>
             </TouchableHighlight>

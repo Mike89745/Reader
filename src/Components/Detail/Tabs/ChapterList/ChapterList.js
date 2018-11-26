@@ -7,13 +7,23 @@ export default class ChapterList extends Component {
     state ={
         chapters: null,
     }
-    getChapters(){
-        axios.get('http://localhost:8000/getChapters/XD').then((response) => {
-            this.setState({chapters:response.data.docs});
-        });
+    donwloadSelectedChapters(){
+
+    }
+    onSelect(){
+
+    }
+    onDeselect(){
+        
+    }
+    componentWillReceiveProps(nextProps) {
+        this.setState({ chapters: nextProps.screenProps.chapters});  
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextState.chapters != this.state.chapters;
     }
     componentDidMount(){
-      //  console.log(this.props._id);
+        //console.log(this.props.screenProps.bookID);
         //console.log(this.scre);
     }
     
@@ -21,9 +31,15 @@ export default class ChapterList extends Component {
         return (
             <ScrollView style={styles.container} nestedScrollEnabled={true}>
                 {this.state.chapters ? this.state.chapters.map((item,index) => 
-                 <Chapter key={index} chapterName={item.title} chapterCount={item.number} dateAdded={item.dateAdded}/>) 
+                 <Chapter key={index} 
+                 chapterName={item.title} 
+                 chapterCount={item.number} 
+                 dateAdded={item.dateAdded} 
+                 bookID={this.props.screenProps.bookID}
+                 nav = {this.props.screenProps.nav}
+                 />) 
                  : 
-                 <Button title="Load Chapters" onPress={() => this.getChapters()}/>
+                 <Button title="Load Chapters" onPress={() => this.props.screenProps.getChapters()}/>
                 }
             </ScrollView>
         )

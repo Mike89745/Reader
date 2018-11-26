@@ -9,6 +9,7 @@ import HistoryScreen from "../../Components/HistoryScreen/HistoryScreen"
 import LibraryScreen from "../../Components/LibraryScreen/LibraryScreen"
 import ButtonIcon from "../../Components/Icon/Icon"
 import Reader from "../../Components/Reader/Reader"
+import DownloadsScreen from '../../Components/DownloadsScreen/DownloadsScreen';
 export default class Layout extends Component{
     render() {
         return (
@@ -18,17 +19,17 @@ export default class Layout extends Component{
         )
     }
 }
-const LibraryStack = createStackNavigator(
+const DownloadStack = createStackNavigator(
     {
-        LibraryScreen: {screen : LibraryScreen},
-        Details: {screen : Detail},
+        DownloadsScreen: {screen : DownloadsScreen},
     },
     {
-        drawerLabel: 'Knihovna',
-        initialRouteName: 'LibraryScreen',
+        drawerLabel: 'Downloads',
+        initialRouteName: 'DownloadsScreen',
         headerMode: 'float',
+       
         navigationOptions: ({navigation}) => ({
-            headerTitle: ( <HeaderInput/> ),
+            headerTitle: ( <Text style={{color:"white"}}>Downloads</Text> ),
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
@@ -68,14 +69,35 @@ const ReaderStack = createStackNavigator(
         drawerLabel: 'Reader',
         initialRouteName: 'ReaderScreen',
         headerMode: 'none',
-       
-      
+    }
+);
+const LibraryStack = createStackNavigator(
+    {
+        LibraryScreen: {screen : LibraryScreen},
+        Details: {screen : Detail},
+        Reader : {screen : ReaderStack},
+    },
+    {
+        drawerLabel: 'Knihovna',
+        initialRouteName: 'LibraryScreen',
+        headerMode: 'float',
+        navigationOptions: ({navigation}) => ({
+            headerTitle: ( <HeaderInput/> ),
+            headerLeft: (
+                <ButtonIcon
+                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+                    name="magic"
+                    Color="#fff"
+                />
+            )
+        })
     }
 );
 const CatalogStack = createStackNavigator(
     {
         Catalog: {screen : GridItems},
         Details: {screen : Detail},
+        Reader : {screen : ReaderStack},
     },
     {
         drawerLabel: 'Katalog',
@@ -102,7 +124,7 @@ const Drawer = createDrawerNavigator(
         Catalog: {screen : CatalogStack},
         History: {screen : HistoryStack},
         Library: {screen : LibraryStack},
-        Reader : {screen : ReaderStack},
+        Download : {screen:DownloadStack},
     },
     {
         initialRouteName: 'Catalog',

@@ -145,6 +145,7 @@ repositories {
     maven { url "https://maven.google.com" }
 }
 dependencies {
+    compile project(':react-native-background-downloader')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-fs')
     compile project(':react-native-document-picker')

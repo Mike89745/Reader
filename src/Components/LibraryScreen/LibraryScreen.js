@@ -56,7 +56,7 @@ export default class LibraryScreen extends Component {
     }
     
     getTabForCategory (category){
-        return () => (<LibraryTab category={category} />);
+        return () => (<LibraryTab category={category} nav={this.props.navigation} />);
     }
     componentWillMount(){
         db.allDocs().then((Response) => {

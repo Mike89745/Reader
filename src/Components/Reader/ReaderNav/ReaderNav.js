@@ -13,7 +13,7 @@ export default class ReaderNav extends Component {
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ pages: nextProps.pages,currentPage: nextProps.currentPage });  
-      }
+    }
     render() {
         return (
             <View style={styles.container}>
