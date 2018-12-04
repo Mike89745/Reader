@@ -21,69 +21,39 @@ import React, {Component} from 'react';
 import {StyleSheet, View,Button} from 'react-native';
 import Layout from "./src/Containers/Layout/Layout";
 import { MenuProvider } from 'react-native-popup-menu';
-import RNBackgroundDownloader from 'react-native-background-downloader';
-import axios from 'react-native-axios';
 
-export default class App extends Component {
-  state = {
-  }
-  async ReAttachingDownloads(){
-    let lostTasks = await RNBackgroundDownloader.checkForExistingDownloads();
-      for (let task of lostTasks) {
-        console.log(`Task ${task.id} was found!`);
-        task.progress((percent) => {
-          console.log(`Downloaded: ${percent * 100}%`);
-        }).done(() => {
-          console.log('Downlaod is done!');
-        }).error((error) => {
-          console.log('Download canceled due to error: ', error);
-        });
-      }
+import Downloader from './src/reducers/downloader/downloaderReducer';
+
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import {createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import {loadData, nextDownload} from "./src/reducers/downloader/downloaderActions"
+const loggerMiddleware = createLogger();
+const store = createStore(Downloader,applyMiddleware(
+  thunkMiddleware,
+  loggerMiddleware,
+));
+export default class ReaderApp extends Component {
+  componentWillMount(){ 
+    //this.ReAttachingDownloads();
+    console.log("appMounted");
+    //store.dispatch(loadData());
   }
   test(){
-    axios.get("http://localhost:8000/getChapterPages/Tensei%20Shitara%20Ken%20Deshita/1").then((response) => {
-      console.log(response.data.pages);
-      for (let index = 0; index < response.data.pages; index++) {
-        let task = RNBackgroundDownloader.download({
-          id: 'Tensei-Shitara-Ken-Deshita//1-first-chapter//' + index,
-          url: 'http://localhost:8000/public/books/Tensei-Shitara-Ken-Deshita/1-first-chapter/' + index,
-          destination: `${RNBackgroundDownloader.directories.documents}/${index}.jpg`
-        }).begin((expectedBytes) => {
-          //console.log(`Going to download ${expectedBytes} bytes!`);
-        }).progress((percent) => {
-          //console.log(`Downloaded: ${percent * 100}%`,index);
-        }).done(() => {
-          console.log('Download is done!',index);
-        }).error((error) => {
-          console.log('Download canceled due to error: ', error,index);
-        });
-      }
-    });
-   
-
-
-    // Pause the task
-    //task.pause();
-    
-    // Resume after pause
-    //task.resume();
-    
-    // Cancel the task
-    //task.stop();*/
+    store.dispatch(nextDownload());
   }
-  componentWillMount(){ 
-    this.ReAttachingDownloads();
-  }
- 
   render() {
-    // 
+    //<Button title="Test Download" onPress={() => this.test()}/>
+
     return (
-      <MenuProvider>
-       <Button title="Test Download" onPress={() => this.test()}/>
-        <View style={styles.container}>
-          <Layout/>
-        </View>
-      </MenuProvider>
+      <Provider store={store}>
+        <MenuProvider>
+          <View style={styles.container}>
+            <Layout/>
+          </View>
+        </MenuProvider>
+      </Provider>
     );
   }
 }

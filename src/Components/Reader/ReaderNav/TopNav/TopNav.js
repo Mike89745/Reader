@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Button,Text} from 'react-native';
 import ButtonIcon from '../../../Icon/Icon';
-import { HeaderBackButton } from 'react-navigation';
 export default class TopNav extends Component {
    
     render() {

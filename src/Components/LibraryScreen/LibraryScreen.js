@@ -36,7 +36,7 @@ export default class LibraryScreen extends Component {
         };
       };
     state = {
-        categories:["Default"],
+        categories:null,
     } 
     tabs(categories) {
         return categories.reduce((routes, category) => {
@@ -69,7 +69,7 @@ export default class LibraryScreen extends Component {
         }).catch(error => console.log(error));
     }
     render() {
-        const Tabs = createMaterialTopTabNavigator(this.tabs(this.state.categories), {
+        const Tabs = this.state.categories ? createMaterialTopTabNavigator(this.tabs(this.state.categories), {
             tabBarOptions: {
                 activeBackgroundColor: "#FFF",  
                 activeTintColor: '#FFF',
@@ -85,11 +85,11 @@ export default class LibraryScreen extends Component {
                     backgroundColor: "#FFF"
                 },
             },
-        });
+        }) : null;
         
         return (
             <View style={styles.container}>
-                {this.state.categories ? <Tabs/> : <GridItems isLibrary={true} navigation={this.props.navigation}/>}
+                {this.state.categories ? <Tabs/> : null}
             </View>
         )
     }

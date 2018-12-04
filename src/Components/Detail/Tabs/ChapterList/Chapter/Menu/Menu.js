@@ -12,7 +12,7 @@ export default class ChapterPopUp extends Component {
     render() {
         return (
             <Menu>
-                <MenuTrigger>
+                <MenuTrigger text="haha">
                   <ButtonIcon
                     name="dots-vertical"
                     Color="#000"
@@ -20,9 +20,9 @@ export default class ChapterPopUp extends Component {
                   />
                 </MenuTrigger>
                 <MenuOptions>
-                    <MenuOption onSelect={() => alert(`Download`)} text='Download' />
-                    <MenuOption onSelect={() => alert(`Marked as read`)} text='Mark as read'/>
-                    <MenuOption onSelect={() => alert(`Delete`)} >
+                    <MenuOption onSelect={() => this.props.download()} text='Download' />
+                    <MenuOption onSelect={() => this.props.markAsRead()} text='Mark as read'/>
+                    <MenuOption onSelect={() => this.props.delete()} >
                         <Text>Delete</Text>
                     </MenuOption>
                 </MenuOptions>

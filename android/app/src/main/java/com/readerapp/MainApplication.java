@@ -3,16 +3,17 @@ package com.readerapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.eko.RNBackgroundDownloaderPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.rnfs.RNFSPackage;
-import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
-import com.reactnative.photoview.PhotoViewPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import io.realm.react.RealmReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.reactnative.photoview.PhotoViewPackage;
 import com.walmartreact.ReactOrientationListener.ReactOrientationListener;
 import com.github.yamill.orientation.OrientationPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.rnfs.RNFSPackage;
 import ui.fileselector.RNFileSelectorPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
+import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
+import com.eko.RNBackgroundDownloaderPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -33,16 +34,17 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNBackgroundDownloaderPackage(),
-            new LinearGradientPackage(),
-            new RNFSPackage(),
-            new ReactNativeDocumentPicker(),
-            new PhotoViewPackage(),
+            new RNFetchBlobPackage(),
+            new RealmReactPackage(),
             new VectorIconsPackage(),
+            new PhotoViewPackage(),
             new ReactOrientationListener(),
             new OrientationPackage(),
+            new LinearGradientPackage(),
+            new RNFSPackage(),
             new RNFileSelectorPackage(),
-            new RNFetchBlobPackage()
+            new ReactNativeDocumentPicker(),
+            new RNBackgroundDownloaderPackage()
       );
     }
 

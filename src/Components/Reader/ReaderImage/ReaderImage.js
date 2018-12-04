@@ -34,7 +34,7 @@ export default class ReaderImage extends Component {
         this.calcImageSize(!inView);
     }
     componentDidMount() {
-        console.log(this.props.source);
+        //console.log(this.props.source);
     }
     componentWillUnmount(){
       //  console.log(this.props.imageIndex,"unmounted");

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,Slider,Button} from 'react-native';
+import { StyleSheet, View, Text,Dimensions,Button} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from '../../Icon/Icon';
+import ProgressBarAnimated from 'react-native-progress-bar-animated';
 export default class DowloadItem extends Component {
     state={
         value : 0,
         maxValue: 0,
-    }
-    add(){
-        let val = this.state.value + 1
-        this.setState({value:val});
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ value: nextProps.value,maxValue : nextProps.maxValue});  
@@ -23,6 +20,10 @@ export default class DowloadItem extends Component {
                 <Text style={styles.textHeader}>{this.props.title}</Text>
                 <Text style={styles.textStyle}>{this.props.chapterName}</Text>
                 <Text style={{textAlign:"right",paddingRight:15}}>{this.state.value ? this.state.value : 0}/{this.state.maxValue}</Text>
+                <ProgressBarAnimated
+                    width={Dimensions.get("screen").width - 30}
+                    value={(this.state.value/this.state.maxValue) * 100}
+                />
             </View>
         )
     }

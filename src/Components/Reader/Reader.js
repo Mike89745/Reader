@@ -12,11 +12,8 @@ const defHeight = Dimensions.get('window').height/2;
 export default class Reader extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
-            headerStyle: {
-                backgroundColor: '#3b424c',
-            },
+            headerVisible: false,
             headerMode: 'none',
-            
         };
       };
     state = {
@@ -65,23 +62,6 @@ export default class Reader extends Component {
            
           });
     }
-    getChapterImages(){
-        axios.get(this.state.uri + "/" + this.state.chapter).then((response) => {
-            console.log(response.data);
-            let images = [];
-            for (let index = 0; index < response.data; index++) {
-                images.push({path : this.props.source + index})
-            }
-            this.setState({
-                Images: images,
-                currentPage:1,
-                fromWeb:true,
-                pages: response.data,
-            });
-        }).catch(error => console.log(error));;
-    
-    }
-   
     scrollToPage = (page,animated = true) =>{
         let x = 0;
         const images = this.state.Images
@@ -166,11 +146,13 @@ export default class Reader extends Component {
         }
     }
     componentWillMount(){
+        //"http://localhost:8000/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         this.setState({
-            uri : "http://localhost:8000/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/" ,
+            uri :  this.props.navigation.getParam("uri",null) ,
+            fromWeb : this.props.navigation.getParam("downloaded",null),
             chapter : parseInt(this.props.navigation.getParam("chapter",null)),
             title : this.props.navigation.getParam("title",null)
-        },() => this.loadChapter("http://localhost:8000/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/",true));
+        },() => this.loadChapter(this.props.navigation.getParam("uri",null) + "/",this.props.navigation.getParam("downloaded",null)));
        
     }
     loadChapter(path,fromWeb = this.state.fromWeb){
@@ -193,14 +175,12 @@ export default class Reader extends Component {
                 });
             }).catch(error => console.log(error));
         }else{
+            console.log(path);
             RNFS.readDir(path).then((result) => {
-                result.sort(function(a, b){
-                    if(a.path < b.path) { return -1; }
-                    if(a.path > b.path) { return 1; }
-                    return 0;
-                })
+                result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")))
+                console.log(result);
                 const Height = Dimensions.get('window').height/2;
-                result.forEach((element) => { 
+                result.forEach((element) => {
                     element.key = element.path;
                     element.height = Height;
                 });  
@@ -308,16 +288,16 @@ export default class Reader extends Component {
                     currentPage={this.state.currentPage}
                     showSettings={this.showSettings}
                 />
-                <View style={{flex:1,position: 'absolute', top: 50}}>
-                    <Button title="Open" onPress={() => this.openFileSelector()}/>
-                    <Button title="test" onPress={() => this.xd()}/>
-                </View>
+                
                 <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/>
             </View>
         )
     }
 }
-//<Button title="test" onPress={() => this.xd()} styles={{ position: 'absolute', top: 50}}/>
+/*<Button title="test" onPress={() => this.xd()} styles={{ position: 'absolute', top: 50}}<View style={{flex:1,position: 'absolute', top: 50}}>
+                    <Button title="Open" onPress={() => this.openFileSelector()}/>
+                    <Button title="test" onPress={() => this.xd()}/>
+                </View>/>*/
 const styles = StyleSheet.create({
     PageCounterContainer:{
         width: '100%', 

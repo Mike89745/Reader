@@ -127,7 +127,7 @@ const Drawer = createDrawerNavigator(
         Download : {screen:DownloadStack},
     },
     {
-        initialRouteName: 'Catalog',
+        initialRouteName: 'Library',
         headerVisible: false,
         headerMode: 'none',
     }
