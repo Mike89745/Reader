@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,TextInput,Text} from 'react-native';
+import { StyleSheet, View,Text} from 'react-native';
 import GridItems from "../../Components/GridItems/GridItems";
 import Detail from "../../Components/Detail/Detail";
 import {createStackNavigator,createDrawerNavigator} from 'react-navigation';
@@ -33,7 +33,7 @@ const DownloadStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="magic"
+                    name="menu"
                     Color="#fff"
                 />
             )
@@ -54,7 +54,7 @@ const HistoryStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="magic"
+                    name="menu"
                     Color="#fff"
                 />
             )
@@ -86,7 +86,7 @@ const LibraryStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="magic"
+                    name="menu"
                     Color="#fff"
                 />
             )
@@ -110,7 +110,7 @@ const CatalogStack = createStackNavigator(
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="magic"
+                    name="menu"
                     Color="#fff"
                 />
             )

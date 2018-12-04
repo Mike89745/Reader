@@ -47,12 +47,10 @@ export default class Chapter extends Component {
     }
    
     isDownloaded(){
-        console.log(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`);
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-');
         RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-               console.log(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`);
                this.state.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,});
            })
         });

@@ -1,12 +1,12 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text,Button,Dimensions} from 'react-native';
+import { StyleSheet, ScrollView, Text,Button,Dimensions,View} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import { DrawerActions } from 'react-navigation';
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ButtonIcon from '../Icon/Icon';
 import DowloadItem from './DownloadItem/DowloadItem';
+import PopUpMenu from "../PopUpMenu/PopUpMenu"
 import {
     loadData,
     saveData,
@@ -17,8 +17,10 @@ import {
 class DownloadsScreen extends Component {
     state={
         Downloads : [],
+        isPaused: true,
     }
     static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state;
         return {
             headerStyle: {
                 backgroundColor: '#3b424c',
@@ -28,34 +30,50 @@ class DownloadsScreen extends Component {
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
                     name="menu"
-                    Color="#fff"
+                    Color="#ffffff"
                 />
-            )
+            ),
+            headerRight :(
+                <View style={{flexDirection : "row",flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',marginRight:15}}>
+                   <ButtonIcon
+                        onPress={() => params ? params.toggleDownloads() : null}
+                        name="play"
+                        Color="#ffffff"
+                    />
+                    <PopUpMenu Color="#ffffff" name="dots-vertical" options={ params ? params.options : null}/>
+                </View>
+            ),
         };
       };
 
     componentDidMount(){
+        //this.props.clearDownloads();
+        this.props.navigation.setParams({options: [{text: "Clear queue",onSelect:this.props.clearDownloads}]});
+        this.props.navigation.setParams({toggleDownloads: this.props.toggleDownloads});
+        //this.props.navigation.setParams({isPaused: this.state.isPaused});
         this.props.loadData();
     }
     componentWillReceiveProps(nextProps) {
+        //this.props.navigation.setParams({isPaused: nextProps.isPaused ? true : false});
         this.setState({ Downloads: nextProps.Downloads,task:nextProps.task,isPaused : nextProps.isPaused});  
     }
-    clearDownloads(){
-        this.props.clearDownloads();
+    shouldComponentUpdate(nextProps, nextState) {
+        return true
     }
+
 
     render() {
         //<Button title="test" onPress={() => this.test()}/>
-
+       // console.log(this.state.Downloads);
         return (
             <ScrollView style={styles.container}>
-            <Button title="Start" onPress={() => this.props.nextDownload()}/>
-            <Button title="Clear" onPress={() => this.clearDownloads()}/>
-            <Button title={this.state.isPaused ? "Resume" : "Pause"} onPress={() => this.props.toggleDownloads()}/>
+                <Button title={this.state.isPaused ? "Resume" : "Pause"} onPress={() => this.props.toggleDownloads()}/>
                 {this.state.Downloads ? this.state.Downloads.map((item,index) => (
                 <DowloadItem 
-                    title={item.title} 
-                    chapterName={item.chapter} 
+                    title={item.title ? item.title : "undefined"} 
+                    chapterName={item.chapter ? item.chapter : "undefined"} 
                     maxValue={item.pageStatus ? item.pageStatus.length : 3} 
                     value={item.pageStatus ? item.pageStatus.filter(el => {return el.status === 1 ?  el : null}).length : 0} 
                     key={index + item.title}/>

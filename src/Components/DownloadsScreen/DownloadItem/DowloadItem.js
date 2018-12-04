@@ -1,29 +1,41 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text,Dimensions,Button} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-import ButtonIcon from '../../Icon/Icon';
-import ProgressBarAnimated from 'react-native-progress-bar-animated';
+import * as Progress from 'react-native-progress';
 export default class DowloadItem extends Component {
     state={
         value : 0,
         maxValue: 0,
+        percentage : 0.01,
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ value: nextProps.value,maxValue : nextProps.maxValue});  
+        console.log(nextProps.value,nextProps.maxValue);
+        this.setState({ 
+            value: nextProps.value,maxValue : nextProps.maxValue, 
+            percentage : nextProps.value/nextProps.maxValue < 0.01 ? 0.01 : nextProps.value/nextProps.maxValue,
+            maxValue : nextProps.maxValue
+        });  
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue;
+        return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue || nextProps.chapterName != this.props.chapterName || nextState.maxValue != this.state.maxValue;
     }
     render() {
+        console.log(this.state.value,this.state.maxValue);
         return (
             <View style={styles.container}>
-                <Text style={styles.textHeader}>{this.props.title}</Text>
-                <Text style={styles.textStyle}>{this.props.chapterName}</Text>
-                <Text style={{textAlign:"right",paddingRight:15}}>{this.state.value ? this.state.value : 0}/{this.state.maxValue}</Text>
-                <ProgressBarAnimated
-                    width={Dimensions.get("screen").width - 30}
-                    value={(this.state.value/this.state.maxValue) * 100}
-                />
+                <Text style={styles.textHeader}>{this.props.title ? this.props.title : null}</Text>
+                <Text style={styles.textStyle}>{this.props.chapterName ? this.props.chapterName : null}</Text>
+                <View style={{flexDirection : "row",flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center'}}>
+                    <Progress.Bar
+                        height={12}
+                        width={Dimensions.get("screen").width - 65}
+                        progress={this.state.percentage}
+                        useNativeDriver={true}
+                    />
+                    <Text style={{textAlign:"right",paddingRight:15, paddingLeft:15}}>{this.state.value ? this.state.value : 0}/{this.state.maxValue}</Text>
+                </View>
             </View>
         )
     }

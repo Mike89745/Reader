@@ -29,6 +29,7 @@
     "react-native-orientation-listener": "0.0.4",
     "react-native-photo-view": "^1.5.2",
     "react-native-popup-menu": "^0.14.1",
+    "react-native-progress": "^3.5.0",
     "react-native-progress-bar-animated": "^1.0.6",
     "react-native-queue": "^1.2.1",
     "react-native-responsive-fontsize": "^0.1.2",

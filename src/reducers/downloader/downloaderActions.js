@@ -161,7 +161,7 @@ export function nextDownload() {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));
-                  dispatch(nextDownload());
+                  if(!getState().downloads.isPaused) dispatch(nextDownload());
                 }else{
                   console.log('Download canceled due to error: ', error,title,chapter,page);
                 }
@@ -192,6 +192,7 @@ export function toggleDownloads() {
   return function(dispatch,getState) {
       dispatch(togglingDownloads())
       let task = getState().downloads;
+      console.log(task.task);
       if(task.task){
         if(!task.isPaused){
           task.task.pause();
@@ -199,11 +200,16 @@ export function toggleDownloads() {
             dispatch(toggledDownloads(true))
           )
         }else{
-          task.task.resume();
+          dispatch(toggledDownloads(false))
           return  (
-            dispatch(toggledDownloads(false))
+            dispatch(nextDownload())
           )
         }
+      }else{
+        dispatch(toggledDownloads(false));
+        return  (
+          dispatch(nextDownload())
+        )
       }
   }
 }

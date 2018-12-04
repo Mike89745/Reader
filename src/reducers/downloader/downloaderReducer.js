@@ -59,6 +59,10 @@ downloads = (state = {isFetching: false,downloads: []},action) =>{
             return Object.assign({}, state, {
                isPaused : action.isPaused
             })    
+        case TOGGLING_TASK:
+            return Object.assign({}, state, {
+                res: "Toggling",
+            })
         case SAVE_DOWNLOADS:
             return Object.assign({}, state, {
                 isFetching: false,

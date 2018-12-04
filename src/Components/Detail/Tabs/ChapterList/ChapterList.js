@@ -83,17 +83,17 @@ class ChapterList extends Component {
         this.setState({chapterRefs: refs});
     }
     componentWillReceiveProps(nextProps) {
+        console.log(nextProps.screenProps.chapters);
         this.setState({ chapters: nextProps.screenProps.chapters,Downloads: nextProps.Downloads});  
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.state.Downloads || nextState.Downloads){
+        if(this.state.Downloads && nextState.Downloads){
             return nextState.chapters != this.state.chapters || nextState.Downloads.length != this.state.Downloads.length;
         }else{
             return nextState.chapters != this.state.chapters;
         }
     }
     componentDidMount(){
-        this.props.saveData([])
         this.props.loadData();
     }
     render() {
@@ -110,6 +110,7 @@ class ChapterList extends Component {
                  select ={this.onToggleSelect}
                  index = {index}
                  queued = {false}
+                 pages = {item.pages ? item.pages : 0}
                  />) 
                  : 
                  <Button title="Load Chapters" onPress={() => this.props.screenProps.getChapters()}/>

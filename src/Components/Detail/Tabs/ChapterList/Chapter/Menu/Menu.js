@@ -7,17 +7,20 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import ButtonIcon from '../../../../../Icon/Icon';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default class ChapterPopUp extends Component {
     render() {
         return (
             <Menu>
-                <MenuTrigger text="haha">
-                  <ButtonIcon
-                    name="dots-vertical"
-                    Color="#000"
-                    size={15}
-                  />
+                <MenuTrigger>
+                  <View>
+                    <Icon
+                      iconStyle = {{margin: 8,borderWidth:0}}
+                      name="dots-vertical"
+                      Color="#000"
+                      size={23}
+                    />
+                  </View> 
                 </MenuTrigger>
                 <MenuOptions>
                     <MenuOption onSelect={() => this.props.download()} text='Download' />

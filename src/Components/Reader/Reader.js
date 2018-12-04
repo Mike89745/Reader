@@ -223,9 +223,7 @@ export default class Reader extends Component {
         }
         
     }
-    xd(){
-        console.log("loaded");
-    }
+
     setHeight=(height,index)=>{
         let images = this.state.Images;
         if(height){
