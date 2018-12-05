@@ -38,7 +38,7 @@ class DownloadsScreen extends Component {
                 justifyContent: 'center',
                 alignItems: 'center',marginRight:15}}>
                    <ButtonIcon
-                        onPress={() => params ? params.toggleDownloads() : null}
+                        onPress={params ? () => params.toggleDownloads(): null}
                         name="play"
                         Color="#ffffff"
                     />
@@ -48,10 +48,10 @@ class DownloadsScreen extends Component {
         };
       };
 
-    componentDidMount(){
+    componentWillMount(){
         //this.props.clearDownloads();
         this.props.navigation.setParams({options: [{text: "Clear queue",onSelect:this.props.clearDownloads}]});
-        this.props.navigation.setParams({toggleDownloads: this.props.toggleDownloads});
+        this.props.navigation.setParams({toggleDownloads: this.props.toggleDownload});
         //this.props.navigation.setParams({isPaused: this.state.isPaused});
         this.props.loadData();
     }

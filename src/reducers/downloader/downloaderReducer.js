@@ -7,33 +7,22 @@ import {
     CLEAR_DOWNLOADS,
     START_DOWNLOADS,
     STARTED_DOWNLOADS,
+
     GET_TASK,
     TOGGLED_TASK,
     TOGGLING_TASK,
+
+    TOGGLED_SELECTHEADER,
+    SETTING_CHAPTERREFS,
+    SET_CHAPTERREFS,
+    GET_CHAPTERREFS,
+    SELECT_CHAPTERS,
+    DELETE_CHAPTERS,
+    DESELECT_CHAPTERS,
+    DOWNLOAD_CHAPTERS,
+    MARK_AS_READ_CHAPTERS,
+    UNMARK_AS_READ_CHAPTERS
 } from "./downloaderActions"
-/*
-pauseDownload = () => {
-    task.pause();
-    return {
-        type: PAUSE_DOWNLOADS,
-        res: "succes",
-    }
-}
-resumeDownload = () => {
-    task.resume();
-    return {
-        type: RESUME_DOWNLOADS,
-        res: "succes",
-    }
-}
-clearQueue = () => {
-    task.stop();
-    saveQueue(null);
-    return {
-        type: CLEAR_DOWNLOADS,
-        res: "succes",
-    }
-}*/
 
 downloads = (state = {isFetching: false,downloads: []},action) =>{
     switch (action.type) {
@@ -74,7 +63,52 @@ downloads = (state = {isFetching: false,downloads: []},action) =>{
                 isFetching: false,
                 isSaving: true,
                 res: action.res,
-            })    
+            })
+        case TOGGLED_SELECTHEADER:
+            return Object.assign({}, state, {
+                res: action.res,
+                selectHeaderVisible: action.selectHeaderVisible,
+            })
+        case SET_CHAPTERREFS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case GET_CHAPTERREFS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case SELECT_CHAPTERS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case DESELECT_CHAPTERS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case MARK_AS_READ_CHAPTERS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case UNMARK_AS_READ_CHAPTERS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case DELETE_CHAPTERS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })
+        case DOWNLOAD_CHAPTERS:
+            return Object.assign({}, state, {
+                res: action.res,
+                chaptersRefs: action.chaptersRefs,
+            })                                       
         default:
           return state
       }

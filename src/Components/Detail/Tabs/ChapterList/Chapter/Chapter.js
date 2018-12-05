@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,TouchableHighlight} from 'react-native';
+import { StyleSheet, View, Text,TouchableHighlight,NetInfo} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ChapterPopUp from './Menu/Menu';
 import RNFS from "react-native-fs";
@@ -21,27 +21,31 @@ export default class Chapter extends Component {
     }
     select = () =>{
         this.setState({selected: true});
-        return true;
+        this.props.onToggleSelect();
     }
     deselect = () =>{
         this.setState({selected: false});
-        return false;
     }
     toggleSelect= () => {
-        
         let selected = this.state.selected;
         this.setState({selected: !selected});
-        return !selected;
+        this.props.onToggleSelect();
     }
     toggleMark = () => {
         let marked = this.state.MarkedAsRead;
         this.setState({MarkedAsRead: marked});
     }
-    DeleteChapter= () =>{
+    markAsRead = () => {
+        this.setState({MarkedAsRead: true});
+    }
+    unmarkAsRead = () => {
+        this.setState({MarkedAsRead: false});
+    }
+    deleteChapter= () =>{
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-');
         RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-            this.isDownloaded();
+            this.setState({error: false,downloaded:false});
             alert(`Deleted`);
         }).catch(err => console.log(err,"Delete error"));
     }
@@ -56,23 +60,18 @@ export default class Chapter extends Component {
         });
     }
     componentDidMount(){
-        axios.get("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
-            this.setState({pages : response.data.pages},() => this.isDownloaded())
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         });
+        /*axios.get("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
+            this.setState({pages : response.data.pages},() => this.isDownloaded())
+        }).catch(err =>console.log(err));*/
     }
     render() {
         //#dddddd
         return ( 
-            <TouchableHighlight underlayColor="#ccc" onPress={() => this.props.nav.navigate('Reader',{
-                title: this.props.bookID,
-                chapter: this.props.chapterCount,
-                downloaded : !this.state.downloaded,
-                uri: this.state.downloaded ? 
-                RNFS.DocumentDirectoryPath +"/"+ this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
-                :
-                "http://localhost:8000/public/books/" + this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
-            })}
-                onLongPress={() => this.props.select(this.props.index)}
+            <TouchableHighlight underlayColor="#ccc" onPress={() => this.toggleSelect()}
+                onLongPress={() => this.toggleSelect()}
                 delayLongPress={400}
                 >
                 <View style={[styles.container,{backgroundColor : this.state.selected ? "#ccc" : this.state.markAsRead ? "#ddd" : null}]} >

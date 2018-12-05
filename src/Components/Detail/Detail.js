@@ -10,12 +10,17 @@ import Spinner from 'react-native-gifted-spinner';
 import ButtonIcon from '../Icon/Icon';
 import PouchDB from 'pouchdb-react-native';
 import find from 'pouchdb-find';
-
+import SelectHeader from './Tabs/ChapterList/Chapter/SelectHeader/SelectHeader';
+import { connect } from 'react-redux'
+import {
+    toggleSelectHeader,
+    clearChapters
+  } from '../../reducers/downloader/downloaderActions'
 PouchDB.plugin(find)
 const Library = new PouchDB('Library');
 const Chapters = new PouchDB('Chapters');
 
-export default class Detail extends Component {
+class Detail extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
         return {
@@ -77,7 +82,13 @@ export default class Detail extends Component {
         });
       
     }
+    componentWillReceiveProps(nextProps){
+     
+        this.setState({selectHeaderVisible : nextProps.selectHeaderVisible})
+    }
     componentDidMount(){
+        this.props.clearChapters()
+       // this.props.toggleSelectHeader();
         this.getInfo();
         let size = this.state.size;
         let height = Math.floor(Dimensions.get('window').height/3);
@@ -87,6 +98,9 @@ export default class Detail extends Component {
             size = Math.floor(Dimensions.get('window').width/3) - 10;
         }
         this.setState({size : size, height: height});
+    }
+    componentWillUnmount(){
+        this.state.selectHeaderVisible ? this.props.toggleSelectHeader() : null;
     }
     addToLibrary = () => {
         Library.get(this.state.info[0]._id).then((response) => {
@@ -164,28 +178,35 @@ export default class Detail extends Component {
 
     render() {
         return (
-            <ScrollView>
-                {this.state.info ? 
-                <View> 
-                    <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
-                        <View style={{width : this.state.size,paddingRight: 10}}>
-                            <ThumbNail source={{uri: ("http://localhost:8000/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}/>
+            <View> 
+                <ScrollView>
+                    {this.state.info ? 
+                    <View> 
+                        <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
+                            <View style={{width : this.state.size,paddingRight: 10}}>
+                                <ThumbNail source={{uri: ("http://localhost:8000/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}/>
+                            </View>
+                            <Info style={styles.Info} info={this.state.info[0]}/>
                         </View>
-                        <Info style={styles.Info} info={this.state.info[0]}/>
-                    </View>
-                    <View style={styles.content}>
-                        <Description description={this.state.info[0].description}/>
-                        <View style={{flex:1,alignSelf:"flex-end",flexDirection:"row",paddingTop: 8}}>
-                            <ButtonIcon name={this.state.added ? "bookmark-minus" : "bookmark-plus"} backgroundColor="#3b424c" borderRadius={50} Color="#fff" onPress={() => this.addToLibrary()}/>
+                        <View style={styles.content}>
+                            <Description description={this.state.info[0].description}/>
+                            <View style={{flex:1,alignSelf:"flex-end",flexDirection:"row",paddingTop: 8}}>
+                                <ButtonIcon name={this.state.added ? "bookmark-minus" : "bookmark-plus"} backgroundColor="#3b424c" borderRadius={50} Color="#fff" onPress={() => this.addToLibrary()}/>
+                            </View>
+                            <TagList tags={this.state.info[0].tags}/>
                         </View>
-                        <TagList tags={this.state.info[0].tags}/>
+                        {this.state.selectHeaderVisible ? <View>
+                            <SelectHeader/>
+                        </View> : null}
+                        <Tabs bookID={this.state.info[0]._id} nav={this.props.navigation} getChapters={this.getChapters} chapters={this.state.chapters}/>
+                        
                     </View>
-                    <Tabs bookID={this.state.info[0]._id} nav={this.props.navigation} getChapters={this.getChapters} chapters={this.state.chapters}/>
-                </View> 
-                :
-                <Spinner style={styles.Spinner}/>
-                }
-            </ScrollView>
+                    :
+                    <Spinner style={styles.Spinner}/>
+                    }
+                </ScrollView>
+            </View>
+               
         )
     }
 }
@@ -213,3 +234,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 });
+const mapStateToProps = state => {
+    return {
+        selectHeaderVisible: state.downloads.selectHeaderVisible,
+    };
+};
+const mapDispatchToProps = {
+    toggleSelectHeader,
+    clearChapters
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Detail);
