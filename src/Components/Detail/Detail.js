@@ -16,6 +16,7 @@ import {
     toggleSelectHeader,
     clearChapters
   } from '../../reducers/downloader/downloaderActions'
+import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library');
 const Chapters = new PouchDB('Chapters');
@@ -49,6 +50,7 @@ class Detail extends Component {
         height : 0,
         chapters: null,
         added : false,
+        Book: null,
     }
     getInfo = () => {
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
@@ -64,11 +66,13 @@ class Detail extends Component {
                         book_id : {$eq : data[0]._id},
                     }
                 }).then(response => {
+                    console.log(response);
                     this.setState({chapters: response.docs})
                 }).catch(err => console.log(err));
             }).catch(function (err) {
                 console.log(err);
             });
+            //console.log(data);
             this.setState({info : data, infoLoading : false,inLibrary:true,added:true});
             this.props.navigation.setParams({title: data[0]._id});
         }).catch((error) => {
@@ -88,7 +92,7 @@ class Detail extends Component {
     }
     componentDidMount(){
         this.props.clearChapters()
-       // this.props.toggleSelectHeader();
+        //this.props.toggleSelectHeader();
         this.getInfo();
         let size = this.state.size;
         let height = Math.floor(Dimensions.get('window').height/3);
@@ -119,6 +123,8 @@ class Detail extends Component {
                     status : this.state.info[0].status,
                     description : this.state.info[0].description,
                     tags: this.state.info[0].tags,
+                    categories: [],
+                    lastRead: null,
                 }
                 Library.put(book).then((response) => {
                     if(!this.state.chapters){
@@ -132,8 +138,10 @@ class Detail extends Component {
                                     dateAdded : chapter.dateAdded,
                                     read : false,
                                     lastRead : null,
+                                    lastPage: 0,
                                 })
                             })
+                           
                             this.setState({chapters:chapters},() =>  {
                                 Chapters.bulkDocs(this.state.chapters).then((response) => {
                                     //console.log(response,"chapters");
@@ -141,14 +149,15 @@ class Detail extends Component {
                                     console.log(err,"chapters");
                                 });
                             });
-                        });
+                        }).catch(err => console.log(err,"failed to save chapters"));
                     }else{
                         Chapters.bulkDocs(this.state.chapters).then((response) => {
                             //console.log(response,"chapters");
                         }).catch((err) => {
                             console.log(err,"chapters");
                         });
-                    } 
+                    }
+                    this.CategoriesModal.toggleModal(); 
                     this.setState({added : true});
                 }).catch((err) => {
                     console.log(err,5);
@@ -205,6 +214,11 @@ class Detail extends Component {
                     <Spinner style={styles.Spinner}/>
                     }
                 </ScrollView>
+                <CategoriesModal 
+                    ref={(ref) => { this.CategoriesModal = ref; }} 
+                    Book={this.props.navigation.getParam("_id",null)} 
+                    categories={this.state.info ? this.state.info[0].categories : null}
+                />
             </View>
                
         )

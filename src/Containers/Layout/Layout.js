@@ -10,6 +10,9 @@ import LibraryScreen from "../../Components/LibraryScreen/LibraryScreen"
 import ButtonIcon from "../../Components/Icon/Icon"
 import Reader from "../../Components/Reader/Reader"
 import DownloadsScreen from '../../Components/DownloadsScreen/DownloadsScreen';
+import LibraryCategories from '../../Components/LibraryScreen/LibraryCategories/LibraryCategories';
+import FilterDrawer from '../../Components/FilterDrawer/FilterDrawer';
+import UserDrawer from '../../Components/UserDrawer/UserDrawer';
 export default class Layout extends Component{
     render() {
         return (
@@ -50,7 +53,7 @@ const HistoryStack = createStackNavigator(
         headerMode: 'float',
        
         navigationOptions: ({navigation}) => ({
-            headerTitle: ( <HeaderInput/> ),
+            headerTitle: (<Text style={{color:"white"}}>History</Text>  ),
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
@@ -76,13 +79,14 @@ const LibraryStack = createStackNavigator(
         LibraryScreen: {screen : LibraryScreen},
         Details: {screen : Detail},
         Reader : {screen : ReaderStack},
+        LibraryCategories : {screen : LibraryCategories}
     },
     {
-        drawerLabel: 'Knihovna',
+        drawerLabel: 'Library',
         initialRouteName: 'LibraryScreen',
         headerMode: 'float',
         navigationOptions: ({navigation}) => ({
-            headerTitle: ( <HeaderInput/> ),
+            headerTitle: ( <Text style={{color:"white"}}>Library</Text> ),
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
@@ -106,7 +110,7 @@ const CatalogStack = createStackNavigator(
         
         navigationOptions: ({navigation}) => ({
 
-            headerTitle: ( <HeaderInput/> ),
+            headerTitle: ( <Text style={{color:"white"}}>Catalog</Text> ),
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
@@ -127,20 +131,24 @@ const Drawer = createDrawerNavigator(
         Download : {screen:DownloadStack},
     },
     {
+        contentComponent: ({ navigation }) => (
+           <UserDrawer navigation={navigation}/>
+        ),
         initialRouteName: 'Library',
         headerVisible: false,
         headerMode: 'none',
     }
-    
 );
 
 
 const RootStack = createDrawerNavigator(
     {
         Drawer: { screen: Drawer },
-        
     },
     {
+        contentComponent: ({ navigation }) => (
+            <FilterDrawer navigation={navigation} />
+        ),
         drawerPosition: 'right',
         initialRouteName: 'Drawer',
         headerVisible: false,

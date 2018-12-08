@@ -4,6 +4,7 @@ import RF from "react-native-responsive-fontsize"
 import ChapterPopUp from './Menu/Menu';
 import RNFS from "react-native-fs";
 import axios from "react-native-axios";
+
 export default class Chapter extends Component {
     state = {
         downloaded : false,
@@ -55,24 +56,40 @@ export default class Chapter extends Component {
         let chapter = (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-');
         RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-               this.state.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,});
+              this.state.pages > 0 ? this.state.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,}) : null;
            })
         });
+    }
+    shouldNavigate =()=>{
+        console.log(this.props.selectHeaderVisible);
+        if(this.props.selectHeaderVisible){
+            this.toggleSelect();
+        }else{
+            this.props.nav.navigate('Reader',{
+                title: this.props.bookID,
+                chapter: this.props.chapterCount,
+                downloaded : !this.state.downloaded,
+                uri: this.state.downloaded ? 
+                RNFS.DocumentDirectoryPath +"/"+ this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
+                :
+                "http://localhost:8000/public/books/" + this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+            })
+        }
     }
     componentDidMount(){
         NetInfo.getConnectionInfo().then((connectionInfo) => {
             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         });
-        /*axios.get("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
+        axios.get("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
             this.setState({pages : response.data.pages},() => this.isDownloaded())
-        }).catch(err =>console.log(err));*/
+        }).catch(err =>console.log(err));
     }
     render() {
         //#dddddd
         return ( 
-            <TouchableHighlight underlayColor="#ccc" onPress={() => this.toggleSelect()}
+            <TouchableHighlight underlayColor="#ccc" onPress={() => this.shouldNavigate()}
                 onLongPress={() => this.toggleSelect()}
-                delayLongPress={400}
+                delayLongPress={1000}
                 >
                 <View style={[styles.container,{backgroundColor : this.state.selected ? "#ccc" : this.state.markAsRead ? "#ddd" : null}]} >
                     <View style={{flex:0.8}}>

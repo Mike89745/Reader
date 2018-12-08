@@ -20,7 +20,16 @@ export default class HistoryScreen extends Component {
                 />
             )
         };
-      };   
+      };
+    state = {
+        historyItems : []
+    } 
+    loadHistory = () =>{
+        
+    }  
+    componentDidMount(){
+        this.loadHistory();
+    }
     render() {
         return (
             <ScrollView style={styles.container}>

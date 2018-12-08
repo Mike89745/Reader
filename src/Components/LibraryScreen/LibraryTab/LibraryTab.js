@@ -5,9 +5,6 @@ import RF from "react-native-responsive-fontsize"
 import GridItems from '../../GridItems/GridItems';
 
 export default class LibraryTab extends Component {
-    componentDidMount(){
-        console.log(this.props.category,this.props.nav);
-    }
     render() {
         return (
             <View style={styles.container}>

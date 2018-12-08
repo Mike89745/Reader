@@ -14,6 +14,7 @@ import {
     nextDownload,
     toggleDownloads,
   } from '../../reducers/downloader/downloaderActions'
+import ToggleDownloadButton from './ToggleDownloadButton/ToggleDownloadButton';
 class DownloadsScreen extends Component {
     state={
         Downloads : [],
@@ -37,11 +38,7 @@ class DownloadsScreen extends Component {
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',marginRight:15}}>
-                   <ButtonIcon
-                        onPress={params ? () => params.toggleDownloads(): null}
-                        name="play"
-                        Color="#ffffff"
-                    />
+                    <ToggleDownloadButton/>
                     <PopUpMenu Color="#ffffff" name="dots-vertical" options={ params ? params.options : null}/>
                 </View>
             ),
@@ -49,14 +46,10 @@ class DownloadsScreen extends Component {
       };
 
     componentWillMount(){
-        //this.props.clearDownloads();
         this.props.navigation.setParams({options: [{text: "Clear queue",onSelect:this.props.clearDownloads}]});
-        this.props.navigation.setParams({toggleDownloads: this.props.toggleDownload});
-        //this.props.navigation.setParams({isPaused: this.state.isPaused});
         this.props.loadData();
     }
     componentWillReceiveProps(nextProps) {
-        //this.props.navigation.setParams({isPaused: nextProps.isPaused ? true : false});
         this.setState({ Downloads: nextProps.Downloads,task:nextProps.task,isPaused : nextProps.isPaused});  
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -65,11 +58,9 @@ class DownloadsScreen extends Component {
 
 
     render() {
-        //<Button title="test" onPress={() => this.test()}/>
-       // console.log(this.state.Downloads);
+
         return (
             <ScrollView style={styles.container}>
-                <Button title={this.state.isPaused ? "Resume" : "Pause"} onPress={() => this.props.toggleDownloads()}/>
                 {this.state.Downloads ? this.state.Downloads.map((item,index) => (
                 <DowloadItem 
                     title={item.title ? item.title : "undefined"} 

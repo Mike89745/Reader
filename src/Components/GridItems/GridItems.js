@@ -9,9 +9,12 @@ import { DrawerActions } from 'react-navigation';
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
 import ButtonIcon from "../Icon/Icon"
 import PouchDB from 'pouchdb-react-native';
-
+import CategoriesModal from './CategoriesModal/CategoriesModal';
+import find from 'pouchdb-find';
+import Toast from 'react-native-simple-toast';
+PouchDB.plugin(find)
 const db = new PouchDB('Library');
-
+const chapters = new PouchDB('chapters');
 const ItemSpacing = 6;
 const ItemsPerRow = 2;
 
@@ -37,15 +40,38 @@ export default  class GridItems extends Component {
         size : 100,
         items : [],
         loading : false,
-        page : 0
+        page : 0,
+        Book : null,
     }
 
     LoadItems = () => {
         let page = this.state.page + 1;
         if(this.props.isLibrary){
-            db.allDocs().then((Response) => {
-                this.setState({items : Response.rows, loading : false});
-            }).catch(error => console.log(error));
+            if(this.props.category === "Default"){
+                db.allDocs({endkey: '_design'}).then((Response) => {
+                    this.setState({items : Response.rows, loading : false});
+                }).catch(error => console.log(error));
+            }
+            else{
+                let categories = [];
+                categories.push(this.props.category);
+                db.createIndex({
+                        index: {
+                            fields: ["_id",'categories','tags']
+                        }
+                }).then(() => {
+                        return db.find({
+                            selector: {
+                                categories: {$in : categories}
+                            }
+                        }).then(res => {
+                            
+                            let items = [];
+                            res.docs.map(docs => items.push({doc : docs}))
+                            this.setState({items : items});
+                        })
+                }).catch((err) => console.log(err,"griditems createIndex error"));
+            }
         }else{
             this.setState({loading : true});
             
@@ -53,7 +79,10 @@ export default  class GridItems extends Component {
                 data = this.state.items;
                 response.data.rows.map(el => data.push(el));
                 this.setState({items : data, loading : false,page:page});
-            }).catch(error => console.log(error));;
+            }).catch(error => {
+                console.log(error,"Catalog")
+                //Toast.show(error, Toast.LONG)
+            });
         }
       
     }
@@ -72,37 +101,50 @@ export default  class GridItems extends Component {
     componentDidMount(){
        this.LoadItems();
     }
-
+    showTagModal = (item) =>{
+        if(this.props.isLibrary){
+            this.setState({Book:item},() => this.CategoriesModal.toggleModal());
+        }
+    }
     render() {
         let Grid = null;
-        if(this.state.items.length > 0){
-            Grid = ( <InfiniteScroll
-                horizontal={false}  
-                onLoadMoreAsync={this.LoadItems}
-                distanceFromEnd={10}
-                >
-                    <GridView
-                        itemDimension={this.state.size}
-                        items={[...this.state.items]}
-                        spacing ={ItemSpacing}
-                        style={styles.gridView}
-                        renderItem={items => (
-                            <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} underlayColor="red">
-                                <View style={[styles.ItemContainer,{height: 250}]} >
-                                    <GridItem 
-                                    source={{uri: "http://localhost:8000/public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}} 
-                                    title={items.doc._id}/>
-                                </View>
-                            </TouchableHighlight>
-                        )}
-                    />
-                </InfiniteScroll>
-            );
+        if(this.state.items){
+            if(this.state.items.length > 0){
+                Grid = ( <InfiniteScroll
+                    horizontal={false}  
+                    onLoadMoreAsync={this.LoadItems}
+                    distanceFromEnd={10}
+                    >
+                        <GridView
+                            itemDimension={this.state.size}
+                            items={[...this.state.items]}
+                            spacing ={ItemSpacing}
+                            style={styles.gridView}
+                            renderItem={items => (
+                                <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} 
+                                    onLongPress={() => this.showTagModal(items.doc)}
+                                    delayLongPress={1000}>
+                                    <View style={[styles.ItemContainer,{height: 250}]} >
+                                        <GridItem 
+                                        source={{uri: "http://localhost:8000/public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}} 
+                                        title={items.doc._id}/>
+                                    </View>
+                                </TouchableHighlight>
+                            )}  
+                        />
+                    </InfiniteScroll>
+                );
+            }
         }
         return (
             <View style={styles.container}>
                 {Grid}
                 {this.state.loading ? <View styles={styles.Spinner}><Spinner/></View> : null}
+                {this.state.Book ? <CategoriesModal 
+                    ref={(ref) => { this.CategoriesModal = ref; }} 
+                    Book={this.state.Book ? this.state.Book._id : null} 
+                    currentCategories={this.state.Book ? this.state.Book.categories : null}
+                /> : null}
             </View>
         )
     }

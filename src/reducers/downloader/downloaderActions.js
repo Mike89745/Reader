@@ -162,6 +162,7 @@ export function ReattachDownloads() {
 export function nextDownload() {
   return function(dispatch,getState) {
       dispatch(startingDownloads())
+      const isPaused = getState().downloads.isPaused;
       let data = getState().downloads.downloads;
       if(data.length > 0){
         let title = data[0].title;
@@ -192,13 +193,12 @@ export function nextDownload() {
               dispatch(nextDownload());
           }).error((error) => {
               RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`).then(response => {
-                console.log(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`, response);
                   if(response) { 
                     data[0].pageStatus[page].status = 1;
                     dispatch(saveData(data));
-                    if(!getState().downloads.isPaused) dispatch(nextDownload());
+                    if(!isPaused) dispatch(nextDownload());
                   }else{
-                    console.log('Download canceled due to error: ', error,title,chapter,page);
+                    dispatch(startedDownloads(error))
                   }
               });
           });
@@ -238,6 +238,7 @@ export function toggleDownloads() {
             dispatch(toggledDownloads(true))
           )
         }else{
+          task.task.resume();
           dispatch(toggledDownloads(false))
           return  (
             dispatch(nextDownload())

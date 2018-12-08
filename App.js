@@ -28,17 +28,22 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import {createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import {loadData, nextDownload} from "./src/reducers/downloader/downloaderActions"
+import {loadData, nextDownload} from "./src/reducers/downloader/downloaderActions";
+import Toast from 'react-native-simple-toast';
 const loggerMiddleware = createLogger();
 const store = createStore(Downloader,applyMiddleware(
   thunkMiddleware,
-  loggerMiddleware,
+ // loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentWillMount(){ 
     //this.ReAttachingDownloads();
     console.log("appMounted");
+    
     //store.dispatch(loadData());
+  }
+  componentDidMount(){
+    //Toast.show('This is a long toast.', Toast.LONG);
   }
   test(){
     store.dispatch(nextDownload());

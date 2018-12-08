@@ -286,8 +286,7 @@ export default class Reader extends Component {
                     currentPage={this.state.currentPage}
                     showSettings={this.showSettings}
                 />
-                
-                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/>
+                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }}/>
             </View>
         )
     }

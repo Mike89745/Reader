@@ -7,10 +7,11 @@ import ButtonIcon from "../Icon/Icon"
 import LibraryTab from './LibraryTab/LibraryTab';
 import {createMaterialTopTabNavigator } from "react-navigation"
 import PouchDB from 'pouchdb-react-native';
-import GridItems from '../GridItems/GridItems';
+import TriStateCheckBox from '../FilterDrawer/TriStateCheckbox/TriStateCheckbox';
 const db = new PouchDB('categories');
 export default class LibraryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state;
         return {
             headerStyle: {
                 backgroundColor: '#3b424c',
@@ -32,7 +33,14 @@ export default class LibraryScreen extends Component {
                     name="menu"
                     Color="#fff"
                 />
-            )
+            ),
+            headerRight :(
+                <View style={{flexDirection : "row",flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',marginRight:15}}>
+                    <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories")}/>
+                </View>
+            ),
         };
       };
     state = {
@@ -49,6 +57,7 @@ export default class LibraryScreen extends Component {
         const screen = this.getTabForCategory(category);
         return {
             screen: screen,
+            lazy: true,
             navigationOptions: {
                 title: category,
             }
@@ -62,9 +71,10 @@ export default class LibraryScreen extends Component {
         db.allDocs().then((Response) => {
             let temp = [];
             for(let i of Response.rows){
-                i && temp.push(i.doc.category);
+                i && temp.push(i.doc._id);
             }
-            temp.length > 0 ? null : temp.unshift("Default");
+            //temp.length > 0 ? null : temp.unshift("Default");
+            temp.unshift("Default");
             this.setState({categories:temp})
         }).catch(error => console.log(error));
     }

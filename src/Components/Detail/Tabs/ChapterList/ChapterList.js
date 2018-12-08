@@ -61,6 +61,7 @@ class ChapterList extends Component {
                     index = {index}
                     queued = {false}
                     pages = {item.pages ? item.pages : 0}
+                    selectHeaderVisible = {this.state.selectHeaderVisible}
                  />) 
                  : 
                  <Button title="Load Chapters" onPress={() => this.props.screenProps.getChapters()}/>
