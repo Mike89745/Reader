@@ -35,7 +35,7 @@ export default class UserDrawer extends Component {
                         }
                        <View>
                             <TouchableOpacity onPress={() => this.navigateTo("Library")} >
-                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Library" ? " rgba(59,66,76,0.2)" : null,padding:5}}>
+                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Library" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
                                     <View style={{marginLeft: 10, marginRight:25}}>
                                         <Icon  name={"book"}
                                             color = {"#000" }
@@ -50,7 +50,7 @@ export default class UserDrawer extends Component {
                         </View>
                         <View>
                             <TouchableOpacity onPress={() => this.navigateTo("Catalog")} >
-                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Catalog" ? " rgba(59,66,76,0.2)" : null,padding:5}}>
+                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Catalog" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
                                     <View style={{marginLeft: 10, marginRight:25}}>
                                         <Icon  name={"table"}
                                             color = {"#000" }
@@ -65,7 +65,7 @@ export default class UserDrawer extends Component {
                         </View>
                         <View>
                             <TouchableOpacity onPress={() => this.navigateTo("History")} >
-                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "History" ? " rgba(59,66,76,0.2)" : null,padding:5}}>
+                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "History" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
                                     <View style={{marginLeft: 10, marginRight:25}}>
                                         <Icon  name={"book-open-variant"}
                                             color = {"#000" }
@@ -80,7 +80,7 @@ export default class UserDrawer extends Component {
                         </View>
                         <View>
                             <TouchableOpacity onPress={() => this.navigateTo("Download")} >
-                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Download" ? " rgba(59,66,76,0.2)" : null,padding:5}}>
+                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Download" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
                                     <View style={{marginLeft: 10, marginRight:25}}>
                                         <Icon  name={"download"}
                                             color = {"#000" }
@@ -90,6 +90,21 @@ export default class UserDrawer extends Component {
                                             size = {20}/>
                                     </View>
                                     <Text style={styles.textStyle}>Downloads</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        <View>
+                            <TouchableOpacity onPress={() => this.navigateTo("Settings")} >
+                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Download" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
+                                    <View style={{marginLeft: 10, marginRight:25}}>
+                                        <Icon  name={"settings"}
+                                            color = {"#000" }
+                                            backgroundColor={"rgba(120,120,120,0)" }
+                                            borderRadius={0}
+                                            iconStyle = {{margin: 8,borderWidth:0,marginLeft: 15}}
+                                            size = {20}/>
+                                    </View>
+                                    <Text style={styles.textStyle}>Settings</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>

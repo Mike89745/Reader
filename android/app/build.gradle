@@ -145,6 +145,7 @@ repositories {
     maven { url "https://maven.google.com" }
 }
 dependencies {
+    compile project(':react-native-pdf')
     compile project(':rn-fetch-blob')
     compile project(':realm')
     compile project(':react-native-vector-icons')

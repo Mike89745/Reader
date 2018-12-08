@@ -17,7 +17,7 @@ export default class ReaderNav extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TopNav nav={this.props.nav} showSettings={this.props.showSettings}/>
+                <TopNav nav={this.props.nav} showSettings={this.props.showSettings} title={this.props.title} chapter={this.state.chapter}/>
                 <BottomNav 
                     
                     pages={this.state.pages} 

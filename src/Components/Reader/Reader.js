@@ -8,17 +8,19 @@ import axios from 'react-native-axios';
 import ReaderNav from './ReaderNav/ReaderNav';
 import ReaderSettingsModal from './ReaderSettingsModal/ReaderSettingsModal';
 import { Viewport } from '@skele/components'
+import ReaderPDF from './ReaderPDFView/ReaderPDF';
+import Spinner from '../../../node_modules/react-native-gifted-spinner';
 const defHeight = Dimensions.get('window').height/2;
 export default class Reader extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
-            headerVisible: false,
-            headerMode: 'none',
+            header: null
         };
       };
     state = {
         uri: null,
-        
+        ReaderType: "IMAGE",
+
         Images : null,
         fromWeb: false, 
 
@@ -175,10 +177,8 @@ export default class Reader extends Component {
                 });
             }).catch(error => console.log(error));
         }else{
-            console.log(path);
             RNFS.readDir(path).then((result) => {
                 result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")))
-                console.log(result);
                 const Height = Dimensions.get('window').height/2;
                 result.forEach((element) => {
                     element.key = element.path;
@@ -223,7 +223,12 @@ export default class Reader extends Component {
         }
         
     }
-
+    setCurrentPage(page){
+        this.setState({currentPage: page});
+    }
+    setPages(pages){
+        this.setState({pages: pages});
+    }
     setHeight=(height,index)=>{
         let images = this.state.Images;
         if(height){
@@ -252,6 +257,7 @@ export default class Reader extends Component {
     render() {
         return (
             <View style={{flex:1}}>
+            {this.state.ReaderType ==="IMAGE" ?(
                 <Viewport.Tracker style={styles.container} preTriggerRatio={0.5}>
                         <FlatList 
                             scrollEventThrottle={16}
@@ -276,7 +282,19 @@ export default class Reader extends Component {
                                 />
                             }
                         />
-                </Viewport.Tracker>
+                </Viewport.Tracker>)
+            : null}
+            {this.state.ReaderType ==="PDF" ?  
+            <ReaderPDF 
+                setPages={this.setPages} 
+                setCurrentPage={this.setCurrentPage} 
+                source={{uri:'http://samples.leanpub.com/thereactnativebook-sample.pdf',cache:true}}
+                horizontal = {this.state.horizontal}
+                horizontalInv={this.state.horizontalInv}/>
+                
+            : null}
+            {this.state.ReaderType ==="EPUB" ? <Text>Epub</Text> : null}
+
                 <ReaderNav 
                     nav={this.props.navigation} 
                     pages={this.state.pages ? this.state.pages : 1} 
@@ -285,8 +303,10 @@ export default class Reader extends Component {
                     prevChapter={this.prevChapter}
                     currentPage={this.state.currentPage}
                     showSettings={this.showSettings}
+                    title = {this.state.title}
+                    chapter = {this.state.chapterName}
                 />
-                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }}/>
+                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/>
             </View>
         )
     }
@@ -313,5 +333,16 @@ const styles = StyleSheet.create({
     container :{
         flex:1,
         backgroundColor: "black"
+    },
+    Spinner : {
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        flex : 1,
+        height: Dimensions.get("window").height
     }
 });

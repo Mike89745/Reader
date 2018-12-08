@@ -35,9 +35,9 @@ class DownloadsScreen extends Component {
                 />
             ),
             headerRight :(
-                <View style={{flexDirection : "row",flex: 1,
+               <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
-                alignItems: 'center',marginRight:15}}>
+                alignItems: 'center',marginRight:15}}> 
                     <ToggleDownloadButton/>
                     <PopUpMenu Color="#ffffff" name="dots-vertical" options={ params ? params.options : null}/>
                 </View>

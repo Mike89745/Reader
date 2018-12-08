@@ -27,6 +27,7 @@ export default class LibraryScreen extends Component {
                 elevation: 0,
               },
             headerMode: 'float',
+            headerTitle: ( <Text style={{color:"white"}}>Library</Text> ),
             headerLeft: (
                 <ButtonIcon
                     onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}

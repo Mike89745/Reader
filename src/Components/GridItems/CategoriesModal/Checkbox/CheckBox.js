@@ -40,7 +40,7 @@ export default class CheckBoxe extends Component {
                         iconStyle = {{margin: 8,borderWidth:0}}
                         size = {20}/> }
                     unCheckedImage={<Icon  name={"checkbox-blank-outline"}
-                        color = {"red" }
+                        color = {"black" }
                         backgroundColor={"rgba(120,120,120,0)" }
                         borderRadius={0}
                         iconStyle = {{margin: 8,borderWidth:0}}

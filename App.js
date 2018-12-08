@@ -33,7 +33,7 @@ import Toast from 'react-native-simple-toast';
 const loggerMiddleware = createLogger();
 const store = createStore(Downloader,applyMiddleware(
   thunkMiddleware,
- // loggerMiddleware,
+  loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentWillMount(){ 

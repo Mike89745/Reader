@@ -4,7 +4,6 @@ import GridItems from "../../Components/GridItems/GridItems";
 import Detail from "../../Components/Detail/Detail";
 import {createStackNavigator,createDrawerNavigator} from 'react-navigation';
 import { DrawerActions } from 'react-navigation';
-import HeaderInput from "../../Components/HeaderInput/HeaderInput"
 import HistoryScreen from "../../Components/HistoryScreen/HistoryScreen"
 import LibraryScreen from "../../Components/LibraryScreen/LibraryScreen"
 import ButtonIcon from "../../Components/Icon/Icon"
@@ -13,6 +12,11 @@ import DownloadsScreen from '../../Components/DownloadsScreen/DownloadsScreen';
 import LibraryCategories from '../../Components/LibraryScreen/LibraryCategories/LibraryCategories';
 import FilterDrawer from '../../Components/FilterDrawer/FilterDrawer';
 import UserDrawer from '../../Components/UserDrawer/UserDrawer';
+import GeneralSettings from '../../Components/SettingsScreen/GeneralSettings/GeneralSettings';
+import Settings from '../../Components/SettingsScreen/SettingScreen';
+import ReaderSettings from '../../Components/SettingsScreen/ReaderSetting/ReaderSetting';
+import AdvancedSettings from '../../Components/SettingsScreen/AdvancedSettings/AdvancedSettings';
+import DownloaderSettings from '../../Components/SettingsScreen/DownloadeSettings/DownloaderSettings';
 export default class Layout extends Component{
     render() {
         return (
@@ -22,6 +26,31 @@ export default class Layout extends Component{
         )
     }
 }
+const SettingsStack = createStackNavigator(
+    {
+        Settings:{screen : Settings},
+        GeneralSettings: {screen : GeneralSettings},
+        ReaderSettings: {screen : ReaderSettings},
+        AdvancedSettings: {screen : AdvancedSettings},
+        DownloaderSettings: {screen : DownloaderSettings},
+    },
+    {
+        drawerLabel: 'Settings',
+        initialRouteName: 'Settings',
+        headerMode: 'float',
+       
+        navigationOptions: ({navigation}) => ({
+            headerTitle: ( <Text style={{color:"white"}}>Settings</Text> ),
+            headerLeft: (
+                <ButtonIcon
+                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+                    name="menu"
+                    Color="#fff"
+                />
+            )
+        })
+    }
+);
 const DownloadStack = createStackNavigator(
     {
         DownloadsScreen: {screen : DownloadsScreen},
@@ -64,44 +93,25 @@ const HistoryStack = createStackNavigator(
         })
     }
 );
-const ReaderStack = createStackNavigator(
-    {
-        ReaderScreen: {screen : Reader},
-    },
-    {
-        drawerLabel: 'Reader',
-        initialRouteName: 'ReaderScreen',
-        headerMode: 'none',
-    }
-);
+
 const LibraryStack = createStackNavigator(
     {
         LibraryScreen: {screen : LibraryScreen},
         Details: {screen : Detail},
-        Reader : {screen : ReaderStack},
+        Reader: {screen : Reader},
         LibraryCategories : {screen : LibraryCategories}
     },
     {
         drawerLabel: 'Library',
         initialRouteName: 'LibraryScreen',
-        headerMode: 'float',
-        navigationOptions: ({navigation}) => ({
-            headerTitle: ( <Text style={{color:"white"}}>Library</Text> ),
-            headerLeft: (
-                <ButtonIcon
-                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
-                    Color="#fff"
-                />
-            )
-        })
+      
     }
 );
 const CatalogStack = createStackNavigator(
     {
         Catalog: {screen : GridItems},
         Details: {screen : Detail},
-        Reader : {screen : ReaderStack},
+        Reader: {screen : Reader},
     },
     {
         drawerLabel: 'Katalog',
@@ -129,6 +139,7 @@ const Drawer = createDrawerNavigator(
         History: {screen : HistoryStack},
         Library: {screen : LibraryStack},
         Download : {screen:DownloadStack},
+        Settings : {screen : SettingsStack},
     },
     {
         contentComponent: ({ navigation }) => (
