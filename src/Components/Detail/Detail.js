@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions,Button,Text,ScrollView } from 'react-native';
 import Info from "./Info/Info";
 import ThumbNail from "./ThumbNail/ThumbNail";
-import axios from 'react-native-axios';
 import Description from "./Description/Description";
 import TagList from "./TagList/TagList";
 import Tabs from "./Tabs/Tabs";
@@ -78,7 +77,7 @@ class Detail extends Component {
         }).catch((error) => {
             if(error.status == 404){
                 this.setState({infoLoading : true});
-                axios.get('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
+                fetch('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
                     this.setState({info : response.data.docs, infoLoading : false,inLibrary:false,added:false});
                     this.props.navigation.setParams({title:response.data.docs[0]._id});
                 }).catch(error => console.log(error));;
@@ -128,7 +127,7 @@ class Detail extends Component {
                 }
                 Library.put(book).then((response) => {
                     if(!this.state.chapters){
-                        axios.get('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
+                        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
                             let chapters = [];
                             response.data.docs.map((chapter) =>{
                                 chapters.push({
@@ -168,7 +167,7 @@ class Detail extends Component {
        
     }
     getChapters=()=>{
-        axios.get('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
+        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
             let chapters = [];
             response.data.docs.map((chapter) =>{
                 chapters.push({
@@ -181,6 +180,8 @@ class Detail extends Component {
                 })
             })
             this.setState({chapters:chapters});
+        }).catch(err =>{
+            console.log(err);
         }); 
         
     }

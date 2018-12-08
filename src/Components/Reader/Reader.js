@@ -159,7 +159,7 @@ export default class Reader extends Component {
     }
     loadChapter(path,fromWeb = this.state.fromWeb){
         if(fromWeb){
-            axios.get("http://localhost:8000/getChapterPages/" + this.state.title + "/" + this.state.chapter).then((response) => {
+            fetch("http://localhost:8000/getChapterPages/" + this.state.title + "/" + this.state.chapter).then((response) => {
                 let images = [];
                 for (let index = 0; index < response.data.pages; index++) {
                     images.push({path : path + this.state.chapter + "-" + response.data.chapterTitle.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + index});
@@ -291,7 +291,7 @@ export default class Reader extends Component {
                 source={{uri:'http://samples.leanpub.com/thereactnativebook-sample.pdf',cache:true}}
                 horizontal = {this.state.horizontal}
                 horizontalInv={this.state.horizontalInv}/>
-                
+
             : null}
             {this.state.ReaderType ==="EPUB" ? <Text>Epub</Text> : null}
 

@@ -3,8 +3,6 @@ import { StyleSheet, View, Text,TouchableHighlight,NetInfo} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ChapterPopUp from './Menu/Menu';
 import RNFS from "react-native-fs";
-import axios from "react-native-axios";
-
 export default class Chapter extends Component {
     state = {
         downloaded : false,
@@ -80,7 +78,7 @@ export default class Chapter extends Component {
         NetInfo.getConnectionInfo().then((connectionInfo) => {
             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         });
-        axios.get("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
+        fetch("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
             this.setState({pages : response.data.pages},() => this.isDownloaded())
         }).catch(err =>console.log(err));
     }

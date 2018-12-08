@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View,Dimensions,TouchableHighlight} from 'react-native';
 import GridView from 'react-native-super-grid';
-import axios from 'react-native-axios';
 import GridItem from "../../Components/GridItems/GridItem/GridItem";
 import InfiniteScroll from 'react-native-infinite-scroll';
 import Orientation from 'react-native-orientation';
@@ -74,14 +73,13 @@ export default  class GridItems extends Component {
             }
         }else{
             this.setState({loading : true});
-            
-            axios.get('http://localhost:8000/getBooks/'+ page).then((response) => {
+            fetch('http://localhost:8000/getBooks/'+ page).then((response) => {
                 data = this.state.items;
                 response.data.rows.map(el => data.push(el));
                 this.setState({items : data, loading : false,page:page});
             }).catch(error => {
                 console.log(error,"Catalog")
-                //Toast.show(error, Toast.LONG)
+               // Toast.show(error, Toast.LONG);
             });
         }
       
