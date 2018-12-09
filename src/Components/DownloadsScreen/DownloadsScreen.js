@@ -18,7 +18,7 @@ import ToggleDownloadButton from './ToggleDownloadButton/ToggleDownloadButton';
 class DownloadsScreen extends Component {
     state={
         Downloads : [],
-        isPaused: true,
+        isPaused: false,
     }
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
-        Downloads: state.downloads.downloads,
-        isFetching: state.downloads.isFetching,
-        res: state.downloads.res,
-        task : state.downloads.task,
-        isPaused : state.downloads.isPaused,
+        Downloads: state.Downloader.downloads,
+        isFetching: state.Downloader.isFetching,
+        res: state.Downloader.res,
+        task : state.Downloader.task,
+        isPaused : state.Downloader.isPaused,
     };
 };
 const mapDispatchToProps = {

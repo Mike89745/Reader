@@ -30,7 +30,7 @@ class ToggleDownloadButton extends Component {
 }
 const mapStateToProps = state => {
     return {
-        isPaused : state.downloads.isPaused,
+        isPaused : state.Downloader.isPaused,
     };
 };
 const mapDispatchToProps = {

@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import {
     SAVING_DOWNLOADS,
     SAVE_DOWNLOADS,
@@ -24,7 +23,7 @@ import {
     UNMARK_AS_READ_CHAPTERS
 } from "./downloaderActions"
 
-downloads = (state = {isFetching: false,downloads: []},action) =>{
+export default downloads = (state = {isFetching: false,downloads: []},action) =>{
     switch (action.type) {
         case REQUEST_DOWNLOADS:
             return Object.assign({}, state, {
@@ -113,8 +112,3 @@ downloads = (state = {isFetching: false,downloads: []},action) =>{
           return state
       }
 }
-
-const rootReducer = combineReducers({
-    downloads
-});
-export default rootReducer;

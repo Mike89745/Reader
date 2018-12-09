@@ -22,7 +22,6 @@ import {StyleSheet, View,Button} from 'react-native';
 import Layout from "./src/Containers/Layout/Layout";
 import { MenuProvider } from 'react-native-popup-menu';
 
-import Downloader from './src/reducers/downloader/downloaderReducer';
 
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
@@ -30,8 +29,9 @@ import {createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import {loadData, nextDownload} from "./src/reducers/downloader/downloaderActions";
 import Toast from 'react-native-simple-toast';
+import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
-const store = createStore(Downloader,applyMiddleware(
+const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware,
   loggerMiddleware,
 ));

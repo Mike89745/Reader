@@ -19,7 +19,7 @@ export default class Reader extends Component {
       };
     state = {
         uri: null,
-        ReaderType: "IMAGE",
+        ReaderType: "PDF",
 
         Images : null,
         fromWeb: false, 
@@ -65,53 +65,68 @@ export default class Reader extends Component {
           });
     }
     scrollToPage = (page,animated = true) =>{
-        let x = 0;
-        const images = this.state.Images
-        if(!this.state.isPrevChapter) page += this.state.prevImages ? this.state.prevImages.length : 0;
-        for (i = 0; i < page; i++) {
-            if(!this.state.horizontal){
-                if(images[i].height){
-                    x += images[i].height;
-                }else{
-                    x += defHeight;
+        if(this.state.ReaderType === "IMAGE"){
+            let x = 0;
+            const images = this.state.Images
+            if(!this.state.isPrevChapter) page += this.state.prevImages ? this.state.prevImages.length : 0;
+            for (i = 0; i < page; i++) {
+                if(!this.state.horizontal){
+                    if(images[i].height){
+                        x += images[i].height;
+                    }else{
+                        x += defHeight;
+                    }
+                }
+                else{
+                    x += Dimensions.get("screen").width;
                 }
             }
-           else{
-               x += Dimensions.get("screen").width;
-           }
+            this.ScrollRef.scrollToOffset({
+                offset: x,
+                animated: animated
+            })
         }
-        this.ScrollRef.scrollToOffset({
-            offset: x,
-            animated: animated
-         })
+        else if(this.state.ReaderType === "PDF"){
+           /* let height = Dimensions.get("screen").height
+            this.ScrollRef.scrollToPage({
+                x: height * page,
+                y: 0,
+                animated:true,
+            })*/
+        }
 
     }
     scrollToEnd=(animated = true)=>{
-        let x = 0;
-        let images = this.state.isPrevChapter ? this.state.Images : this.state.prevImages;
-        if(!images) images = this.state.Images
-        for (i = 0; i < images.length-1; i++) { 
-            if(!this.state.horizontal){
-                if(images[i].height){
-                    x += images[i].height;
-                }else{
-                    x += defHeight;
+        if(this.state.ReaderType === "IMAGE"){
+            let x = 0;
+            let images = this.state.isPrevChapter ? this.state.Images : this.state.prevImages;
+            if(!images) images = this.state.Images
+            for (i = 0; i < images.length-1; i++) { 
+                if(!this.state.horizontal){
+                    if(images[i].height){
+                        x += images[i].height;
+                    }else{
+                        x += defHeight;
+                    }
                 }
+            else{
+                x += Dimensions.get("screen").width;
             }
-           else{
-               x += Dimensions.get("screen").width;
-           }
+            }
+            this.ScrollRef.scrollToOffset({
+                offset: x,
+                animated: animated
+            })
         }
-        this.ScrollRef.scrollToOffset({
-            offset: x,
-            animated: animated
-         })
     }
     scrollToStart=(animated = true)=>{
-        this.ScrollRef.scrollToOffset({
-            offset: 0,
-            animated: animated
-         })
+        if(this.state.ReaderType === "IMAGE"){
+            this.ScrollRef.scrollToOffset({
+                offset: 0,
+                animated: animated
+            });
+        }
+      
     }
     nextChapter = () =>{
        
@@ -178,19 +193,27 @@ export default class Reader extends Component {
             }).catch(error => console.log(error));
         }else{
             RNFS.readDir(path).then((result) => {
-                result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")))
-                const Height = Dimensions.get('window').height/2;
-                result.forEach((element) => {
-                    element.key = element.path;
-                    element.height = Height;
-                });  
-                this.setState({
-                    Images: result,
-                    currentPage:1,
-                    fromWeb:false,
-                    pages:result.length,
-                    uri:path.substring(0, path.lastIndexOf("/"))
-                });
+                if(this.state.ReaderType === "IMAGE"){
+                    result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")))
+                    const Height = Dimensions.get('window').height/2;
+                    result.forEach((element) => {
+                        element.key = element.path;
+                        element.height = Height;
+                    });  
+                    this.setState({
+                        Images: result,
+                        currentPage:1,
+                        fromWeb:false,
+                        pages:result.length,
+                        uri:path.substring(0, path.lastIndexOf("/"))
+                    });
+                }
+                if(this.state.ReaderType === "PDF"){
+                    this.setState({
+                        fromWeb:false,
+                        uri:result[0].path
+                    })
+                }
     
                 return Promise.all([RNFS.stat(result[0].path), result[0].path]);
             })
@@ -223,10 +246,10 @@ export default class Reader extends Component {
         }
         
     }
-    setCurrentPage(page){
+    setCurrentPage =(page)=>{
         this.setState({currentPage: page});
     }
-    setPages(pages){
+    setPages = (pages) =>{
         this.setState({pages: pages});
     }
     setHeight=(height,index)=>{
@@ -284,20 +307,23 @@ export default class Reader extends Component {
                         />
                 </Viewport.Tracker>)
             : null}
-            {this.state.ReaderType ==="PDF" ?  
+            {this.state.ReaderType === "PDF" ?  
             <ReaderPDF 
                 setPages={this.setPages} 
                 setCurrentPage={this.setCurrentPage} 
                 source={{uri:'http://samples.leanpub.com/thereactnativebook-sample.pdf',cache:true}}
                 horizontal = {this.state.horizontal}
-                horizontalInv={this.state.horizontalInv}/>
-
+                horizontalInv={this.state.horizontalInv}
+                spacing = {3}
+                ref={(ref) => { this.ScrollRef = ref; }}
+                />
+               
             : null}
             {this.state.ReaderType ==="EPUB" ? <Text>Epub</Text> : null}
 
                 <ReaderNav 
                     nav={this.props.navigation} 
-                    pages={this.state.pages ? this.state.pages : 1} 
+                    page={10} 
                     setPage={this.scrollToPage}
                     nextChapter={this.nextChapter}
                     prevChapter={this.prevChapter}

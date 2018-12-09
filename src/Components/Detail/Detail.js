@@ -16,6 +16,7 @@ import {
     clearChapters
   } from '../../reducers/downloader/downloaderActions'
 import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
+import SimpleToast from '../../../node_modules/react-native-simple-toast';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library');
 const Chapters = new PouchDB('Chapters');
@@ -50,6 +51,7 @@ class Detail extends Component {
         chapters: null,
         added : false,
         Book: null,
+        error: false,
     }
     getInfo = () => {
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
@@ -77,10 +79,18 @@ class Detail extends Component {
         }).catch((error) => {
             if(error.status == 404){
                 this.setState({infoLoading : true});
-                fetch('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then((response) => {
-                    this.setState({info : response.data.docs, infoLoading : false,inLibrary:false,added:false});
-                    this.props.navigation.setParams({title:response.data.docs[0]._id});
-                }).catch(error => console.log(error));;
+                console.log(this.props.navigation.getParam("_id",null));
+                fetch('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then(response =>{
+                    return response.json()
+                }).then((response) => {
+                    console.log(response);
+                    this.setState({info : response.docs, infoLoading : false,inLibrary:false,added:false,error:false});
+                    this.props.navigation.setParams({title:response.docs[0]._id});
+                }).catch(error => {
+                    SimpleToast.show("Error getting Book, please Try again",SimpleToast.LONG);
+                    this.setState({error:true})
+                    console.log(error);
+                });
             }
         });
       
@@ -127,9 +137,11 @@ class Detail extends Component {
                 }
                 Library.put(book).then((response) => {
                     if(!this.state.chapters){
-                        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
+                        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then(response =>{
+                            return response.json()
+                        }).then((response) => {
                             let chapters = [];
-                            response.data.docs.map((chapter) =>{
+                            response.docs.map((chapter) =>{
                                 chapters.push({
                                     book_id : chapter.book_id,
                                     number : chapter.number,
@@ -139,8 +151,11 @@ class Detail extends Component {
                                     lastRead : null,
                                     lastPage: 0,
                                 })
+                            }).catch(error => {
+                                SimpleToast.show("Error getting chapters, please Try again",SimpleToast.LONG);
+                                this.setState({error:true})
+                                console.log(error);
                             })
-                           
                             this.setState({chapters:chapters},() =>  {
                                 Chapters.bulkDocs(this.state.chapters).then((response) => {
                                     //console.log(response,"chapters");
@@ -157,7 +172,7 @@ class Detail extends Component {
                         });
                     }
                     this.CategoriesModal.toggleModal(); 
-                    this.setState({added : true});
+                    this.setState({added : true,error:false});
                 }).catch((err) => {
                     console.log(err,5);
                 });
@@ -167,9 +182,11 @@ class Detail extends Component {
        
     }
     getChapters=()=>{
-        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then((response) => {
+        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then(response =>{
+            return response.json()
+        }).then((response) => {
             let chapters = [];
-            response.data.docs.map((chapter) =>{
+            response.docs.map((chapter) =>{
                 chapters.push({
                     book_id : chapter.book_id,
                     number : chapter.number,
@@ -179,9 +196,12 @@ class Detail extends Component {
                     lastRead : null,
                 })
             })
+            if(chapters.length === 0)  SimpleToast.show("No chapters.",SimpleToast.LONG);
             this.setState({chapters:chapters});
-        }).catch(err =>{
-            console.log(err);
+        }).catch(error =>{
+            SimpleToast.show("Error getting chapters, please Try again",SimpleToast.LONG);
+            this.setState({error:true})
+            console.log(error);
         }); 
         
     }
@@ -251,7 +271,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
-        selectHeaderVisible: state.downloads.selectHeaderVisible,
+        selectHeaderVisible: state.Downloader.selectHeaderVisible,
     };
 };
 const mapDispatchToProps = {

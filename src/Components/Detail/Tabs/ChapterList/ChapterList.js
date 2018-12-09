@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
-        Downloads: state.downloads.downloads,
-        isFetching: state.downloads.isFetching,
-        res: state.downloads.res,
-        chapterRefs: state.downloads.chapterRefs,
-        selectHeaderVisible: state.downloads.selectHeaderVisible,
+        Downloads: state.Downloader.downloads,
+        isFetching: state.Downloader.isFetching,
+        res: state.Downloader.res,
+        chapterRefs: state.Downloader.chapterRefs,
+        selectHeaderVisible: state.Downloader.selectHeaderVisible,
     };
 };
 const mapDispatchToProps = {

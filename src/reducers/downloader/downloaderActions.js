@@ -162,8 +162,8 @@ export function ReattachDownloads() {
 export function nextDownload() {
   return function(dispatch,getState) {
       dispatch(startingDownloads())
-      const isPaused = getState().downloads.isPaused;
-      let data = getState().downloads.downloads;
+      const isPaused = getState().Downloader.isPaused;
+      let data = getState().Downloader.downloads;
       if(data.length > 0){
         let title = data[0].title;
         let chapter = data[0].chapter;
@@ -230,7 +230,7 @@ export function clearDownloads() {
 export function toggleDownloads() {
   return function(dispatch,getState) {
       dispatch(togglingDownloads())
-      let task = getState().downloads;
+      let task = getState().Downloader;
       if(task.task){
         if(!task.isPaused){
           task.task.pause();
@@ -256,7 +256,7 @@ export function toggleDownloads() {
 export function toggleSelectHeader() {
   return function(dispatch,getState) {
     dispatch(togglingSelectHeader())
-      let visible = getState().downloads.selectHeaderVisible;
+      let visible = getState().Downloader.selectHeaderVisible;
       visible ? null : false;
       !visible ? null : dispatch(deselectAll());
       return  (
@@ -302,7 +302,7 @@ function getChaptersRefs(refs) {
 export function getchapterRefs() {
   return function(dispatch,getState) {
     dispatch(gettingChaptersRefs())
-      let refs = getState().downloads.chaptersRefs
+      let refs = getState().Downloader.chaptersRefs
       return  (
         dispatch(getChaptersRefs(refs))
       )
@@ -317,7 +317,7 @@ function selectedAll(refs) {
 }
 export function selectAll() {
   return function(dispatch,getState) {
-      let refs = getState().downloads.chaptersRefs
+      let refs = getState().Downloader.chaptersRefs
       refs.forEach(ref => {
         if(!ref.getSelect())  ref.select();
       });
@@ -335,7 +335,7 @@ function deselectedAll(refs) {
 }
 export function deselectAll() {
   return function(dispatch,getState) {
-      let refs = getState().downloads.chaptersRefs
+      let refs = getState().Downloader.chaptersRefs
       refs ? refs.forEach(ref => {
         if(ref.getSelect())  ref.deselect();
       }) : null;
@@ -353,7 +353,7 @@ function deletedSelected(refs) {
 }
 export function deleteSelected() {
   return function(dispatch,getState) {
-      let refs = getState().downloads.chaptersRefs
+      let refs = getState().Downloader.chaptersRefs
       refs.forEach(ref => {
         if(ref.getSelect())  ref.deleteChapter();
       });
@@ -370,8 +370,8 @@ function donwloadSelected() {
 }
 export function donwloadSelectedChapters() {
   return function(dispatch,getState) {
-      let refs = getState().downloads.chaptersRefs
-      let queueData = getState().downloads.downloads;
+      let refs = getState().Downloader.chaptersRefs
+      let queueData = getState().Downloader.downloads;
       if(!queueData) queueData = []; 
       refs ? refs.forEach(ref => {
         if(ref.getSelect() && ref.getPages() > 0){
@@ -418,7 +418,7 @@ function markedAsRead(refs) {
 }
 export function markAsRead() {
   return function(dispatch,getState) {
-      let refs = getState().downloads.chaptersRefs
+      let refs = getState().Downloader.chaptersRefs
       refs ? refs.forEach(ref => {
         if(ref.getSelect())  ref.markAsRead();
       }) : null;
@@ -436,7 +436,7 @@ function unmarkedAsRead(refs) {
 }
 export function unmarkAsRead() {
   return function(dispatch,getState) {
-      let refs = getState().downloads.chaptersRefs
+      let refs = getState().Downloader.chaptersRefs
       refs ? refs.forEach(ref => {
         if(ref.getSelect())  ref.unmarkAsRead();
       }) : null;

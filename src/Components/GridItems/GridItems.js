@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,Dimensions,TouchableHighlight} from 'react-native';
+import { StyleSheet, View,Dimensions,TouchableHighlight,Button} from 'react-native';
 import GridView from 'react-native-super-grid';
 import GridItem from "../../Components/GridItems/GridItem/GridItem";
 import InfiniteScroll from 'react-native-infinite-scroll';
@@ -11,6 +11,11 @@ import PouchDB from 'pouchdb-react-native';
 import CategoriesModal from './CategoriesModal/CategoriesModal';
 import find from 'pouchdb-find';
 import Toast from 'react-native-simple-toast';
+import { connect } from 'react-redux'
+import {
+    GetBooksFromAPI,
+    GetBooksFromLibrary
+  } from '../../reducers/API/APIActions'
 PouchDB.plugin(find)
 const db = new PouchDB('Library');
 const chapters = new PouchDB('chapters');
@@ -18,7 +23,7 @@ const ItemSpacing = 6;
 const ItemsPerRow = 2;
 
 
-export default  class GridItems extends Component {
+class GridItems extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             headerStyle: {
@@ -38,55 +43,33 @@ export default  class GridItems extends Component {
     state = {
         size : 100,
         items : [],
-        loading : false,
+        loading : true,
         page : 0,
         Book : null,
+        error: false,
     }
 
     LoadItems = () => {
         let page = this.state.page + 1;
         if(this.props.isLibrary){
-            if(this.props.category === "Default"){
-                db.allDocs({endkey: '_design'}).then((Response) => {
-                    this.setState({items : Response.rows, loading : false});
-                }).catch(error => console.log(error));
-            }
-            else{
-                let categories = [];
-                categories.push(this.props.category);
-                db.createIndex({
-                        index: {
-                            fields: ["_id",'categories','tags']
-                        }
-                }).then(() => {
-                        return db.find({
-                            selector: {
-                                categories: {$in : categories}
-                            }
-                        }).then(res => {
-                            
-                            let items = [];
-                            res.docs.map(docs => items.push({doc : docs}))
-                            this.setState({items : items});
-                        })
-                }).catch((err) => console.log(err,"griditems createIndex error"));
-            }
+           this.props.GetBooksFromLibrary(this.props.category)
         }else{
-            this.setState({loading : true});
-            fetch('http://localhost:8000/getBooks/'+ page).then((response) => {
-                data = this.state.items;
-                response.data.rows.map(el => data.push(el));
-                this.setState({items : data, loading : false,page:page});
-            }).catch(error => {
-                console.log(error,"Catalog")
-               // Toast.show(error, Toast.LONG);
-            });
+            this.props.GetBooksFromAPI(page)
         }
       
     }
-   
+    componentWillReceiveProps(NextProps){
+        this.setState({items : this.props.category ? NextProps.CatalogBooks ? NextProps.CatalogBooks[this.props.category] : null : NextProps.CatalogBooks,error:NextProps.gettingBooksError,page:NextProps.CatalogPage,loading:NextProps.gettingBooks})
+    }
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.props.category){
+            if(nextState.items) return true
+            return false
+        }
+        return true
+     
+    }
     componentWillMount() {
-       // console.log(this.props.nav,this.props.navigation);
         const initial = Orientation.getInitialOrientation();
         let size = this.state.size;
         if (initial === 'PORTRAIT') {
@@ -97,7 +80,7 @@ export default  class GridItems extends Component {
         this.setState({size : size,orientations:initial});
     }
     componentDidMount(){
-       this.LoadItems();
+        this.LoadItems();
     }
     showTagModal = (item) =>{
         if(this.props.isLibrary){
@@ -105,6 +88,7 @@ export default  class GridItems extends Component {
         }
     }
     render() {
+        console.log("update", this.props.category ? this.props.category : "Catalog",this.state.items)
         let Grid = null;
         if(this.state.items){
             if(this.state.items.length > 0){
@@ -137,7 +121,11 @@ export default  class GridItems extends Component {
         return (
             <View style={styles.container}>
                 {Grid}
-                {this.state.loading ? <View styles={styles.Spinner}><Spinner/></View> : null}
+                {this.state.error ? <View styles={styles.retryButtoncontainer}>
+                    <View style={styles.retryButton}>
+                        {this.state.loading ? <View styles={styles.Spinner}><Spinner/></View> : <Button title="retry" onPress={this.LoadItems} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>} 
+                    </View>
+                </View> : null}
                 {this.state.Book ? <CategoriesModal 
                     ref={(ref) => { this.CategoriesModal = ref; }} 
                     Book={this.state.Book ? this.state.Book._id : null} 
@@ -153,6 +141,20 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor : "#FFF",
         alignSelf: 'stretch',
+    },
+    retryButtoncontainer:{
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        flex: 1
+    },
+    retryButton: {
+        width:100,
+        height:50,
+       
+        position: 'absolute',
+        left: (Dimensions.get('window').width / 2) - 50,
+        top: (Dimensions.get('window').height / 2) - 75,
+        
     },
     ItemContainer: {
         flex: 1,
@@ -171,14 +173,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     Spinner : {
-        position: 'absolute', 
-        top: 0, 
-        left: 0, 
-        right: 0, 
-        bottom: 0, 
         justifyContent: 'center', 
         alignItems: 'center',
         flex : 1,
-        height: Dimensions.get("window").height
     } 
 });
+const mapStateToProps = state => {
+    return {
+        gettingBooks : state.Booker.gettingBooks,
+        CatalogBooks : state.Booker.CatalogBooks,
+        gettingBooksError : state.Booker.gettingBooksError,
+        CatalogPage : state.Booker.CatalogPage
+    };
+};
+const mapDispatchToProps = {
+    GetBooksFromAPI,
+    GetBooksFromLibrary
+};
+export default connect(mapStateToProps, mapDispatchToProps)(GridItems);

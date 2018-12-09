@@ -11,11 +11,11 @@ export default class TriStateCheckBox extends Component {
         return this.props.text;
     }
     isChecked =()=>{
-        if(this.state.isIndeterminate){
-            return this.state.isIndeterminate
-        }else{
-            return this.state.isChecked;
-        }
+        if(this.state.isIndeterminate) return false;
+        return this.state.isChecked;
+    }
+    isIndeterminate = () => {
+        return this.state.isIndeterminate;
     }
     checkboxClick=()=>{
         let isChecked = this.state.isChecked;

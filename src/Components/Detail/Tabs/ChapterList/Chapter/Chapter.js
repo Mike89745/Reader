@@ -3,6 +3,7 @@ import { StyleSheet, View, Text,TouchableHighlight,NetInfo} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ChapterPopUp from './Menu/Menu';
 import RNFS from "react-native-fs";
+import SimpleToast from '../../../../../../node_modules/react-native-simple-toast';
 export default class Chapter extends Component {
     state = {
         downloaded : false,
@@ -75,12 +76,14 @@ export default class Chapter extends Component {
         }
     }
     componentDidMount(){
-        NetInfo.getConnectionInfo().then((connectionInfo) => {
-            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+        fetch("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then(response =>{
+            return response.json()
+        }).then((response) => {
+            this.setState({pages : response.pages},() => this.isDownloaded())
+        }).catch(error =>{
+            SimpleToast.show("Error getting chapter pages, please Try again",SimpleToast.LONG);
+            console.log(error);
         });
-        fetch("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then((response) => {
-            this.setState({pages : response.data.pages},() => this.isDownloaded())
-        }).catch(err =>console.log(err));
     }
     render() {
         //#dddddd
