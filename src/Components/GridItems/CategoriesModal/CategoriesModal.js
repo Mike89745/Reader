@@ -29,7 +29,7 @@ export default class CategoriesModal extends Component {
         }
         if(this.state.modalVisible) this.toggleModal();
     }
-    toggleModal(){
+    toggleModal = () =>{
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible });
         if(modalVisible){

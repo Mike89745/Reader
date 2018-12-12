@@ -3,6 +3,7 @@ import { StyleSheet, View, Text,TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RF from "react-native-responsive-fontsize";
 import ButtonIcon from '../Icon/Icon';
+import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 export default class Settings extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -11,13 +12,9 @@ export default class Settings extends Component {
             },
             headerMode: 'float',
             headerLeft: (
-                <ButtonIcon
-                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
-                    Color="#fff"
-                    
-                />
-            )
+                <ToggleMainDrawerButton/>
+            ),
+            drawerLockMode: 'locked-closed',
         };
       };
     navigateTo(route){

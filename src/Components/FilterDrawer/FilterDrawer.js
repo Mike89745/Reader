@@ -8,7 +8,15 @@ import { connect } from 'react-redux'
 import {
     SearchBooksFromAPI
 } from '../../reducers/API/APIActions'
+import {
+    setFilterDrawer
+} from '../../reducers/DrawerNavigation/DrawerNavigationActions'
 class FilterDrawer extends Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            drawerLockMode: 'locked-closed',
+        };
+      };
     state = {
         CheckboxRefs : [],
         text: "",
@@ -23,16 +31,11 @@ class FilterDrawer extends Component {
         this.state.tags.map(tag => {
             this.tagsRefs[tag].isChecked() ? CheckedTags.push( this.tagsRefs[tag].getID()) :  this.tagsRefs[tag].isIndeterminate() ? IndeterminateTags.push( this.tagsRefs[tag].getID()) : null;
         })
-
-        const data = new FormData();
-        console.log(this.state.text,CheckedTags,IndeterminateTags)
-        data.append("text" , this.state.text);
-        data.append("INtags" , CheckedTags);
-        data.append("NORtags", IndeterminateTags);
-        console.log(data);
-        this.props.SearchBooksFromAPI(data);
+        this.props.SearchBooksFromAPI(this.state.text,CheckedTags,IndeterminateTags);
     }
-     
+    componentWillMount(){
+        this.props.setFilterDrawer(this.props.navigation);
+    }
     render() {
         return (
             <ScrollView>
@@ -98,6 +101,7 @@ const mapStateToProps = state => {
     return {};
 };
 const mapDispatchToProps = {
-    SearchBooksFromAPI
+    SearchBooksFromAPI,
+    setFilterDrawer,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(FilterDrawer);

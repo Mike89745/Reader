@@ -60,7 +60,6 @@ export default class Chapter extends Component {
         });
     }
     shouldNavigate =()=>{
-        console.log(this.props.selectHeaderVisible);
         if(this.props.selectHeaderVisible){
             this.toggleSelect();
         }else{
@@ -71,18 +70,18 @@ export default class Chapter extends Component {
                 uri: this.state.downloaded ? 
                 RNFS.DocumentDirectoryPath +"/"+ this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
                 :
-                "http://localhost:8000/public/books/" + this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+                "https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
             })
         }
     }
     componentDidMount(){
-        fetch("http://localhost:8000/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then(response =>{
+        fetch("https://mike.xn--mp8hal61bd.ws/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then(response =>{
             return response.json()
         }).then((response) => {
             this.setState({pages : response.pages},() => this.isDownloaded())
         }).catch(error =>{
+            console.log(error)
             SimpleToast.show("Error getting chapter pages, please Try again",SimpleToast.LONG);
-            console.log(error);
         });
     }
     render() {

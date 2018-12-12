@@ -163,7 +163,7 @@ export default class Reader extends Component {
         }
     }
     componentWillMount(){
-        //"http://localhost:8000/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+        //"https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         this.setState({
             uri :  this.props.navigation.getParam("uri",null) ,
             fromWeb : this.props.navigation.getParam("downloaded",null),
@@ -174,7 +174,7 @@ export default class Reader extends Component {
     }
     loadChapter(path,fromWeb = this.state.fromWeb){
         if(fromWeb){
-            fetch("http://localhost:8000/getChapterPages/" + this.state.title + "/" + this.state.chapter).then((response) => {
+            fetch("https://mike.xn--mp8hal61bd.ws/getChapterPages/" + this.state.title + "/" + this.state.chapter).then((response) => {
                 let images = [];
                 for (let index = 0; index < response.data.pages; index++) {
                     images.push({path : path + this.state.chapter + "-" + response.data.chapterTitle.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + index});

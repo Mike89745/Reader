@@ -23,10 +23,10 @@ export default class ChapterPopUp extends Component {
                   </View> 
                 </MenuTrigger>
                 <MenuOptions>
-                    <MenuOption onSelect={() => this.props.download()} text='Download' />
-                    <MenuOption onSelect={() => this.props.markAsRead()} text='Mark as read'/>
-                    <MenuOption onSelect={() => this.props.delete()}text='Delete' >
-                    </MenuOption>
+                    <MenuOption onSelect={() => this.props.download()} ><Text style={{padding: 5}}>Download</Text></MenuOption>
+                    <MenuOption onSelect={() => this.props.markAsRead()} ><Text style={{padding: 5}}>Mark as read</Text></MenuOption>
+                    <MenuOption onSelect={() => this.props.delete()} ><Text style={{padding: 5}}>Delete</Text></MenuOption>
+                    
                 </MenuOptions>
             </Menu>
         )

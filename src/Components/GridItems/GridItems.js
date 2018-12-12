@@ -16,6 +16,12 @@ import {
     GetBooksFromAPI,
     GetBooksFromLibrary
   } from '../../reducers/API/APIActions'
+import {
+    ToggleFilterDrawer,
+    ToggleMainDrawer
+} from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
+import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 PouchDB.plugin(find)
 const db = new PouchDB('Library');
 const chapters = new PouchDB('chapters');
@@ -31,12 +37,10 @@ class GridItems extends Component {
             },
             headerMode: 'float',
             headerLeft: (
-                <ButtonIcon
-                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
-                    Color="#fff"
-                    
-                />
+                <ToggleMainDrawerButton/>
+            ),
+            headerRight: (
+                <ToggleFilterDrawerButton/>
             )
         };
       };
@@ -88,7 +92,7 @@ class GridItems extends Component {
         }
     }
     render() {
-        console.log("update", this.props.category ? this.props.category : "Catalog",this.state.items)
+        //console.log("update", this.props.category ? this.props.category : "Catalog",this.state.items)
         let Grid = null;
         if(this.state.items){
             if(this.state.items.length > 0){
@@ -108,7 +112,7 @@ class GridItems extends Component {
                                     delayLongPress={1000}>
                                     <View style={[styles.ItemContainer,{height: 250}]} >
                                         <GridItem 
-                                        source={{uri: "http://localhost:8000/public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}} 
+                                        source={{uri: "https://mike.xn--mp8hal61bd.ws/public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}} 
                                         title={items.doc._id}/>
                                     </View>
                                 </TouchableHighlight>
@@ -188,6 +192,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     GetBooksFromAPI,
-    GetBooksFromLibrary
+    GetBooksFromLibrary,
+    ToggleFilterDrawer,
+    ToggleMainDrawer
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GridItems);

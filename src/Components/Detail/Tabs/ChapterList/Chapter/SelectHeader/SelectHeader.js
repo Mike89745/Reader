@@ -61,7 +61,7 @@ class SelectHeader extends Component {
 }
 const mapStateToProps = state => {
     return {
-        selectHeaderVisible: state.Downloader.downloads.selectHeaderVisible ? state.Downloader.downloads.selectHeaderVisible : false ,
+        selectHeaderVisible: state.Downloader.selectHeaderVisible ? state.Downloader.selectHeaderVisible : false ,
     };
 };
 const mapDispatchToProps = {

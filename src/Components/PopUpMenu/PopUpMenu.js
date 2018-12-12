@@ -23,7 +23,9 @@ export default class PopUpMenu extends Component {
                   </View> 
                 </MenuTrigger>
                 <MenuOptions>
-                    {this.props.options ? this.props.options.map(option => <MenuOption onSelect={() => option.onSelect()} text={option.text} key={option.text}/>) : null}
+                    {this.props.options ? this.props.options.map(option => <MenuOption onSelect={() => option.onSelect()} key={option.text}>
+                        <Text style={{padding:5}}>{option.text}</Text>
+                    </MenuOption>) : null}
                 </MenuOptions>
             </Menu>
         )

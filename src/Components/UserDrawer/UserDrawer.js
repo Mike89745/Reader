@@ -3,7 +3,11 @@ import { StyleSheet, TextInput,ScrollView,View,Text,TouchableOpacity} from 'reac
 import RF from "react-native-responsive-fontsize"
 import { DrawerItems, SafeAreaView } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-export default class UserDrawer extends Component {
+import { connect } from 'react-redux'
+import {
+    setMainDrawer
+} from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+class UserDrawer extends Component {
     state = {
         user : null,
         ActiveRoute: null
@@ -16,6 +20,7 @@ export default class UserDrawer extends Component {
         this.setState({ActiveRoute : routeName});
     }
     componentDidMount(){
+        this.props.setMainDrawer(this.props.navigation);
         let navState =this.props.navigation.state;
         this.setState({ActiveRoute : navState.routes[navState.index].routeName});
     }
@@ -95,7 +100,7 @@ export default class UserDrawer extends Component {
                         </View>
                         <View>
                             <TouchableOpacity onPress={() => this.navigateTo("Settings")} >
-                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Download" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
+                                <View style={{flexDirection:"row",alignItems: 'center',backgroundColor: this.state.ActiveRoute === "Settings" ? " rgba(59,66,76,0.5)" : null,padding:5}}>
                                     <View style={{marginLeft: 10, marginRight:25}}>
                                         <Icon  name={"settings"}
                                             color = {"#000" }
@@ -139,3 +144,10 @@ const styles = StyleSheet.create({
         color: "black"
     }
 });
+const mapStateToProps = state => {
+    return {};
+};
+const mapDispatchToProps = {
+    setMainDrawer,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(UserDrawer);

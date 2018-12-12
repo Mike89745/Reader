@@ -5,6 +5,7 @@ import RF from "react-native-responsive-fontsize"
 import { DrawerActions } from 'react-navigation';
 import ButtonIcon from '../Icon/Icon';
 import HistoryItem from './HistoryItem/HistoryItem';
+import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 export default class HistoryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -13,12 +14,9 @@ export default class HistoryScreen extends Component {
             },
             headerMode: 'float',
             headerLeft: (
-                <ButtonIcon
-                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
-                    Color="#fff"
-                />
-            )
+                <ToggleMainDrawerButton/>
+            ),
+            drawerLockMode: 'locked-closed',
         };
       };
     state = {

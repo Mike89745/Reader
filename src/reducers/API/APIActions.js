@@ -11,7 +11,7 @@ export const GETTINGS_BOOKS = 'GETTINGS_BOOKS';
 export const SEARCH_BOOKS = 'SEARCH_BOOKS';
 export const SEARCHING_BOOKS = 'SEARCHING_BOOKS';
 export const SEARCH_BOOKS_ERROR = 'SEARCH_BOOKS_ERROR';
-const ENDPOINT = 'http://192.168.0.185:8000/';
+const ENDPOINT = 'https://mike.xn--mp8hal61bd.ws/';
 function GettingBooks(res){
     return{
         gettingBooks : true,
@@ -62,7 +62,7 @@ export function GetBooksFromAPI(page) {
                 response.rows.map(el => data.push(el));
                 dispatch(GetBooks(data,false,page))
             }).catch(error => {
-                Toast.show(ENDPOINT +"getBooks/"+ page, Toast.LONG);
+                Toast.show("Error Loading data,please try again later", Toast.LONG);
                 dispatch(GetBooksError(true,error))
             })
         )
@@ -144,13 +144,17 @@ function SearchBooksError(error,errormsg){
         errormsg: errormsg
     }
 }
-export function SearchBooksFromAPI(data) {
+export function SearchBooksFromAPI(text,INtags,NINtags) {
     return function(dispatch,getState) {
         dispatch(SearchingBooks("Getting Books from Library"))
         return  (
-            fetch(ENDPOINT + 'Search/', {
-                method: 'POST',
-                body: data,
+            fetch("http://localhost:8000/" + 'Search/', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  method: "POST",
+                  body: JSON.stringify({text: text, INtags: INtags,NINtags : NINtags})
             }).then(response =>{
                 return response.json()
             }).then((response) => {
@@ -161,6 +165,36 @@ export function SearchBooksFromAPI(data) {
             }).catch(error => {
                 dispatch(SearchBooksError(true,error))
                 Toast.show("Searched Failed", Toast.LONG);
+            })
+        )
+    }
+}
+export function SearchBooksFromLibrary(text,INtags,NINtags) {
+    return function(dispatch,getState) {
+        dispatch(SearchingBooks("Getting Books from Library"))
+        return  (
+            db.createIndex({
+                index: {
+                  fields: ['_id',"author","artist","status","tags"]
+                }
+              }).then(() => {
+                return db.find({
+                  selector: {
+                    _id : {$regex : text},
+                    tags: {$all : INtags},
+                    tags: {$nin : NINtags},
+                  },
+                }).then(res => {
+                    let newData = [];
+                    res.docs.map(docs => newData.push({doc : docs}));
+                    if(data.length === 0) Toast.show("Nothing Found", Toast.LONG);
+                }).catch(error => {
+                    dispatch(SearchBooksError(true,error))
+                    Toast.show("Search Failed! This shouldnt happen!", Toast.LONG);
+                });
+              }).catch(error => {
+                dispatch(SearchBooksError(true,error))
+                Toast.show("Failed to create indexese", Toast.LONG);
             })
         )
     }

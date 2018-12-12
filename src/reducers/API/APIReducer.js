@@ -50,7 +50,7 @@ export default Booker = (state = {Books: []},action) =>{
                 gettingBooks :  action.gettingBooks,
                 res: action.res,
                 gettingBooksError : action.gettingBooksError,
-                errormsg: errormsg
+                errormsg: action.errormsg
         })
         
         default:

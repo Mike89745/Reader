@@ -1,8 +1,10 @@
+import { combineReducers } from 'redux';
 import Booker from "./API/APIReducer"
 import Downloader from "./downloader/downloaderReducer"
-import { combineReducers } from 'redux';
+import DrawerNav from "./DrawerNavigation/DrawerNavigationReducer"
 const RootReducer = combineReducers({
     Booker,
-    Downloader
+    Downloader,
+    DrawerNav,
 });
 export default RootReducer;

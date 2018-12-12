@@ -22,7 +22,6 @@ import {StyleSheet, View,Button} from 'react-native';
 import Layout from "./src/Containers/Layout/Layout";
 import { MenuProvider } from 'react-native-popup-menu';
 
-
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import {createStore, applyMiddleware } from 'redux';

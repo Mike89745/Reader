@@ -19,7 +19,7 @@ import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library');
-const Chapters = new PouchDB('Chapters');
+const ChaptersDB = new PouchDB('Chapters');
 
 class Detail extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -54,23 +54,30 @@ class Detail extends Component {
         error: false,
     }
     getInfo = () => {
+        
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
             let data = [];
             data.push(response)
-            Chapters.createIndex({
+           
+            ChaptersDB.createIndex({
                 index: {
                     fields: ['book_id','number']
                 }
             }).then(() => {
-                return Chapters.find({
+                return ChaptersDB.find({
                     selector: {
-                        book_id : {$eq : data[0]._id},
+                        book_id : {$eq : this.props.navigation.getParam("_id",null)},
                     }
                 }).then(response => {
+                    SimpleToast.show(response.docs.length.toString(),SimpleToast.LONG);
                     console.log(response);
                     this.setState({chapters: response.docs})
-                }).catch(err => console.log(err));
+                }).catch(err => {
+                    SimpleToast.show("Error getting chapters",SimpleToast.LONG);
+                    console.log(err)
+                });
             }).catch(function (err) {
+                SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
                 console.log(err);
             });
             //console.log(data);
@@ -79,11 +86,9 @@ class Detail extends Component {
         }).catch((error) => {
             if(error.status == 404){
                 this.setState({infoLoading : true});
-                console.log(this.props.navigation.getParam("_id",null));
-                fetch('http://localhost:8000/getBook/' + this.props.navigation.getParam("_id",null)).then(response =>{
+                fetch('https://mike.xn--mp8hal61bd.ws/getBook/' + this.props.navigation.getParam("_id",null)).then(response =>{
                     return response.json()
                 }).then((response) => {
-                    console.log(response);
                     this.setState({info : response.docs, infoLoading : false,inLibrary:false,added:false,error:false});
                     this.props.navigation.setParams({title:response.docs[0]._id});
                 }).catch(error => {
@@ -120,8 +125,9 @@ class Detail extends Component {
             Library.remove(response).then(response =>{
                 this.setState({added : false});
             }).catch((err) => {
+                SimpleToast.show("Error removing from library, this shouldnt happen",SimpleToast.LONG);
                 console.log(err,"delete");
-            });;
+            });
         }).catch((error) => {
             if(error.status == 404){
                 const book ={
@@ -137,7 +143,7 @@ class Detail extends Component {
                 }
                 Library.put(book).then((response) => {
                     if(!this.state.chapters){
-                        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then(response =>{
+                        fetch('https://mike.xn--mp8hal61bd.ws/getChapters/' + this.state.info[0]._id).then(response =>{
                             return response.json()
                         }).then((response) => {
                             let chapters = [];
@@ -157,23 +163,26 @@ class Detail extends Component {
                                 console.log(error);
                             })
                             this.setState({chapters:chapters},() =>  {
-                                Chapters.bulkDocs(this.state.chapters).then((response) => {
+                                ChaptersDB.bulkDocs(this.state.chapters).then((response) => {
                                     //console.log(response,"chapters");
                                 }).catch((err) => {
+                                    SimpleToast.show("Error saving chapters, this shouldnt happen",SimpleToast.LONG);
                                     console.log(err,"chapters");
                                 });
                             });
                         }).catch(err => console.log(err,"failed to save chapters"));
                     }else{
-                        Chapters.bulkDocs(this.state.chapters).then((response) => {
+                        ChaptersDB.bulkDocs(this.state.chapters).then((response) => {
                             //console.log(response,"chapters");
                         }).catch((err) => {
+                            SimpleToast.show("Error saving chapters, this shouldnt happen",SimpleToast.LONG);
                             console.log(err,"chapters");
                         });
                     }
                     this.CategoriesModal.toggleModal(); 
                     this.setState({added : true,error:false});
                 }).catch((err) => {
+                    SimpleToast.show("Error saving book, this shouldnt happen",SimpleToast.LONG);
                     console.log(err,5);
                 });
             }
@@ -182,7 +191,8 @@ class Detail extends Component {
        
     }
     getChapters=()=>{
-        fetch('http://localhost:8000/getChapters/' + this.state.info[0]._id).then(response =>{
+        SimpleToast.show("getting chapters",SimpleToast.LONG);
+        fetch('https://mike.xn--mp8hal61bd.ws/getChapters/' + this.state.info[0]._id).then(response =>{
             return response.json()
         }).then((response) => {
             let chapters = [];
@@ -214,7 +224,7 @@ class Detail extends Component {
                     <View> 
                         <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
                             <View style={{width : this.state.size,paddingRight: 10}}>
-                                <ThumbNail source={{uri: ("http://localhost:8000/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}/>
+                                <ThumbNail source={{uri: ("https://mike.xn--mp8hal61bd.ws/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}/>
                             </View>
                             <Info style={styles.Info} info={this.state.info[0]}/>
                         </View>

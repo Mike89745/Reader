@@ -8,6 +8,8 @@ import LibraryTab from './LibraryTab/LibraryTab';
 import {createMaterialTopTabNavigator } from "react-navigation"
 import PouchDB from 'pouchdb-react-native';
 import TriStateCheckBox from '../FilterDrawer/TriStateCheckbox/TriStateCheckbox';
+import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
+import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 const db = new PouchDB('categories');
 export default class LibraryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -29,17 +31,14 @@ export default class LibraryScreen extends Component {
             headerMode: 'float',
             headerTitle: ( <Text style={{color:"white"}}>Library</Text> ),
             headerLeft: (
-                <ButtonIcon
-                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
-                    Color="#fff"
-                />
+                <ToggleMainDrawerButton/>
             ),
             headerRight :(
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',marginRight:15}}>
                     <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories")}/>
+                    <ToggleFilterDrawerButton/>
                 </View>
             ),
         };

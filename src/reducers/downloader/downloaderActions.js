@@ -180,7 +180,7 @@ export function nextDownload() {
         if(data.length > 0 && page != -1){
           let task = RNBackgroundDownloader.download({
             id: title + "//"+ chapter + "//" + page,
-            url: `http://localhost:8000/public/books/${title}/${chapter}/${page}`,
+            url: `https://mike.xn--mp8hal61bd.ws/public/books/${title}/${chapter}/${page}`,
             destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`
           }).begin((expectedBytes) => {
               //console.log(`Going to download ${expectedBytes} bytes!`);
