@@ -27,10 +27,6 @@ import {
 const SettingsStack = createStackNavigator(
     {
         Settings:{screen : Settings},
-        GeneralSettings: {screen : GeneralSettings},
-        ReaderSettings: {screen : ReaderSettings},
-        AdvancedSettings: {screen : AdvancedSettings},
-        DownloaderSettings: {screen : DownloaderSettings},
     },
     {
         drawerLabel: 'Settings',
@@ -184,7 +180,7 @@ class Layout extends Component{
     render() {
         return (
             <View style={styles.container}>
-                <RootStack style={styles.container} drawerLockMode={'locked-closed'}/>
+                <RootStack style={styles.container}/>
             </View>
         )
     }

@@ -68,6 +68,7 @@
 		7BE0296DCBE345AB89BEF171 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98B127B123E74BD9B8E2ECCF /* Zocial.ttf */; };
 		E0DC629A12954FD48923F8E6 /* libLRDRCTSimpleToast.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC2B2B6E31804507B058ACFB /* libLRDRCTSimpleToast.a */; };
 		3F7C23AF694943B5972213A7 /* libRCTPdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5C14BC947DB4947987CDDB7 /* libRCTPdf.a */; };
+		DB475DE6E05D42A9AE5F6E85 /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D87411A95243487A81ACD319 /* libFastImage.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -417,6 +418,8 @@
 		CC2B2B6E31804507B058ACFB /* libLRDRCTSimpleToast.a */ = {isa = PBXFileReference; name = "libLRDRCTSimpleToast.a"; path = "libLRDRCTSimpleToast.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		25A36144D4454D4FA4F09522 /* RCTPdf.xcodeproj */ = {isa = PBXFileReference; name = "RCTPdf.xcodeproj"; path = "../node_modules/react-native-pdf/ios/RCTPdf.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		C5C14BC947DB4947987CDDB7 /* libRCTPdf.a */ = {isa = PBXFileReference; name = "libRCTPdf.a"; path = "libRCTPdf.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		5763309FA6294E5D83D451EE /* FastImage.xcodeproj */ = {isa = PBXFileReference; name = "FastImage.xcodeproj"; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		D87411A95243487A81ACD319 /* libFastImage.a */ = {isa = PBXFileReference; name = "libFastImage.a"; path = "libFastImage.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -459,6 +462,7 @@
 				1A0BAF404BC94B6E9463E8C5 /* libRNFetchBlob.a in Frameworks */,
 				E0DC629A12954FD48923F8E6 /* libLRDRCTSimpleToast.a in Frameworks */,
 				3F7C23AF694943B5972213A7 /* libRCTPdf.a in Frameworks */,
+				DB475DE6E05D42A9AE5F6E85 /* libFastImage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +665,7 @@
 				E50CDC5382CF4AC68AA0596A /* RNFetchBlob.xcodeproj */,
 				94E4C0C48EC741B1B0578A18 /* LRDRCTSimpleToast.xcodeproj */,
 				25A36144D4454D4FA4F09522 /* RCTPdf.xcodeproj */,
+				5763309FA6294E5D83D451EE /* FastImage.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1341,6 +1346,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1357,6 +1363,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Debug;
@@ -1392,6 +1399,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1408,6 +1416,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Release;
@@ -1443,6 +1452,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Debug;
@@ -1477,6 +1487,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Release;
@@ -1520,6 +1531,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1536,6 +1548,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Debug;
@@ -1579,6 +1592,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1595,6 +1609,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Release;
@@ -1637,6 +1652,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1653,6 +1669,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Debug;
@@ -1695,6 +1712,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1711,6 +1729,7 @@
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-simple-toast\ios\LRDRCTSimpleToast",
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
+					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 				);
 			};
 			name = Release;

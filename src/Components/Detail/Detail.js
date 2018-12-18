@@ -11,6 +11,8 @@ import PouchDB from 'pouchdb-react-native';
 import find from 'pouchdb-find';
 import SelectHeader from './Tabs/ChapterList/Chapter/SelectHeader/SelectHeader';
 import { connect } from 'react-redux'
+import RNBackgroundDownloader from 'react-native-background-downloader';
+import RNFS from "react-native-fs";
 import {
     toggleSelectHeader,
     clearChapters
@@ -70,8 +72,7 @@ class Detail extends Component {
                     }
                 }).then(response => {
                     SimpleToast.show(response.docs.length.toString(),SimpleToast.LONG);
-                    console.log(response);
-                    this.setState({chapters: response.docs})
+                    if(response.docs.length > 0)  this.setState({chapters: response.docs});
                 }).catch(err => {
                     SimpleToast.show("Error getting chapters",SimpleToast.LONG);
                     console.log(err)
@@ -101,7 +102,6 @@ class Detail extends Component {
       
     }
     componentWillReceiveProps(nextProps){
-     
         this.setState({selectHeaderVisible : nextProps.selectHeaderVisible})
     }
     componentDidMount(){
@@ -142,53 +142,35 @@ class Detail extends Component {
                     lastRead: null,
                 }
                 Library.put(book).then((response) => {
-                    if(!this.state.chapters){
-                        fetch('https://mike.xn--mp8hal61bd.ws/getChapters/' + this.state.info[0]._id).then(response =>{
-                            return response.json()
-                        }).then((response) => {
-                            let chapters = [];
-                            response.docs.map((chapter) =>{
-                                chapters.push({
-                                    book_id : chapter.book_id,
-                                    number : chapter.number,
-                                    title : chapter.title,
-                                    dateAdded : chapter.dateAdded,
-                                    read : false,
-                                    lastRead : null,
-                                    lastPage: 0,
-                                })
-                            }).catch(error => {
-                                SimpleToast.show("Error getting chapters, please Try again",SimpleToast.LONG);
-                                this.setState({error:true})
-                                console.log(error);
-                            })
-                            this.setState({chapters:chapters},() =>  {
-                                ChaptersDB.bulkDocs(this.state.chapters).then((response) => {
-                                    //console.log(response,"chapters");
-                                }).catch((err) => {
-                                    SimpleToast.show("Error saving chapters, this shouldnt happen",SimpleToast.LONG);
-                                    console.log(err,"chapters");
-                                });
-                            });
-                        }).catch(err => console.log(err,"failed to save chapters"));
-                    }else{
-                        ChaptersDB.bulkDocs(this.state.chapters).then((response) => {
-                            //console.log(response,"chapters");
-                        }).catch((err) => {
-                            SimpleToast.show("Error saving chapters, this shouldnt happen",SimpleToast.LONG);
-                            console.log(err,"chapters");
-                        });
-                    }
-                    this.CategoriesModal.toggleModal(); 
+                    this.CategoriesModal.toggleModal();
+                    this.saveThumbNail(book._id.replace(/[/\\?%*:|"<>. ]/g, '-')) 
                     this.setState({added : true,error:false});
                 }).catch((err) => {
                     SimpleToast.show("Error saving book, this shouldnt happen",SimpleToast.LONG);
-                    console.log(err,5);
                 });
             }
         });
-       
-       
+    }
+    saveThumbNail(bookID){
+        RNFS.exists(`${RNFS.DocumentDirectoryPath}/thumbnails/$`).then(response => {
+            if(!response) { 
+                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/thumbnails/$`);
+            }
+        });
+        let task = RNBackgroundDownloader.download({
+            id: "//"+ bookID + "//Thumbnail",
+            url: `https://mike.xn--mp8hal61bd.ws/public/thumbnails/${bookID}`,
+            destination: `${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`
+          }).begin((expectedBytes) => {
+          }).progress((percent) => {
+          }).done(() => {
+          }).error((error) => {
+              RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${bookID}.jpg`).then(response => {
+                  if(!response) { 
+                    SimpleToast.show("Error saving Thumbnail",SimpleToast.LONG);
+                  }
+              });
+          });
     }
     getChapters=()=>{
         SimpleToast.show("getting chapters",SimpleToast.LONG);
@@ -206,7 +188,15 @@ class Detail extends Component {
                     lastRead : null,
                 })
             })
-            if(chapters.length === 0)  SimpleToast.show("No chapters.",SimpleToast.LONG);
+            if(chapters.length === 0){
+                SimpleToast.show("No chapters.",SimpleToast.LONG);
+            }else{
+                ChaptersDB.bulkDocs(chapters).then((response) => {
+                }).catch((err) => {
+                    SimpleToast.show("Error saving chapters, this shouldnt happen",SimpleToast.LONG);
+                    console.log(err,"chapters");
+                });
+            }  
             this.setState({chapters:chapters});
         }).catch(error =>{
             SimpleToast.show("Error getting chapters, please Try again",SimpleToast.LONG);
@@ -224,7 +214,12 @@ class Detail extends Component {
                     <View> 
                         <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
                             <View style={{width : this.state.size,paddingRight: 10}}>
-                                <ThumbNail source={{uri: ("https://mike.xn--mp8hal61bd.ws/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}/>
+                                <ThumbNail 
+                                source={this.state.added ? 
+                                {uri : `${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`} 
+                                :
+                                {uri: ("https://mike.xn--mp8hal61bd.ws/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
+                                />
                             </View>
                             <Info style={styles.Info} info={this.state.info[0]}/>
                         </View>

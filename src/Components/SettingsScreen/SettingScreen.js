@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,TouchableOpacity} from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RF from "react-native-responsive-fontsize";
 import ButtonIcon from '../Icon/Icon';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
-export default class Settings extends Component {
+import GeneralSettings from './GeneralSettings/GeneralSettings';
+import DownloaderSettings from './DownloadeSettings/DownloaderSettings';
+import ReaderSettings from './ReaderSetting/ReaderSetting';
+import { connect } from 'react-redux'
+import {
+    loadSettings,
+    saveSettings
+  } from '../../reducers/Settings/SettingsActions'
+class Settings extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             headerStyle: {
@@ -16,74 +24,32 @@ export default class Settings extends Component {
             ),
             drawerLockMode: 'locked-closed',
         };
-      };
-    navigateTo(route){
-        this.props.navigation.navigate(route);
+    };
+    state = {
+        settings : null,
+    }
+    ReduxSaveSettings=(setting,key)=>{
+        let settings = this.state.settings;
+        settings[key] = setting
+        this.props.saveSettings(settings);
+    }
+    componentWillMount(){
+        this.props.loadSettings();
+    }
+    componentWillReceiveProps(nextProps){
+        this.setState({settings:nextProps.settings})
     }
     render() {
         return (
-            <View>
-                <View>
-                    <TouchableOpacity onPress={() => this.navigateTo("GeneralSettings")} >
-                        <View style={{flexDirection:"row",alignItems: 'center',padding:5,borderBottomColor:"rgba(59,66,76,0.5)", borderBottomWidth: 1}}>
-                            <View style={{marginLeft: 10, marginRight:25}}>
-                                <Icon  name={"information"}
-                                    color = {"#3b424c" }
-                                    backgroundColor={"rgba(120,120,120,0)" }
-                                    borderRadius={0}
-                                    iconStyle = {{margin: 8,borderWidth:0,marginLeft: 15}}
-                                    size = {25}/>
-                            </View>    
-                            <Text style={styles.textStyle}>General Settings</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => this.navigateTo("ReaderSettings")} >
-                        <View style={{flexDirection:"row",alignItems: 'center',padding:5,borderBottomColor:"rgba(59,66,76,0.5)", borderBottomWidth: 1}}>
-                            <View style={{marginLeft: 10, marginRight:25}}>
-                                <Icon  name={"book-open"}
-                                    color = {"#3b424c" }
-                                    backgroundColor={"rgba(120,120,120,0)" }
-                                    borderRadius={0}
-                                    iconStyle = {{margin: 8,borderWidth:0,marginLeft: 15}}
-                                    size = {25}/>
-                            </View>    
-                            <Text style={styles.textStyle}>Reader Settings</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => this.navigateTo("DownloaderSettings")} >
-                        <View style={{flexDirection:"row",alignItems: 'center',padding:5,borderBottomColor:"rgba(59,66,76,0.5)", borderBottomWidth: 1}}>
-                            <View style={{marginLeft: 10, marginRight:25}}>
-                                <Icon  name={"download"}
-                                    color = {"#3b424c" }
-                                    backgroundColor={"rgba(120,120,120,0)" }
-                                    borderRadius={0}
-                                    iconStyle = {{margin: 8,borderWidth:0,marginLeft: 15}}
-                                    size = {25}/>
-                            </View>    
-                            <Text style={styles.textStyle}>Dowloader Settings</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => this.navigateTo("AdvancedSettings")} >
-                        <View style={{flexDirection:"row",alignItems: 'center',padding:5,borderBottomColor:"rgba(59,66,76,0.5)", borderBottomWidth: 1}}>
-                            <View style={{marginLeft: 10, marginRight:25}}>
-                                <Icon  name={"code-tags"}
-                                    color = {"#3b424c" }
-                                    backgroundColor={"rgba(120,120,120,0)" }
-                                    borderRadius={0}
-                                    iconStyle = {{margin: 8,borderWidth:0,marginLeft: 15}}
-                                    size = {25}/>
-                            </View>    
-                            <Text style={styles.textStyle}>Advanced Settings</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <ScrollView style={{flex:1}}>
+            {this.state.settings ?( 
+                <View style={{flex:1,padding:5}}>
+                    <GeneralSettings ReduxSaveSettings={this.ReduxSaveSettings} LibraryLayoutSettings={this.state.settings.LibraryLayoutSettings} StartScreenSettings={this.state.settings.StartScreen}/>
+                    <ReaderSettings ReduxSaveSettings={this.ReduxSaveSettings} ReaderSettings={this.state.settings.ReaderLayout}/>
+                    <DownloaderSettings ReduxSaveSettings={this.ReduxSaveSettings} DownloaderWiFiSettings={this.state.settings.DownloadOverWiFi}/>
+                </View>) : null}
+               
+            </ScrollView>
         )
     }
 }
@@ -108,3 +74,13 @@ const styles = StyleSheet.create({
         color: "black"
     }
 });
+const mapStateToProps = state => {
+    return {
+        settings: state.Settings.Settings,
+    };
+};
+const mapDispatchToProps = {
+    saveSettings,
+    loadSettings
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

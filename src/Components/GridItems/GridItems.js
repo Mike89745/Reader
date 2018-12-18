@@ -20,13 +20,16 @@ import {
     ToggleFilterDrawer,
     ToggleMainDrawer
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+import {
+    loadSettings,
+} from '../../reducers/Settings/SettingsActions'
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 PouchDB.plugin(find)
 const db = new PouchDB('Library');
 const chapters = new PouchDB('chapters');
-const ItemSpacing = 6;
-const ItemsPerRow = 2;
+//const ItemSpacing = 6;
+//const ItemsPerRow = 2;
 
 
 class GridItems extends Component {
@@ -63,7 +66,12 @@ class GridItems extends Component {
       
     }
     componentWillReceiveProps(NextProps){
-        this.setState({items : this.props.category ? NextProps.CatalogBooks ? NextProps.CatalogBooks[this.props.category] : null : NextProps.CatalogBooks,error:NextProps.gettingBooksError,page:NextProps.CatalogPage,loading:NextProps.gettingBooks})
+        this.setState({items : 
+            this.props.category ? NextProps.CatalogBooks ? NextProps.CatalogBooks[this.props.category] : null : NextProps.CatalogBooks,
+            error:NextProps.gettingBooksError,
+            page:NextProps.CatalogPage,
+            loading:NextProps.gettingBooks
+        })
     }
     shouldComponentUpdate(nextProps, nextState){
         if(this.props.category){
@@ -74,13 +82,21 @@ class GridItems extends Component {
      
     }
     componentWillMount() {
+        this.props.loadSettings();
         const initial = Orientation.getInitialOrientation();
         let size = this.state.size;
-        if (initial === 'PORTRAIT') {
-            size = Math.floor(Dimensions.get('window').width/ItemsPerRow) - 10;
-        } else {
-            size = Math.floor(Dimensions.get('window').height/ItemsPerRow) - 10;
-        }
+        let ItemsPerRow = this.props.settings.LibraryLayoutSettings
+        if(ItemsPerRow != "Default"){
+            ItemsPerRow = parseInt(ItemsPerRow)
+            if (initial === 'PORTRAIT') {
+                size = Math.floor(Dimensions.get('window').width/ItemsPerRow) - 10;
+            } else {
+                size = Math.floor(Dimensions.get('window').height/ItemsPerRow) - 10;
+            }
+        }else{
+            size = 150
+        } 
+       
         this.setState({size : size,orientations:initial});
     }
     componentDidMount(){
@@ -104,7 +120,7 @@ class GridItems extends Component {
                         <GridView
                             itemDimension={this.state.size}
                             items={[...this.state.items]}
-                            spacing ={ItemSpacing}
+                            spacing ={6}
                             style={styles.gridView}
                             renderItem={items => (
                                 <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} 
@@ -187,13 +203,15 @@ const mapStateToProps = state => {
         gettingBooks : state.Booker.gettingBooks,
         CatalogBooks : state.Booker.CatalogBooks,
         gettingBooksError : state.Booker.gettingBooksError,
-        CatalogPage : state.Booker.CatalogPage
+        CatalogPage : state.Booker.CatalogPage,
+        settings: state.Settings.Settings,
     };
 };
 const mapDispatchToProps = {
     GetBooksFromAPI,
     GetBooksFromLibrary,
     ToggleFilterDrawer,
-    ToggleMainDrawer
+    ToggleMainDrawer,
+    loadSettings,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GridItems);

@@ -15,7 +15,7 @@ class ChapterList extends Component {
     constructor(props) {
         super(props);
     
-        this. state ={
+        this.state ={
             chapters: null,
             chapterRefs: [],
             Downloads: [],
@@ -42,8 +42,22 @@ class ChapterList extends Component {
             return nextState.chapters != this.state.chapters || nextState.selectHeaderVisible != this.state.selectHeaderVisible;
         }
     }
+    navigateToReader = (index,downloaded) =>{
+        this.props.screenProps.nav.navigate('Reader',{
+            title: this.props.screenProps.bookID,
+            chapter: this.state.chapters[index].number,
+            downloaded : !downloaded,
+            ReaderType : this.state.chapters[index].Type ? this.state.chapters[index].Type : null,
+            uri: downloaded ? 
+                RNFS.DocumentDirectoryPath 
+                + "/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') 
+                + "/" + (this.state.chapters[index].number + "-" + this.state.chapters[index].title).replace(/[/\\?%*:|"<>. ]/g, '-') 
+                + "/"
+                :
+                "https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+        })
+    }
     componentDidMount(){
-        
         this.props.loadData();
     }
     render() {
@@ -55,11 +69,12 @@ class ChapterList extends Component {
                     chapterCount={item.number} 
                     dateAdded={item.dateAdded} 
                     bookID={this.props.screenProps.bookID}
-                    nav = {this.props.screenProps.nav}
+                    nav = {this.navigateToReader}
                     ref={(chapterRef) => this.addRef(chapterRef,index)}
                     onToggleSelect ={this.onToggleSelect}
                     index = {index}
                     queued = {false}
+                    downloading = {false}
                     pages = {item.pages ? item.pages : 0}
                     selectHeaderVisible = {this.state.selectHeaderVisible}
                  />) 

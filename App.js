@@ -27,6 +27,7 @@ import { createLogger } from 'redux-logger';
 import {createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import {loadData, nextDownload} from "./src/reducers/downloader/downloaderActions";
+import {loadSettings} from "./src/reducers/Settings/SettingsActions";
 import Toast from 'react-native-simple-toast';
 import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
@@ -35,21 +36,10 @@ const store = createStore(RootReducer,applyMiddleware(
   loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
-  componentWillMount(){ 
-    //this.ReAttachingDownloads();
-    console.log("appMounted");
-    
-    //store.dispatch(loadData());
-  }
   componentDidMount(){
-    //Toast.show('This is a long toast.', Toast.LONG);
-  }
-  test(){
-    store.dispatch(nextDownload());
+    store.dispatch(loadSettings());
   }
   render() {
-    //<Button title="Test Download" onPress={() => this.test()}/>
-
     return (
       <Provider store={store}>
         <MenuProvider>

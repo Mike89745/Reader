@@ -63,15 +63,7 @@ export default class Chapter extends Component {
         if(this.props.selectHeaderVisible){
             this.toggleSelect();
         }else{
-            this.props.nav.navigate('Reader',{
-                title: this.props.bookID,
-                chapter: this.props.chapterCount,
-                downloaded : !this.state.downloaded,
-                uri: this.state.downloaded ? 
-                RNFS.DocumentDirectoryPath +"/"+ this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
-                :
-                "https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
-            })
+            this.props.nav(this.props.index,this.state.downloaded)
         }
     }
     componentDidMount(){
@@ -95,7 +87,7 @@ export default class Chapter extends Component {
                     <View style={{flex:0.8}}>
                         <Text style={styles.textHeader}>Chapter {this.props.chapterCount} - {this.props.chapterName}</Text>
                         <Text style={styles.textDate}>{this.props.dateAdded}</Text>
-                        {this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
+                        {this.props.downloading ? <Text>Downloading</Text> : this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
                         <ChapterPopUp download={this.DownloadChapter} delete={this.DeleteChapter} markAsRead={this.toggleMark}/>
