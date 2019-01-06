@@ -8,6 +8,7 @@ export const SAVED_CHAPTERS = "SAVED_CHAPTERS";
 import PouchDB from 'pouchdb-react-native';
 import find from 'pouchdb-find';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
+import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
 const ChaptersDB = new PouchDB('Chapters');
 function gettingChapters(){
@@ -55,7 +56,7 @@ export function getChaptersFromAPI(book_id) {
                   pages : chapter.pages,
                   lastRead : null,
                   lastPage : 0,
-                  type: chapter.type,
+                  type: chapter.type
                 })
             })
             if(chapters.length === 0){
@@ -82,15 +83,16 @@ export function getChaptersFromLibrary(book_id) {
       }).then(() => {
           return ChaptersDB.find({
               selector: {
-                  book_id : {$eq : book_id},
+                book_id : {$eq : book_id},
               }
           }).then(response => {
-              response.docs.length > 0 ? dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,chapters.docs)) : null
+             dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,response.docs));
           }).catch(err => {
               dispatch(getChaptersError(err));
               SimpleToast.show("Error getting chapters",SimpleToast.LONG);
           });
-      }).catch(function (err) {
+      }).catch(err => {
+
           dispatch(getChaptersError(err));
           SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
       })

@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import {
     loadSettings,
 } from '../../reducers/Settings/SettingsActions'
+import { ENDPOINT } from '../../Values/Values';
 const defHeight = Dimensions.get('window').height/2;
 class Reader extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -165,36 +166,34 @@ class Reader extends Component {
     componentWillMount(){
         this.props.loadSettings();
         this.ChangeSettings(this.props.settings.ReaderLayout)
+        const chapter =this.props.navigation.getParam("chapter",null);
+        console.log(chapter);
         //"https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         this.setState({
-            
             uri :  this.props.navigation.getParam("uri",null) ,
             fromWeb : this.props.navigation.getParam("downloaded",null),
-            chapter : parseInt(this.props.navigation.getParam("chapter",null)),
+            chapter : parseInt(chapter.number),
             title : this.props.navigation.getParam("title",null),
-            ReaderType : this.props.navigation.getParam("title","IMAGE"),
+            ReaderType : chapter.type,
+            pages : chapter.pages,
         },() => this.loadChapter(this.props.navigation.getParam("uri",null) + "/",this.props.navigation.getParam("downloaded",null)));
        
     }
     loadChapter(path,fromWeb = this.state.fromWeb){
         if(fromWeb){
-            fetch("https://mike.xn--mp8hal61bd.ws/getChapterPages/" + this.state.title + "/" + this.state.chapter).then((response) => {
-                let images = [];
-                for (let index = 0; index < response.data.pages; index++) {
-                    images.push({path : path + this.state.chapter + "-" + response.data.chapterTitle.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + index});
-                }
-                const Height = Dimensions.get('window').height/2;
-                images.forEach((element) => { 
-                    element.key = element.path;
-                    element.height = Height;
-                });  
-                this.setState({
-                    Images: images,
-                    currentPage:1,
-                    fromWeb:true,
-                    pages: response.data.pages,
-                });
-            }).catch(error => console.log(error));
+            let images = [];
+            for (let index = 0; index < this.state.pages; index++) {
+                images.push({path : path + this.state.chapter + "-" + this.state.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + index});
+            }
+            const Height = Dimensions.get('window').height/2;
+            images.forEach((element) => { 
+                element.key = element.path;
+                element.height = Height;
+            });  
+            this.setState({
+                Images: images,
+                currentPage:1,
+            });
         }else{
             RNFS.readDir(path).then((result) => {
                 if(this.state.ReaderType === "IMAGE"){

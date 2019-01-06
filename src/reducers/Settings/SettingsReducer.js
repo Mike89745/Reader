@@ -1,5 +1,5 @@
 import {LOAD_SETTINGS,SAVE_SETTINGS,ERROR_LOADING_SETTINGS,ERROR_SAVING_SETTINGS } from "./SettingsActions";
-export default SettingsReducer = (state = {DrawerNavigation: []},action) =>{
+export default SettingsReducer = (state = {},action) =>{
     switch (action.type) {
         case LOAD_SETTINGS:
             return Object.assign({}, state, {

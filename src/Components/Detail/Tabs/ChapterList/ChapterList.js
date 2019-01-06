@@ -18,10 +18,8 @@ import {
   } from '../../../../reducers/Chapters/Chapters'
 import { ENDPOINT } from '../../../../Values/Values';
 class ChapterList extends Component {
-   
     constructor(props) {
         super(props);
-    
         this.state ={
             chapters: null,
             chapterRefs: [],
@@ -42,7 +40,11 @@ class ChapterList extends Component {
         this.setState({chapterRefs: refs});
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ chapters: nextProps.props.Chapters,Downloads: nextProps.Downloads,selectHeaderVisible : nextProps.selectHeaderVisible,error : nextProps.ChaptersError,loading: ChaptersLoading});  
+        this.setState({ chapters: nextProps.Chapters ,
+            Downloads: nextProps.Downloads,
+            selectHeaderVisible : nextProps.selectHeaderVisible,
+            error : nextProps.ChaptersError,
+            loading: nextProps.ChaptersLoading});  
     }
     shouldComponentUpdate(nextProps, nextState) {
         if(this.state.Downloads && nextState.Downloads){
@@ -51,17 +53,14 @@ class ChapterList extends Component {
             return nextState.chapters != this.state.chapters || nextState.selectHeaderVisible != this.state.selectHeaderVisible;
         }
     }
-    navigateToReader = (index,downloaded) =>{
+    navigateToReader = (chapter,downloaded) =>{
+        console.log(chapter);
         this.props.screenProps.nav.navigate('Reader',{
+            chapter : chapter,
             title: this.props.screenProps.bookID,
-            chapter: this.state.chapters[index].number,
             downloaded : !downloaded,
-            ReaderType : this.state.chapters[index].Type ? this.state.chapters[index].Type : null,
             uri: downloaded ? 
-                RNFS.DocumentDirectoryPath 
-                + "/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') 
-                + "/" + (this.state.chapters[index].number + "-" + this.state.chapters[index].title).replace(/[/\\?%*:|"<>. ]/g, '-') 
-                + "/"
+                chapter
                 :
                 ENDPOINT + "/public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         })
@@ -87,7 +86,7 @@ class ChapterList extends Component {
                     selectHeaderVisible = {this.state.selectHeaderVisible}
                  />) 
                  : 
-                 <Button title="Load Chapters" onPress={() => this.props.getChaptersFromLibrary(this.props.screenProps.bookID)}/>
+                 <Button title="Load Chapters" onPress={() => this.props.getChaptersFromAPI(this.props.screenProps.bookID)}/>
                 }
             </ScrollView>
         )
@@ -106,9 +105,9 @@ const mapStateToProps = state => {
         isFetching: state.Downloader.isFetching,
         chapterRefs: state.Downloader.chapterRefs,
         selectHeaderVisible: state.Downloader.selectHeaderVisible,
-        Chapters : state.Chapters.Chapters,
-        ChaptersLoading : state.Chapters.loading,
-        ChaptersError : state.Chapters.error,
+        Chapters : state.ChaptersReducer.Chapters,
+        ChaptersLoading : state.ChaptersReducer.loading,
+        ChaptersError : state.ChaptersReducer.error,
     };
 };
 const mapDispatchToProps = {

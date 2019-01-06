@@ -1,5 +1,5 @@
 import {GETTING_CHAPTERS,GETTING_CHAPTERS_ERROR,GET_CHAPTERS_FROM_API,GET_CHAPTERS_FROM_LIBRARY,SAVED_CHAPTERS,SAVING_CHAPTERS_ERROR} from "./Chapters"
-export default ChaptersReducer = (state = {DrawerNavigation: []},action) =>{
+export default ChaptersReducer = (state = {loading: false,error:false},action) =>{
     switch (action.type) {
         case GETTING_CHAPTERS : 
             return Object.assign({}, state, {
