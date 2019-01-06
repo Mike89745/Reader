@@ -7,7 +7,6 @@ import com.dylanvann.fastimage.FastImageViewPackage;
 import com.zyu.ReactNativeWheelPickerPackage;
 import org.wonday.pdf.RCTPdfView;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import io.realm.react.RealmReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.walmartreact.ReactOrientationListener.ReactOrientationListener;
@@ -41,7 +40,6 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativeWheelPickerPackage(),
             new RCTPdfView(),
             new RNFetchBlobPackage(),
-            new RealmReactPackage(),
             new VectorIconsPackage(),
             new PhotoViewPackage(),
             new ReactOrientationListener(),

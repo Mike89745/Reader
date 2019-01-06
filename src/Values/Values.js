@@ -1,0 +1,1 @@
+export const ENDPOINT = 'http://localhost:8000/'; // 'http://localhost:8000/' 'https://mike.xn--mp8hal61bd.ws/'

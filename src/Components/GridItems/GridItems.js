@@ -25,6 +25,7 @@ import {
 } from '../../reducers/Settings/SettingsActions'
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
+import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
 const db = new PouchDB('Library');
 const chapters = new PouchDB('chapters');
@@ -128,7 +129,7 @@ class GridItems extends Component {
                                     delayLongPress={1000}>
                                     <View style={[styles.ItemContainer,{height: 250}]} >
                                         <GridItem 
-                                        source={{uri: "https://mike.xn--mp8hal61bd.ws/public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}} 
+                                        source={{uri: ENDPOINT + "public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}} 
                                         title={items.doc._id}/>
                                     </View>
                                 </TouchableHighlight>

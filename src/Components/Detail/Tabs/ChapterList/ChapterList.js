@@ -10,6 +10,13 @@ import {
     setchapterRefs,
     toggleSelectHeader,
   } from '../../../../reducers/downloader/downloaderActions'
+  import {
+    getChaptersFromAPI,
+    getChaptersFromLibrary,
+    saveChapter,
+    saveChapters,
+  } from '../../../../reducers/Chapters/Chapters'
+import { ENDPOINT } from '../../../../Values/Values';
 class ChapterList extends Component {
    
     constructor(props) {
@@ -19,7 +26,9 @@ class ChapterList extends Component {
             chapters: null,
             chapterRefs: [],
             Downloads: [],
-            selectHeaderVisible : false
+            selectHeaderVisible : false,
+            error : false,
+            loading : false,
         }
       }
 
@@ -33,7 +42,7 @@ class ChapterList extends Component {
         this.setState({chapterRefs: refs});
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ chapters: nextProps.screenProps.chapters,Downloads: nextProps.Downloads,selectHeaderVisible : nextProps.selectHeaderVisible});  
+        this.setState({ chapters: nextProps.props.Chapters,Downloads: nextProps.Downloads,selectHeaderVisible : nextProps.selectHeaderVisible,error : nextProps.ChaptersError,loading: ChaptersLoading});  
     }
     shouldComponentUpdate(nextProps, nextState) {
         if(this.state.Downloads && nextState.Downloads){
@@ -54,20 +63,20 @@ class ChapterList extends Component {
                 + "/" + (this.state.chapters[index].number + "-" + this.state.chapters[index].title).replace(/[/\\?%*:|"<>. ]/g, '-') 
                 + "/"
                 :
-                "https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+                ENDPOINT + "/public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         })
     }
     componentDidMount(){
         this.props.loadData();
+        this.props.getChaptersFromLibrary();
     }
     render() {
         return (
             <ScrollView style={styles.container} nestedScrollEnabled={true}>
                 {this.state.chapters ? this.state.chapters.map((item,index) => 
-                 <Chapter key={index} 
-                    chapterName={item.title} 
-                    chapterCount={item.number} 
-                    dateAdded={item.dateAdded} 
+                 <Chapter 
+                    key={index} 
+                    chapter = {item}
                     bookID={this.props.screenProps.bookID}
                     nav = {this.navigateToReader}
                     ref={(chapterRef) => this.addRef(chapterRef,index)}
@@ -75,11 +84,10 @@ class ChapterList extends Component {
                     index = {index}
                     queued = {false}
                     downloading = {false}
-                    pages = {item.pages ? item.pages : 0}
                     selectHeaderVisible = {this.state.selectHeaderVisible}
                  />) 
                  : 
-                 <Button title="Load Chapters" onPress={() => this.props.screenProps.getChapters()}/>
+                 <Button title="Load Chapters" onPress={() => this.props.getChaptersFromLibrary(this.props.screenProps.bookID)}/>
                 }
             </ScrollView>
         )
@@ -96,9 +104,11 @@ const mapStateToProps = state => {
     return {
         Downloads: state.Downloader.downloads,
         isFetching: state.Downloader.isFetching,
-        res: state.Downloader.res,
         chapterRefs: state.Downloader.chapterRefs,
         selectHeaderVisible: state.Downloader.selectHeaderVisible,
+        Chapters : state.Chapters.Chapters,
+        ChaptersLoading : state.Chapters.loading,
+        ChaptersError : state.Chapters.error,
     };
 };
 const mapDispatchToProps = {
@@ -106,5 +116,9 @@ const mapDispatchToProps = {
     saveData,
     setchapterRefs,
     toggleSelectHeader,
+    getChaptersFromAPI,
+    getChaptersFromLibrary,
+    saveChapter,
+    saveChapters,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ChapterList);

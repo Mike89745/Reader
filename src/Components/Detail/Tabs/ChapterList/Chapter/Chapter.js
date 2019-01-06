@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,TouchableHighlight,NetInfo} from 'react-native';
+import { StyleSheet, View, Text,TouchableHighlight} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ChapterPopUp from './Menu/Menu';
 import RNFS from "react-native-fs";
-import SimpleToast from '../../../../../../node_modules/react-native-simple-toast';
 export default class Chapter extends Component {
     state = {
         downloaded : false,
@@ -43,7 +42,7 @@ export default class Chapter extends Component {
     }
     deleteChapter= () =>{
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
-        let chapter = (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-');
+        let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
         RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
             this.setState({error: false,downloaded:false});
             alert(`Deleted`);
@@ -52,7 +51,7 @@ export default class Chapter extends Component {
    
     isDownloaded(){
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
-        let chapter = (this.props.chapterCount +"-"+this.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-');
+        let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
         RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
               this.state.pages > 0 ? this.state.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,}) : null;
@@ -67,14 +66,7 @@ export default class Chapter extends Component {
         }
     }
     componentDidMount(){
-        fetch("https://mike.xn--mp8hal61bd.ws/getChapterPages/"+ this.props.bookID + "/" + this.props.chapterCount).then(response =>{
-            return response.json()
-        }).then((response) => {
-            this.setState({pages : response.pages},() => this.isDownloaded())
-        }).catch(error =>{
-            console.log(error)
-            SimpleToast.show("Error getting chapter pages, please Try again",SimpleToast.LONG);
-        });
+        this.setState({pages : this.props.chapter.pages,MarkedAsRead : this.props.chapter.MarkedAsRead})
     }
     render() {
         //#dddddd
@@ -85,8 +77,8 @@ export default class Chapter extends Component {
                 >
                 <View style={[styles.container,{backgroundColor : this.state.selected ? "#ccc" : this.state.markAsRead ? "#ddd" : null}]} >
                     <View style={{flex:0.8}}>
-                        <Text style={styles.textHeader}>Chapter {this.props.chapterCount} - {this.props.chapterName}</Text>
-                        <Text style={styles.textDate}>{this.props.dateAdded}</Text>
+                        <Text style={styles.textHeader}>Chapter {this.props.chapter.number} - {this.props.chapter.title}</Text>
+                        <Text style={styles.textDate}>{this.props.chapter.dateAdded}</Text>
                         {this.props.downloading ? <Text>Downloading</Text> : this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>

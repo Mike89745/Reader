@@ -19,6 +19,7 @@ import {
   } from '../../reducers/downloader/downloaderActions'
 import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
+import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library');
 const ChaptersDB = new PouchDB('Chapters');
@@ -50,7 +51,6 @@ class Detail extends Component {
         infoLoading : false,
         size : 150,
         height : 0,
-        chapters: null,
         added : false,
         Book: null,
         error: false,
@@ -60,34 +60,12 @@ class Detail extends Component {
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
             let data = [];
             data.push(response)
-           
-            ChaptersDB.createIndex({
-                index: {
-                    fields: ['book_id','number']
-                }
-            }).then(() => {
-                return ChaptersDB.find({
-                    selector: {
-                        book_id : {$eq : this.props.navigation.getParam("_id",null)},
-                    }
-                }).then(response => {
-                    SimpleToast.show(response.docs.length.toString(),SimpleToast.LONG);
-                    if(response.docs.length > 0)  this.setState({chapters: response.docs});
-                }).catch(err => {
-                    SimpleToast.show("Error getting chapters",SimpleToast.LONG);
-                    console.log(err)
-                });
-            }).catch(function (err) {
-                SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
-                console.log(err);
-            });
-            //console.log(data);
             this.setState({info : data, infoLoading : false,inLibrary:true,added:true});
             this.props.navigation.setParams({title: data[0]._id});
         }).catch((error) => {
             if(error.status == 404){
                 this.setState({infoLoading : true});
-                fetch('https://mike.xn--mp8hal61bd.ws/getBook/' + this.props.navigation.getParam("_id",null)).then(response =>{
+                fetch(ENDPOINT + 'getBook/' + this.props.navigation.getParam("_id",null)).then(response =>{
                     return response.json()
                 }).then((response) => {
                     this.setState({info : response.docs, infoLoading : false,inLibrary:false,added:false,error:false});
@@ -159,7 +137,7 @@ class Detail extends Component {
         });
         let task = RNBackgroundDownloader.download({
             id: "//"+ bookID + "//Thumbnail",
-            url: `https://mike.xn--mp8hal61bd.ws/public/thumbnails/${bookID}`,
+            url: `${ENDPOINT}public/thumbnails/${bookID}`,
             destination: `${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`
           }).begin((expectedBytes) => {
           }).progress((percent) => {
@@ -172,40 +150,7 @@ class Detail extends Component {
               });
           });
     }
-    getChapters=()=>{
-        SimpleToast.show("getting chapters",SimpleToast.LONG);
-        fetch('https://mike.xn--mp8hal61bd.ws/getChapters/' + this.state.info[0]._id).then(response =>{
-            return response.json()
-        }).then((response) => {
-            let chapters = [];
-            response.docs.map((chapter) =>{
-                chapters.push({
-                    book_id : chapter.book_id,
-                    number : chapter.number,
-                    title : chapter.title,
-                    dateAdded : chapter.dateAdded,
-                    read : false,
-                    lastRead : null,
-                })
-            })
-            if(chapters.length === 0){
-                SimpleToast.show("No chapters.",SimpleToast.LONG);
-            }else{
-                ChaptersDB.bulkDocs(chapters).then((response) => {
-                }).catch((err) => {
-                    SimpleToast.show("Error saving chapters, this shouldnt happen",SimpleToast.LONG);
-                    console.log(err,"chapters");
-                });
-            }  
-            this.setState({chapters:chapters});
-        }).catch(error =>{
-            SimpleToast.show("Error getting chapters, please Try again",SimpleToast.LONG);
-            this.setState({error:true})
-            console.log(error);
-        }); 
-        
-    }
-
+    
     render() {
         return (
             <View> 
@@ -216,9 +161,9 @@ class Detail extends Component {
                             <View style={{width : this.state.size,paddingRight: 10}}>
                                 <ThumbNail 
                                 source={this.state.added ? 
-                                {uri : `${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`} 
+                                {uri : `${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}_s.jpg`} 
                                 :
-                                {uri: ("https://mike.xn--mp8hal61bd.ws/public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
+                                {uri: (ENDPOINT + "public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
                                 />
                             </View>
                             <Info style={styles.Info} info={this.state.info[0]}/>
@@ -233,7 +178,7 @@ class Detail extends Component {
                         {this.state.selectHeaderVisible ? <View>
                             <SelectHeader/>
                         </View> : null}
-                        <Tabs bookID={this.state.info[0]._id} nav={this.props.navigation} getChapters={this.getChapters} chapters={this.state.chapters}/>
+                        <Tabs bookID={this.state.info[0]._id} nav={this.props.navigation}/>
                         
                     </View>
                     :

@@ -11,7 +11,7 @@ export const GETTINGS_BOOKS = 'GETTINGS_BOOKS';
 export const SEARCH_BOOKS = 'SEARCH_BOOKS';
 export const SEARCHING_BOOKS = 'SEARCHING_BOOKS';
 export const SEARCH_BOOKS_ERROR = 'SEARCH_BOOKS_ERROR';
-const ENDPOINT = 'https://mike.xn--mp8hal61bd.ws/';
+import {ENDPOINT} from "../../Values/Values"
 function GettingBooks(res){
     return{
         gettingBooks : true,
@@ -148,7 +148,7 @@ export function SearchBooksFromAPI(text,INtags,NINtags) {
     return function(dispatch,getState) {
         dispatch(SearchingBooks("Getting Books from Library"))
         return  (
-            fetch("http://localhost:8000/" + 'Search/', {
+            fetch(ENDPOINT + 'Search/', {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'

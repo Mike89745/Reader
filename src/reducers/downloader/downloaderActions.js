@@ -28,6 +28,7 @@ export const DOWNLOAD_CHAPTERS= 'DOWNLOAD_CHAPTERS';
 import { AsyncStorage } from "react-native";
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import RNFS from "react-native-fs";
+import { ENDPOINT } from "../../Values/Values";
 function requestDownloads() {
     return {
       type: REQUEST_DOWNLOADS,
@@ -180,7 +181,7 @@ export function nextDownload() {
         if(data.length > 0 && page != -1){
           let task = RNBackgroundDownloader.download({
             id: title + "//"+ chapter + "//" + page,
-            url: `https://mike.xn--mp8hal61bd.ws/public/books/${title}/${chapter}/${page}`,
+            url: `${ENDPOINT}public/books/${title}/${chapter}/${page}`,
             destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`
           }).begin((expectedBytes) => {
               //console.log(`Going to download ${expectedBytes} bytes!`);
