@@ -8,7 +8,7 @@
 /*
 Commads
   react-native run-android
-  adb reverse tcp:8081 tcp:8081
+  adb reverse tcp:8000 tcp:8000
   react-native log-android
 */
 /*

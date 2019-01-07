@@ -21,18 +21,14 @@ class Reader extends Component {
       };
     state = {
         uri: null,
-        ReaderType: "PDF",
 
         Images : null,
         fromWeb: false, 
 
         lastScrollHeight: null,
 
-        title: null,
-        chapterName: null,
-        
-        chapter: 0,
-        pages: null,
+        Chapters : null,
+        index : null,
         currentPage: 1,
 
         horizontal:false,
@@ -52,7 +48,7 @@ class Reader extends Component {
                     let path = stat.originalFilepath;
                     path = path.substring(0, path.lastIndexOf("/"));
                     path = path.substring(0, path.lastIndexOf("/"));
-                    this.loadChapter(path + "/" + this.state.chapter,false);
+                    this.loadChapter(path + "/" + this.state.Chapters[this.state.index].number,false);
                 }).catch((err) => {
                     console.log(err.message, err.code);
                 });
@@ -67,7 +63,7 @@ class Reader extends Component {
           });
     }
     scrollToPage = (page,animated = true) =>{
-        if(this.state.ReaderType === "IMAGE"){
+        if(this.state.Chapters[this.state.index].type === "IMAGE"){
             let x = 0;
             const images = this.state.Images
             if(!this.state.isPrevChapter) page += this.state.prevImages ? this.state.prevImages.length : 0;
@@ -88,7 +84,7 @@ class Reader extends Component {
                 animated: animated
             })
         }
-        else if(this.state.ReaderType === "PDF"){
+        else if(this.state.Chapters[this.state.index].type === "PDF"){
            /* let height = Dimensions.get("screen").height
             this.ScrollRef.scrollToPage({
                 x: height * page,
@@ -96,10 +92,9 @@ class Reader extends Component {
                 animated:true,
             })*/
         }
-
     }
     scrollToEnd=(animated = true)=>{
-        if(this.state.ReaderType === "IMAGE"){
+        if(this.state.Chapters[this.state.index].type === "IMAGE"){
             let x = 0;
             let images = this.state.isPrevChapter ? this.state.Images : this.state.prevImages;
             if(!images) images = this.state.Images
@@ -122,68 +117,77 @@ class Reader extends Component {
         }
     }
     scrollToStart=(animated = true)=>{
-        if(this.state.ReaderType === "IMAGE"){
+        if(this.state.Chapters[this.state.index].type === "IMAGE"){
             this.ScrollRef.scrollToOffset({
                 offset: 0,
                 animated: animated
             });
         }
-      
     }
     nextChapter = () =>{
-        let chapter = this.state.chapter + 1;
-        if(this.state.fromWeb){
-            this.setState({chapter: chapter},() => this.loadChapter(this.state.uri));
-            this.scrollToStart(false);
-        }else{
-            RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
-                if(result === true){
-                    this.setState({chapter: chapter});
-                    this.loadChapter(this.state.uri + "/" + chapter);
-                    this.scrollToStart(false);
-                }
-            });
-        }
-        
-    }
-    prevChapter = () =>{
-        let chapter = this.state.chapter - 1;
-        if(chapter >= 0 && !this.state.isPrevChapter){
+        let index = this.state.index + 1;
+        if(index >= 0 && !this.state.isPrevChapter){
+            this.setState({index : index});
             if(this.state.fromWeb){
-                this.setState({chapter: chapter},() => this.loadChapter(this.state.uri));
+                this.loadChapter();
                 this.scrollToStart(false);
             }else{
-                RNFS.exists(this.state.uri + "/" + chapter).then((result) => {
+                const chapter = this.state.Chapters[index];
+                RNFS.exists(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
                     if(result === true){
-                        this.setState({chapter: chapter});
-                        this.loadChapter(this.state.uri + "/" + chapter);
+                        this.loadChapter();
                         this.scrollToStart(false);
                     }
                 });
             }
         }
     }
+    prevChapter = () =>{
+        let index = this.state.index - 1;
+        if(index >= 0 && !this.state.isPrevChapter){
+            const chapter = this.state.Chapters[index];
+            if(this.state.fromWeb){
+                this.loadChapter();
+                this.scrollToStart(false);
+            }else{
+                RNFS.exists(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
+                    if(result === true){
+                        this.loadChapter();
+                        this.scrollToStart(false);
+                    }
+                });
+            }
+        }
+    }
+    componentWillReceiveProps(nextProps){
+        this.setState({Chapters :  nextProps.Chapters})
+    }
     componentWillMount(){
         this.props.loadSettings();
         this.ChangeSettings(this.props.settings.ReaderLayout)
-        const chapter =this.props.navigation.getParam("chapter",null);
-        console.log(chapter);
-        //"https://mike.xn--mp8hal61bd.ws/public/books/" + this.props.navigation.getParam("title",null).replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         this.setState({
             uri :  this.props.navigation.getParam("uri",null) ,
             fromWeb : this.props.navigation.getParam("downloaded",null),
-            chapter : parseInt(chapter.number),
-            title : this.props.navigation.getParam("title",null),
-            ReaderType : chapter.type,
-            pages : chapter.pages,
-        },() => this.loadChapter(this.props.navigation.getParam("uri",null) + "/",this.props.navigation.getParam("downloaded",null)));
-       
+            index : this.props.navigation.getParam("index",null),
+            Chapters : this.props.Chapters,
+        });
     }
-    loadChapter(path,fromWeb = this.state.fromWeb){
+    componentDidMount(){
+        this.loadChapter(this.props.navigation.getParam("uri",null));
+    }
+    loadChapter(fromWeb = this.state.fromWeb){
+        const chapter = this.state.Chapters[this.state.index];
         if(fromWeb){
             let images = [];
-            for (let index = 0; index < this.state.pages; index++) {
-                images.push({path : path + this.state.chapter + "-" + this.state.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" + index});
+            for (let index = 1; index < chapter.pages; index++) {
+                images.push({path : 
+                    ENDPOINT 
+                    + "public/books/"
+                    + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
+                    + chapter.number + "-" 
+                    + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
+                    + index
+                });
             }
             const Height = Dimensions.get('window').height/2;
             images.forEach((element) => { 
@@ -195,8 +199,8 @@ class Reader extends Component {
                 currentPage:1,
             });
         }else{
-            RNFS.readDir(path).then((result) => {
-                if(this.state.ReaderType === "IMAGE"){
+            RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
+                if(chapter.type === "IMAGE"){
                     result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")))
                     const Height = Dimensions.get('window').height/2;
                     result.forEach((element) => {
@@ -207,11 +211,9 @@ class Reader extends Component {
                         Images: result,
                         currentPage:1,
                         fromWeb:false,
-                        pages:result.length,
-                        uri:path.substring(0, path.lastIndexOf("/"))
                     });
                 }
-                if(this.state.ReaderType === "PDF"){
+                if(chapter.type === "PDF"){
                     this.setState({
                         fromWeb:false,
                         uri:result[0].path
@@ -224,7 +226,6 @@ class Reader extends Component {
                 console.log(err.message, err.code);
             });
         }
-        
        
     }
     startReached(e){
@@ -253,7 +254,9 @@ class Reader extends Component {
         this.setState({currentPage: page});
     }
     setPages = (pages) =>{
-        this.setState({pages: pages});
+        let chapter = this.state.Chapters[this.state.index];
+        chapter.pages = pages;
+        this.setState({chapter: chapter});
     }
     setHeight=(height,index)=>{
         let images = this.state.Images;
@@ -289,7 +292,8 @@ class Reader extends Component {
     render() {
         return (
             <View style={{flex:1}}>
-            {this.state.ReaderType ==="IMAGE" ?(
+            {this.state.Chapters ? 
+            this.state.Chapters[this.state.index].type ==="IMAGE" ?(
                 <Viewport.Tracker style={styles.container} preTriggerRatio={0.5}>
                     <FlatList 
                         scrollEventThrottle={16}
@@ -315,8 +319,8 @@ class Reader extends Component {
                         }
                     />
                 </Viewport.Tracker>)
-            : null}
-            {this.state.ReaderType === "PDF" ?  
+            : null : null}
+            { this.state.Chapters ? this.state.Chapters[this.state.index].type === "PDF" ?  
                 <ReaderPDF 
                     setPages={this.setPages} 
                     setCurrentPage={this.setCurrentPage} 
@@ -327,21 +331,25 @@ class Reader extends Component {
                     ref={(ref) => { this.ScrollRef = ref; }}
                 />
                
-            : null}
-            {this.state.ReaderType ==="EPUB" ? <Text>Epub</Text> : null}
-
+            : null : null}
+             { this.state.Chapters ?this.state.Chapters[this.state.index].type ==="EPUB" ? <Text>Epub</Text> : null : null}
+             {this.state.Chapters ?   
+             <View>         
                 <ReaderNav 
                     nav={this.props.navigation} 
-                    page={10} 
+                    pages={this.state.Chapters[this.state.index].pages} 
                     setPage={this.scrollToPage}
                     nextChapter={this.nextChapter}
                     prevChapter={this.prevChapter}
                     currentPage={this.state.currentPage}
                     showSettings={this.showSettings}
-                    title = {this.state.title}
-                    chapter = {this.state.chapterName}
+                    title = {this.state.Chapters[this.state.index].book_id}
+                    chapter = {this.state.Chapters[this.state.index].title}
                 />
-                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/>
+                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/> 
+                </View>
+                : null }
+            
             </View>
         )
     }
@@ -383,6 +391,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
+        Chapters : state.ChaptersReducer.Chapters,
         settings: state.Settings.Settings,
     };
 };

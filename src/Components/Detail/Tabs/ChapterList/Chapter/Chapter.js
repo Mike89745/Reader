@@ -62,7 +62,7 @@ export default class Chapter extends Component {
         if(this.props.selectHeaderVisible){
             this.toggleSelect();
         }else{
-            this.props.nav(this.props.chapter,this.state.downloaded)
+            this.props.nav(this.props.index,this.state.downloaded)
         }
     }
     componentDidMount(){

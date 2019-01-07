@@ -53,16 +53,14 @@ class ChapterList extends Component {
             return nextState.chapters != this.state.chapters || nextState.selectHeaderVisible != this.state.selectHeaderVisible;
         }
     }
-    navigateToReader = (chapter,downloaded) =>{
-        console.log(chapter);
+    navigateToReader = (chapterIndex,downloaded) =>{
         this.props.screenProps.nav.navigate('Reader',{
-            chapter : chapter,
-            title: this.props.screenProps.bookID,
+            index : chapterIndex,
             downloaded : !downloaded,
             uri: downloaded ? 
                 chapter
                 :
-                ENDPOINT + "/public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+                ENDPOINT + "public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         })
     }
     componentDidMount(){

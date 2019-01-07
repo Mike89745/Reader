@@ -9,15 +9,18 @@ export default class ReaderNav extends Component {
 
     state={
         pages: null,
-        currentPage: null
+        currentPage: null,
+        title : null,
+        chapter : null
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ pages: nextProps.pages,currentPage: nextProps.currentPage });  
+        this.setState({ pages: nextProps.pages,currentPage: nextProps.currentPage,title : nextProps.title,chapter : nextProps.chapter });  
     }
+    
     render() {
         return (
             <View style={styles.container}>
-                <TopNav nav={this.props.nav} showSettings={this.props.showSettings} title={this.props.title} chapter={this.state.chapter}/>
+                <TopNav nav={this.props.nav} showSettings={this.props.showSettings} title={this.state.title} chapter={this.state.chapter}/>
                 <BottomNav 
                     
                     pages={this.state.pages} 
