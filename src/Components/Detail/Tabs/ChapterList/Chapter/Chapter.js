@@ -11,6 +11,7 @@ export default class Chapter extends Component {
         pages: 0,
         error: false,
         queued: false,
+        downloading : false,
     }
     getPages = () => {
         return this.state.pages;
@@ -65,8 +66,11 @@ export default class Chapter extends Component {
             this.props.nav(this.props.index,this.state.downloaded)
         }
     }
+    componentWillReceiveProps(nextProps){
+        this.setState({pages : this.props.chapter.lastPage,MarkedAsRead : this.props.chapter.MarkedAsRead,queued: nextProps.queued,downloading: nextProps.downloading})
+    }
     componentDidMount(){
-        this.setState({pages : this.props.chapter.pages,MarkedAsRead : this.props.chapter.MarkedAsRead})
+        this.setState({pages : this.props.chapter.lastPage,MarkedAsRead : this.props.chapter.MarkedAsRead})
     }
     render() {
         //#dddddd
@@ -75,11 +79,12 @@ export default class Chapter extends Component {
                 onLongPress={() => this.toggleSelect()}
                 delayLongPress={1000}
                 >
-                <View style={[styles.container,{backgroundColor : this.state.selected ? "#ccc" : this.state.markAsRead ? "#ddd" : null}]} >
+                <View style={[styles.container,{backgroundColor : this.state.selected ? "#ccc" : this.state.MarkedAsRead ? "#ddd" : null}]} >
                     <View style={{flex:0.8}}>
                         <Text style={styles.textHeader}>Chapter {this.props.chapter.number} - {this.props.chapter.title}</Text>
                         <Text style={styles.textDate}>{this.props.chapter.dateAdded}</Text>
-                        {this.props.downloading ? <Text>Downloading</Text> : this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
+                        {this.state.downloading ? <Text>Downloading</Text> : this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
+                        {this.state.pages != 0 ? <Text style={styles.textDate}>page: {this.state.pages}</Text> : null}
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
                         <ChapterPopUp download={this.DownloadChapter} delete={this.DeleteChapter} markAsRead={this.toggleMark}/>

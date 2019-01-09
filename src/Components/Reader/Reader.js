@@ -11,6 +11,10 @@ import { connect } from 'react-redux'
 import {
     loadSettings,
 } from '../../reducers/Settings/SettingsActions'
+import {
+    saveChapter,
+    saveChapters
+} from '../../reducers/Chapters/Chapters'
 import { ENDPOINT } from '../../Values/Values';
 const defHeight = Dimensions.get('window').height/2;
 class Reader extends Component {
@@ -126,8 +130,12 @@ class Reader extends Component {
     }
     nextChapter = () =>{
         let index = this.state.index + 1;
-        if(index >= 0 && !this.state.isPrevChapter){
+        if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
             this.setState({index : index});
+            chapter.lastRead = + new Date();
+            chapter.MarkedAsRead = true;
+            this.saveChapter(chapter);
+            this.saveChapter(chapter);
             if(this.state.fromWeb){
                 this.loadChapter();
                 this.scrollToStart(false);
@@ -144,8 +152,10 @@ class Reader extends Component {
     }
     prevChapter = () =>{
         let index = this.state.index - 1;
-        if(index >= 0 && !this.state.isPrevChapter){
+        if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
             const chapter = this.state.Chapters[index];
+            chapter.lastRead = + new Date();
+            this.saveChapter(chapter);
             if(this.state.fromWeb){
                 this.loadChapter();
                 this.scrollToStart(false);
@@ -177,6 +187,7 @@ class Reader extends Component {
     }
     loadChapter(fromWeb = this.state.fromWeb){
         const chapter = this.state.Chapters[this.state.index];
+        
         if(fromWeb){
             let images = [];
             for (let index = 1; index < chapter.pages; index++) {
@@ -198,6 +209,7 @@ class Reader extends Component {
                 Images: images,
                 currentPage:1,
             });
+            //this.scrollToPage(chapter.lastPage);
         }else{
             RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
                 if(chapter.type === "IMAGE"){
@@ -283,11 +295,14 @@ class Reader extends Component {
                 this.setState({horizontal:false,horizontalInv:false});
         }
     }
-    saveChapter(){
-
+    saveChapter(chapter){
+        this.props.saveChapter(chapter);
     }
     componentWillUnmount(){
-        this.saveChapter()
+        const chapter = this.state.Chapters[this.state.index];
+        chapter.lastPage = this.state.currentPage;
+        chapter.lastRead = + new Date();
+        this.saveChapter(chapter);
     }
     render() {
         return (
@@ -310,12 +325,14 @@ class Reader extends Component {
                         removeClippedSubviews={true}
                         onScrollEndDrag={(e) => this.startReached(e)}
                         renderItem={({item,index}) =>
-                            <ReaderImage 
-                                fromWeb={this.state.fromWeb} 
-                                source={item.path} 
-                                imageIndex={index}
-                                setHeight = {this.setHeight}
-                            />
+                            <TouchableWithoutFeedback onPress={() => this.Nav.ToggleNav()}>
+                                <ReaderImage 
+                                    fromWeb={this.state.fromWeb} 
+                                    source={item.path} 
+                                    imageIndex={index}
+                                    setHeight = {this.setHeight}
+                                />
+                            </TouchableWithoutFeedback>
                         }
                     />
                 </Viewport.Tracker>)
@@ -336,6 +353,7 @@ class Reader extends Component {
              {this.state.Chapters ?   
              <View>         
                 <ReaderNav 
+                    ref={(ref) => { this.Nav = ref; }}
                     nav={this.props.navigation} 
                     pages={this.state.Chapters[this.state.index].pages} 
                     setPage={this.scrollToPage}
@@ -349,7 +367,6 @@ class Reader extends Component {
                 <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/> 
                 </View>
                 : null }
-            
             </View>
         )
     }
@@ -396,6 +413,8 @@ const mapStateToProps = state => {
     };
 };
 const mapDispatchToProps = {
-    loadSettings
+    loadSettings,
+    saveChapter,
+    saveChapters
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Reader);

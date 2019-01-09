@@ -30,7 +30,7 @@ function gotChapters(type,chapters){
 }
 function getChaptersError(error){
   return {
-    type: type,
+    type: GETTING_CHAPTERS_ERROR,
     res: "GETTING_CHAPTERS_ERROR",
     loading : false,
     error : true,
@@ -40,7 +40,6 @@ function getChaptersError(error){
 export function getChaptersFromAPI(book_id) {
     return function(dispatch,getState) {
       dispatch(gettingChapters())
-      
         return  (
           fetch(ENDPOINT + 'getChapters/' + book_id).then(response =>{
             return response.json()
@@ -63,7 +62,7 @@ export function getChaptersFromAPI(book_id) {
                 SimpleToast.show("No chapters.",SimpleToast.LONG);
             }else{
                 dispatch(saveChapters(chapters));
-                dispatch(gotChapters(GET_CHAPTERS_FROM_API,chapters));
+                dispatch(getChaptersFromLibrary(book_id));
             }  
         }).catch(error =>{
           dispatch(getChaptersError(error));
@@ -86,23 +85,22 @@ export function getChaptersFromLibrary(book_id) {
                 book_id : {$eq : book_id},
               }
           }).then(response => {
-             dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,response.docs));
+              response.docs.length > 0 ? dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,response.docs.sort((a, b) => b.number - a.number))) : null
           }).catch(err => {
               dispatch(getChaptersError(err));
               SimpleToast.show("Error getting chapters",SimpleToast.LONG);
           });
       }).catch(err => {
-
           dispatch(getChaptersError(err));
           SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
       })
       )
   }
 }
-function savedChapters(){
+function savedChapters(res){
   return {
     type: SAVED_CHAPTERS,
-    res: "SAVED_CHAPTERS",
+    res: "Saved chapters" + res,
   }
 }
 function savedChaptersError(error){
@@ -116,9 +114,9 @@ export function saveChapters(chapters) {
   return function(dispatch) {
       return  (
         ChaptersDB.bulkDocs(chapters).then(res => {
-          dispatch(savedChapters());
+          dispatch(savedChapters(res));
         }).catch(err => {
-          dispatch(savedChaptersError(err));
+          dispatch(savedChaptersError([err,chapters]));
         })
       )
   }
@@ -127,9 +125,9 @@ export function saveChapter(chapter) {
   return function(dispatch) {
       return  (
         ChaptersDB.put(chapter).then(res => {
-          dispatch(savedChapters());
+          dispatch(savedChapters(res));
         }).catch(err => {
-          dispatch(savedChaptersError(err));
+          dispatch(savedChaptersError([err,chapter]));
         })
       )
   }

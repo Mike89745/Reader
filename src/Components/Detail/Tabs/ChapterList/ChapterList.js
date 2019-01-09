@@ -65,7 +65,7 @@ class ChapterList extends Component {
     }
     componentDidMount(){
         this.props.loadData();
-        this.props.getChaptersFromLibrary();
+        this.props.getChaptersFromLibrary(this.props.screenProps.bookID);
     }
     render() {
         return (

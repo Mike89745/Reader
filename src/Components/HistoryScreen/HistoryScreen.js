@@ -1,11 +1,16 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text,Button,Dimensions} from 'react-native';
+import { StyleSheet, ScrollView,} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import { DrawerActions } from 'react-navigation';
-import ButtonIcon from '../Icon/Icon';
 import HistoryItem from './HistoryItem/HistoryItem';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
+import PouchDB from 'pouchdb-react-native';
+import find from 'pouchdb-find';
+import { ENDPOINT } from '../../Values/Values';
+PouchDB.plugin(find)
+const ChaptersDB = new PouchDB('Chapters');
+const Library = new PouchDB('Library');
 export default class HistoryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -20,10 +25,16 @@ export default class HistoryScreen extends Component {
         };
       };
     state = {
-        historyItems : []
+        chapters : []
     } 
+    RemoveChapter = (chapter) =>{
+        chapter.lastRead = null;
+        ChaptersDB.put(chapter).then(res => {}).catch(err => {console.log(err)})
+    }
     loadHistory = () =>{
-        
+        ChaptersDB.allDocs({limit : 10,endkey: '_design'}).then(res => {
+            this.setState({chapters : res.rows})
+        })
     }  
     componentDidMount(){
         this.loadHistory();
@@ -31,12 +42,10 @@ export default class HistoryScreen extends Component {
     render() {
         return (
             <ScrollView style={styles.container}>
-               <HistoryItem/>
-               <HistoryItem/>
-               <HistoryItem/>
-               <HistoryItem/>
-               <HistoryItem/>
-               <HistoryItem/>
+             {this.state.chapters ? this.state.chapters.map((item,index) => (
+               <HistoryItem chapter={item.doc}/>
+             ))
+            :null}
             </ScrollView>
         )
     }

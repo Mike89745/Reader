@@ -3,6 +3,7 @@ import { StyleSheet, View,TouchableOpacity,Text,Dimensions } from 'react-native'
 import Spinner from 'react-native-gifted-spinner';
 import ThumbNail from "../../Detail/ThumbNail/ThumbNail"
 import RF from "react-native-responsive-fontsize" 
+import { ENDPOINT } from '../../../Values/Values';
 export default class HistoryItem extends Component  {
     removeFromHistory(){
     }
@@ -15,14 +16,14 @@ export default class HistoryItem extends Component  {
           <View style={{flex:0.4}}>
             <ThumbNail
               style={{alignSelf:"flex-start"}}
-              source={{uri : "https://firebasestorage.googleapis.com/v0/b/mangareader-5f322.appspot.com/o/22916.jpg?alt=media&token=18749891-1693-4f4c-9499-4f55bf00fd54"}}
+              source={{uri : ENDPOINT + "public/thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
             />
           </View>
           <View style={{flexDirection:"column",flex:0.6}}>
             <View style={{flexDirection:"column"}}>
-              <Text style={styles.textHeader} numberOfLines={2}>sample</Text>
-              <Text style={styles.textStyle} numberOfLines={1}>chapter</Text>
-              <Text style={styles.dateStyle} numberOfLines={1}>date</Text>
+              <Text style={styles.textHeader} numberOfLines={2}>{this.props.chapter.book_id}</Text>
+              <Text style={styles.textStyle} numberOfLines={2}>Chapter : {this.props.chapter.number} - {this.props.chapter.title}</Text>
+              <Text style={styles.dateStyle} numberOfLines={1}>{this.props.chapter.lastRead} </Text>
             </View>
             <View style={{position: "absolute", bottom: 10, flexDirection:"row",flex: 1}}>
                 <TouchableOpacity onPress={this.resumeReading} style={{alignItems:"flex-start",left:30}}>
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   textStyle:{
-    fontSize: RF(2.5),
+    fontSize: RF(2),
     color: "black",
     paddingBottom: 10
   },
