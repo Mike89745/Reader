@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView,} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-import { DrawerActions } from 'react-navigation';
 import HistoryItem from './HistoryItem/HistoryItem';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import PouchDB from 'pouchdb-react-native';
@@ -10,7 +9,6 @@ import find from 'pouchdb-find';
 import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
 const ChaptersDB = new PouchDB('Chapters');
-const Library = new PouchDB('Library');
 export default class HistoryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {

@@ -211,9 +211,9 @@ class Reader extends Component {
             });
             //this.scrollToPage(chapter.lastPage);
         }else{
-            RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
+            RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-')}/${chapter.number}-${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
                 if(chapter.type === "IMAGE"){
-                    result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")))
+                    result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")));
                     const Height = Dimensions.get('window').height/2;
                     result.forEach((element) => {
                         element.key = element.path;
@@ -325,14 +325,12 @@ class Reader extends Component {
                         removeClippedSubviews={true}
                         onScrollEndDrag={(e) => this.startReached(e)}
                         renderItem={({item,index}) =>
-                            <TouchableWithoutFeedback onPress={() => this.Nav.ToggleNav()}>
-                                <ReaderImage 
-                                    fromWeb={this.state.fromWeb} 
-                                    source={item.path} 
-                                    imageIndex={index}
-                                    setHeight = {this.setHeight}
-                                />
-                            </TouchableWithoutFeedback>
+                            <ReaderImage 
+                                fromWeb={this.state.fromWeb} 
+                                source={item.path} 
+                                imageIndex={index}
+                                setHeight = {this.setHeight}
+                            />
                         }
                     />
                 </Viewport.Tracker>)

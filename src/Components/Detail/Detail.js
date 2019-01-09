@@ -130,9 +130,9 @@ class Detail extends Component {
         });
     }
     saveThumbNail(bookID){
-        RNFS.exists(`${RNFS.DocumentDirectoryPath}/thumbnails/$`).then(response => {
+        RNFS.exists(`${RNFS.DocumentDirectoryPath}/thumbnails`).then(response => {
             if(!response) { 
-                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/thumbnails/$`);
+                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/thumbnails`);
             }
         });
         let task = RNBackgroundDownloader.download({
@@ -142,16 +142,15 @@ class Detail extends Component {
           }).begin((expectedBytes) => {
           }).progress((percent) => {
           }).done(() => {
+              console.log(`${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`)
           }).error((error) => {
-              RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${bookID}.jpg`).then(response => {
-                  if(!response) { 
-                    SimpleToast.show("Error saving Thumbnail",SimpleToast.LONG);
-                  }
-              });
+              
           });
     }
     
     render() {
+      //  console.log(`${RNFS.DocumentDirectoryPath}/thumbnails`);
+       // console.log(`file://${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`);
         return (
             <View> 
                 <ScrollView>
@@ -161,7 +160,7 @@ class Detail extends Component {
                             <View style={{width : this.state.size,paddingRight: 10}}>
                                 <ThumbNail 
                                 source={this.state.added ? 
-                                {uri : `${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}_s.jpg`} 
+                                {uri : `file://${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
                                 :
                                 {uri: (ENDPOINT + "public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
                                 />

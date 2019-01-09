@@ -162,58 +162,57 @@ export function ReattachDownloads() {
 }
 export function nextDownload() {
   return function(dispatch,getState) {
-      dispatch(startingDownloads())
-      const isPaused = getState().Downloader.isPaused;
-      let data = getState().Downloader.downloads;
-      if(data.length > 0){
-        let title = data[0].title;
-        let chapter = data[0].chapter;
-        let page = data[0].pageStatus.findIndex(el => el.status===0);
-        if(page === -1){
-          data.shift();
-          if(data.length > 0){
-            title = data[0].title;
-            chapter = data[0].chapter;
-            page = data[0].pageStatus.findIndex(el => el.status===0);
-          }
-          dispatch(saveData(data));
+    dispatch(startingDownloads())
+    const isPaused = getState().Downloader.isPaused;
+    let data = getState().Downloader.downloads;
+    if(data.length > 0){
+      let title = data[0].title;
+      let chapter = data[0].chapter;
+      let page = data[0].pageStatus.findIndex(el => el.status===0) + 1;
+      if(page === -1){
+        data.shift();
+        if(data.length > 0){
+          title = data[0].title;
+          chapter = data[0].chapter;
+          page = data[0].pageStatus.findIndex(el => el.status===0) + 1;
         }
-        if(data.length > 0 && page != -1){
-          let task = RNBackgroundDownloader.download({
-            id: title + "//"+ chapter + "//" + page,
-            url: `${ENDPOINT}public/books/${title}/${chapter}/${page}`,
-            destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`
-          }).begin((expectedBytes) => {
-              //console.log(`Going to download ${expectedBytes} bytes!`);
-          }).progress((percent) => {
-              //console.log(`Downloaded: ${percent * 100}%`,page);
-          }).done(() => {
-              data[0].pageStatus[page].status = 1;
-              dispatch(getTask("task",task));
-              dispatch(saveData(data));
-              dispatch(nextDownload());
-          }).error((error) => {
-              RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`).then(response => {
-                  if(response) { 
-                    data[0].pageStatus[page].status = 1;
-                    dispatch(saveData(data));
-                    if(!isPaused) dispatch(nextDownload());
-                  }else{
-                    dispatch(startedDownloads(error))
-                  }
-              });
-          });
-          return  (
-            dispatch(startedDownloads(true))
-          )
-        }else{
-          return( dispatch(startedDownloads(false)))
-        } 
+        dispatch(saveData(data));
+      }
+      if(data.length > 0 && page != -1){
+        let task = RNBackgroundDownloader.download({
+          id: title + "//"+ chapter + "//" + page,
+          url: `${ENDPOINT}public/books/${title}/${chapter}/${page}`,
+          destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`
+        }).begin((expectedBytes) => {
+            //console.log(`Going to download ${expectedBytes} bytes!`);
+        }).progress((percent) => {
+            //console.log(`Downloaded: ${percent * 100}%`,page);
+        }).done(() => {
+            data[0].pageStatus[page].status = 1;
+            dispatch(getTask("task",task));
+            dispatch(saveData(data));
+            dispatch(nextDownload());
+        }).error((error) => {
+            console.log("error",error);
+            RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`).then(response => {
+                if(response) { 
+                  data[0].pageStatus[page].status = 1;
+                  dispatch(saveData(data));
+                  if(!isPaused) dispatch(nextDownload());
+                }else{
+                  dispatch(startedDownloads(error))
+                }
+            });
+        });
+        return  (
+          dispatch(startedDownloads(true))
+        )
       }else{
         return( dispatch(startedDownloads(false)))
       } 
-  
-     
+    }else{
+      return( dispatch(startedDownloads(false)))
+    } 
   }
 }
 export function clearDownloads() {
@@ -375,29 +374,27 @@ export function donwloadSelectedChapters() {
       let queueData = getState().Downloader.downloads;
       if(!queueData) queueData = []; 
       refs ? refs.forEach(ref => {
-        if(ref.getSelect() && ref.getPages() > 0){
-
-          let title = ref.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
-          let chapter = (ref.props.chapterCount +"-"+ref.props.chapterName).replace(/[/\\?%*:|"<>. ]/g, '-');
-          
+        if(ref.getSelect()){
+          let title = ref.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
+          let chapter = (ref.props.chapter.number +"-"+ref.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
           RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title).then(response => {
-              if(!response) {
-                RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title);
-              }
+            if(!response) {
+              RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title);
+            }
           });
           RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title + "/" + chapter).then(response => {
-              if(!response) {
-                RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title+ "/" + chapter);
-              }
+            if(!response) {
+              RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title+ "/" + chapter);
+            }
           });
           let pages = [];
-          for (let index = 0; index < ref.getPages(); index++) {
-              pages.push({status: 0});
+          for (let index = 0; index < ref.props.chapter.pages; index++) {
+            pages.push({status: 0});
           }
           queueData.push({
-              title : title,
-              chapter: chapter,
-              pageStatus : pages,
+            title : title,
+            chapter: chapter,
+            pageStatus : pages,
           });
         }else{
           dispatch(failedToAddDownloads("failed"));

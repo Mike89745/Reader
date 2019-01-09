@@ -9,6 +9,7 @@ import {
     saveData,
     setchapterRefs,
     toggleSelectHeader,
+    donwloadSelectedChapters,
   } from '../../../../reducers/downloader/downloaderActions'
   import {
     getChaptersFromAPI,
@@ -29,7 +30,9 @@ class ChapterList extends Component {
             loading : false,
         }
       }
-
+    SaveChapter=(chapter) =>{
+        this.props.saveChapter(chapter);
+    }
     onToggleSelect = () =>{
         this.state.selectHeaderVisible ? null: this.props.toggleSelectHeader()
     }
@@ -58,7 +61,7 @@ class ChapterList extends Component {
             index : chapterIndex,
             downloaded : !downloaded,
             uri: downloaded ? 
-                chapter
+                null
                 :
                 ENDPOINT + "public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         })
@@ -82,6 +85,7 @@ class ChapterList extends Component {
                     queued = {false}
                     downloading = {false}
                     selectHeaderVisible = {this.state.selectHeaderVisible}
+                    SaveChapter = {this.SaveChapter}
                  />) 
                  : 
                  <Button title="Load Chapters" onPress={() => this.props.getChaptersFromAPI(this.props.screenProps.bookID)}/>

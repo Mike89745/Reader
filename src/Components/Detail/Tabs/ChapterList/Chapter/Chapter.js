@@ -13,6 +13,11 @@ export default class Chapter extends Component {
         queued: false,
         downloading : false,
     }
+    saveChapter = () =>{
+        const chapter = this.props.chapter;
+        chapter.markAsRead = this.state.MarkedAsRead;
+        this.props.SaveChapter(chapter);
+    }
     getPages = () => {
         return this.state.pages;
     }
@@ -34,12 +39,15 @@ export default class Chapter extends Component {
     toggleMark = () => {
         let marked = this.state.MarkedAsRead;
         this.setState({MarkedAsRead: marked});
+        this.saveChapter();
     }
     markAsRead = () => {
         this.setState({MarkedAsRead: true});
+        this.saveChapter();
     }
     unmarkAsRead = () => {
         this.setState({MarkedAsRead: false});
+        this.saveChapter();
     }
     deleteChapter= () =>{
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -51,13 +59,13 @@ export default class Chapter extends Component {
     }
    
     isDownloaded(){
-        let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
+        let title = this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
         RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-           if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-              this.state.pages > 0 ? this.state.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,}) : null;
-           })
-        });
+            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
+                this.props.chapter.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,})
+            })
+        }).catch(err => {console.log(err)});
     }
     shouldNavigate =()=>{
         if(this.props.selectHeaderVisible){
@@ -68,6 +76,9 @@ export default class Chapter extends Component {
     }
     componentWillReceiveProps(nextProps){
         this.setState({pages : this.props.chapter.lastPage,MarkedAsRead : this.props.chapter.MarkedAsRead,queued: nextProps.queued,downloading: nextProps.downloading})
+    }
+    componentWillMount(){
+        this.isDownloaded();
     }
     componentDidMount(){
         this.setState({pages : this.props.chapter.lastPage,MarkedAsRead : this.props.chapter.MarkedAsRead})
@@ -87,7 +98,7 @@ export default class Chapter extends Component {
                         {this.state.pages != 0 ? <Text style={styles.textDate}>page: {this.state.pages}</Text> : null}
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
-                        <ChapterPopUp download={this.DownloadChapter} delete={this.DeleteChapter} markAsRead={this.toggleMark}/>
+                        <ChapterPopUp download={this.DownloadChapter} delete={this.deleteChapter} markAsRead={this.toggleMark}/>
                     </View>
                 </View>
             </TouchableHighlight>
