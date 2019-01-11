@@ -5,11 +5,6 @@ import ThumbNail from "../../Detail/ThumbNail/ThumbNail"
 import RF from "react-native-responsive-fontsize" 
 import { ENDPOINT } from '../../../Values/Values';
 export default class HistoryItem extends Component  {
-    removeFromHistory(){
-    }
-    resumeReading(){
-
-    }
     render() {
       const RawDate = new Date(this.props.chapter.lastRead);
       const date = 
@@ -32,13 +27,14 @@ export default class HistoryItem extends Component  {
               <Text style={styles.textHeader} numberOfLines={2}>{this.props.chapter.book_id}</Text>
               <Text style={styles.textStyle} numberOfLines={2}>Chapter : {this.props.chapter.number} - {this.props.chapter.title}</Text>
               <Text style={styles.dateStyle} numberOfLines={1}>{date} </Text>
+              <Text style={styles.dateStyle} numberOfLines={1}>page: {this.props.chapter.lastPage} </Text>
             </View>
             <View style={{position: "absolute", bottom: 10, flexDirection:"row",flex: 1}}>
-                <TouchableOpacity onPress={this.resumeReading} style={{alignItems:"flex-start",left:30}}>
+                <TouchableOpacity onPress={() => this.props.resumeReading(this.props.chapter)} style={{alignItems:"flex-start",left:30}}>
                   <Text style={styles.resumeStyle}>Resume</Text>
                 </TouchableOpacity>
                 <View style={{flex:1,alignItems: 'flex-end'}}>
-                  <TouchableOpacity onPress={this.removeFromHistory} style={{justifyContent:"flex-end",right:30}}>
+                  <TouchableOpacity onPress={() => this.props.removeChapter(this.props.chapter)} style={{justifyContent:"flex-end",right:30}}>
                     <Text style={styles.removeStyle}>Remove</Text>
                   </TouchableOpacity>
                 </View> 

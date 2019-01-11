@@ -7,9 +7,12 @@ import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/Togg
 import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 import { ENDPOINT } from '../../Values/Values';
+import { connect } from 'react-redux';
+import {getChaptersFromLibrary} from "../../reducers/Chapters/Chapters"
+import RNFS from "react-native-fs";
 PouchDB.plugin(find)
 const ChaptersDB = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
-export default class HistoryScreen extends Component {
+class HistoryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             headerStyle: {
@@ -23,7 +26,46 @@ export default class HistoryScreen extends Component {
         };
       };
     state = {
-        chapters : []
+        chapters : [],
+        chapterToLoad : null,
+    }
+    isDownloaded=(chapter)=>{
+        console.log(chapter);
+        let title =chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
+        let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+        return RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterTitle}`).then(response => {
+            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapterTitle}`).then(response => {
+               chapter.pages === response.length ? isDownloaded = true : isDownloaded = false;
+               if( chapter.pages === response.length){
+                    return true
+               }else{
+                    return false
+               }
+            })
+            return false
+        }).catch(err => {console.log(err)});
+      }
+      componentWillReceiveProps(nextProps){
+        this.resumeReading();
+      }
+      resumeReading =() =>{
+        const chapter = this.state.chapterToLoad;
+        this.props.getChaptersFromLibrary(chapter.book_id);
+        this.isDownloaded(chapter).then(downloaded => {
+            const chapterIndex = this.props.Chapters.findIndex(x => x._id == chapter._id)
+            this.props.navigation.navigate('Reader',{
+              index : chapterIndex,
+              downloaded : !downloaded,
+              uri: downloaded ? 
+                  null
+                  :
+                  ENDPOINT + "public/books/" + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+            })
+        }).catch(err => console.log(err));
+    }
+    LoadBookChapters =(chapter)=>{
+        this.setState({chapterToLoad : chapter});
+        this.props.getChaptersFromLibrary(chapter.book_id);
     } 
     RemoveChapter = (chapter) =>{
         chapter.lastRead = null;
@@ -41,15 +83,11 @@ export default class HistoryScreen extends Component {
                 },
                 limit : 10,
             }).then(response => {
-                console.log(response);
                 this.setState({chapters : response.docs});
-               // response.docs.length > 0 ? dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,response.docs.sort((a, b) => b.number - a.number))) : null
             }).catch(err => {
-                console.log(err);
 //                SimpleToast.show("Error getting chapters",SimpleToast.LONG);
             });
         }).catch(err => {
-            console.log(err);
 //            SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
         })
     }  
@@ -60,7 +98,7 @@ export default class HistoryScreen extends Component {
         return (
             <ScrollView style={styles.container}>
              {this.state.chapters ? this.state.chapters.map((item,index) => (
-               <HistoryItem chapter={item} key={item._id}/>
+               <HistoryItem chapter={item} key={item._id} removeChapter={this.RemoveChapter} resumeReading = {this.LoadBookChapters}/>
              ))
             :null}
             </ScrollView>
@@ -80,3 +118,14 @@ const styles = StyleSheet.create({
         fontSize: RF(2.5),
     }
 });
+const mapStateToProps = state => {
+    return {
+        selectHeaderVisible: state.Downloader.selectHeaderVisible,
+        Chapters : state.ChaptersReducer.Chapters,
+    };
+};
+const mapDispatchToProps = {
+    getChaptersFromLibrary,
+    
+};
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryScreen);

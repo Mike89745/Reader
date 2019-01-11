@@ -69,6 +69,7 @@ const DownloadStack = createStackNavigator(
 const HistoryStack = createStackNavigator(
     {
         HistoryScreen: {screen : HistoryScreen},
+        Reader: {screen : Reader},
     },
     {
         drawerLabel: 'Historie',
