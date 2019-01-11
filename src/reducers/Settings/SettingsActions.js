@@ -1,9 +1,9 @@
 
 import Toast from "react-native-simple-toast";
-import PouchDB from 'pouchdb-react-native';
+import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 PouchDB.plugin(find)
-const db = new PouchDB('Settings');
+const db = new PouchDB('Settings', { adapter: 'pouchdb-adapters-rn'});
 export const SAVE_SETTINGS = "SAVE_SETTINGS";
 export const ERROR_SAVING_SETTINGS = "ERROR_SAVING_SETTINGS";
 export const LOAD_SETTINGS = "LOAD_SETTINGS";

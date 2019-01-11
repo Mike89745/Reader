@@ -3,9 +3,9 @@ import { StyleSheet,Dimensions,View,FlatList,Text,TouchableOpacity} from 'react-
 import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
 import CheckBox from './Checkbox/CheckBox';
-import PouchDB from 'pouchdb-react-native';
-const Library = new PouchDB('Library');
-const CategoriesDB = new PouchDB('categories');
+import PouchDB from 'pouchdb-adapters-rn';
+const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
+const CategoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class CategoriesModal extends Component {
     state = {
         modalVisible: false,

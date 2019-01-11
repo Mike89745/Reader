@@ -11,6 +11,14 @@ export default class HistoryItem extends Component  {
 
     }
     render() {
+      const RawDate = new Date(this.props.chapter.lastRead);
+      const date = 
+      RawDate.getFullYear() +"."
+      + ("0" + (RawDate.getMonth() + 1)).substr(-2) 
+      + "."+ RawDate.getDate() + " "; +" "
+      + RawDate.getHours() + ':' 
+      + ("0" + RawDate.getMinutes()).substr(-2) + ':' 
+      + ("0" + RawDate.getSeconds()).substr(-2);
       return (
         <View style={styles.container}>
           <View style={{flex:0.4}}>
@@ -23,7 +31,7 @@ export default class HistoryItem extends Component  {
             <View style={{flexDirection:"column"}}>
               <Text style={styles.textHeader} numberOfLines={2}>{this.props.chapter.book_id}</Text>
               <Text style={styles.textStyle} numberOfLines={2}>Chapter : {this.props.chapter.number} - {this.props.chapter.title}</Text>
-              <Text style={styles.dateStyle} numberOfLines={1}>{this.props.chapter.lastRead} </Text>
+              <Text style={styles.dateStyle} numberOfLines={1}>{date} </Text>
             </View>
             <View style={{position: "absolute", bottom: 10, flexDirection:"row",flex: 1}}>
                 <TouchableOpacity onPress={this.resumeReading} style={{alignItems:"flex-start",left:30}}>

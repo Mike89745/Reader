@@ -8,6 +8,7 @@
 /*
 Commads
   react-native run-android
+  react-native run-android --variant=release
   adb reverse tcp:8000 tcp:8000
   react-native log-android
 */
@@ -17,6 +18,7 @@ Main Colors
   #51A3A3
   #505050
 */
+
 import React, {Component} from 'react';
 import {StyleSheet, View,Button} from 'react-native';
 import Layout from "./src/Containers/Layout/Layout";
@@ -33,7 +35,7 @@ import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware,
-  //loggerMiddleware,
+ //loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){

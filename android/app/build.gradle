@@ -158,10 +158,10 @@ repositories {
     maven { url "https://maven.google.com" }
 }
 dependencies {
+    compile project(':react-native-sqlite-2')
+    compile project(':react-native-fetch-blob')
     compile project(':react-native-fast-image')
-    compile project(':react-native-wheel-picker')
     compile project(':react-native-pdf')
-    compile project(':rn-fetch-blob')
     compile project(':react-native-vector-icons')
     compile project(':react-native-photo-view')
     compile project(':react-native-orientation-listener')

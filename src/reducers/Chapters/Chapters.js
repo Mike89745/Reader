@@ -5,12 +5,12 @@ export const GETTING_CHAPTERS_ERROR = "GETTING_CHAPTERS_ERROR";
 
 export const SAVING_CHAPTERS_ERROR = "SAVING_CHAPTERS_ERROR";
 export const SAVED_CHAPTERS = "SAVED_CHAPTERS";
-import PouchDB from 'pouchdb-react-native';
+import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
 import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
-const ChaptersDB = new PouchDB('Chapters');
+const ChaptersDB = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 function gettingChapters(){
   return {
     type: GETTING_CHAPTERS,
@@ -122,9 +122,22 @@ export function saveChapters(chapters) {
   }
 }
 export function saveChapter(chapter) {
-  return function(dispatch) {
+  return function(dispatch) { 
+    const NewChapter =  {
+      _id : chapter._id,
+      _rev : chapter._rev,
+      book_id : chapter.book_id,
+      number : chapter.number,
+      title : chapter.title,
+      dateAdded : chapter.dateAdded,
+      MarkedAsRead : chapter.MarkedAsRead,
+      pages : chapter.pages,
+      lastRead : chapter.lastRead,
+      lastPage : chapter.lastPage,
+      type: chapter.type
+    }
       return  (
-        ChaptersDB.put(chapter).then(res => {
+        ChaptersDB.put(NewChapter).then(res => {
           dispatch(savedChapters(res));
         }).catch(err => {
           dispatch(savedChaptersError([err,chapter]));

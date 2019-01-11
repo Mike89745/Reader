@@ -4,8 +4,8 @@ import {View, Text,FlatList} from 'react-native';
 import LibraryCategoryItem from './LibraryCategoryItem/LibraryCategoryItem';
 import LibraryCategoriesModal from './LibraryCategoriesModal/LibraryCategoriesModal';
 import ButtonIcon from '../../Icon/Icon';
-import PouchDB from 'pouchdb-react-native';
-const db = new PouchDB('categories');
+import PouchDB from 'pouchdb-adapters-rn';
+const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class LibraryCategories extends Component {
     static navigationOptions = ({ navigation }) => {
         return {

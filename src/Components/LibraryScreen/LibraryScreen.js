@@ -6,11 +6,11 @@ import { DrawerActions } from 'react-navigation';
 import ButtonIcon from "../Icon/Icon"
 import LibraryTab from './LibraryTab/LibraryTab';
 import {createMaterialTopTabNavigator } from "react-navigation"
-import PouchDB from 'pouchdb-react-native';
+import PouchDB from 'pouchdb-adapters-rn';
 import TriStateCheckBox from '../FilterDrawer/TriStateCheckbox/TriStateCheckbox';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
-const db = new PouchDB('categories');
+const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class LibraryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;

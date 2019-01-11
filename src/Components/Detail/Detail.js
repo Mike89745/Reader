@@ -7,7 +7,7 @@ import TagList from "./TagList/TagList";
 import Tabs from "./Tabs/Tabs";
 import Spinner from 'react-native-gifted-spinner';
 import ButtonIcon from '../Icon/Icon';
-import PouchDB from 'pouchdb-react-native';
+import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 import SelectHeader from './Tabs/ChapterList/Chapter/SelectHeader/SelectHeader';
 import { connect } from 'react-redux'
@@ -21,8 +21,8 @@ import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
 import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
-const Library = new PouchDB('Library');
-const ChaptersDB = new PouchDB('Chapters');
+const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
+const ChaptersDB = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 
 class Detail extends Component {
     static navigationOptions = ({ navigation }) => {

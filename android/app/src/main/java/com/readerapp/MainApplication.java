@@ -3,10 +3,10 @@ package com.readerapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.dylanvann.fastimage.FastImageViewPackage;
-import com.zyu.ReactNativeWheelPickerPackage;
-import org.wonday.pdf.RCTPdfView;
+import dog.craftz.sqlite_2.RNSqlite2Package;
 import com.RNFetchBlob.RNFetchBlobPackage;
+import com.dylanvann.fastimage.FastImageViewPackage;
+import org.wonday.pdf.RCTPdfView;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.walmartreact.ReactOrientationListener.ReactOrientationListener;
@@ -36,10 +36,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new FastImageViewPackage(),
-            new ReactNativeWheelPickerPackage(),
-            new RCTPdfView(),
+            new RNSqlite2Package(),
             new RNFetchBlobPackage(),
+            new FastImageViewPackage(),
+            new RCTPdfView(),
             new VectorIconsPackage(),
             new PhotoViewPackage(),
             new ReactOrientationListener(),

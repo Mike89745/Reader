@@ -1,9 +1,9 @@
 import Toast from "react-native-simple-toast";
-import PouchDB from 'pouchdb-react-native';
+import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 PouchDB.plugin(find)
-const db = new PouchDB('Library');
-const chapters = new PouchDB('chapters');
+const db = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
+const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
 export const GET_BOOKS = 'GET_BOOKS';
 export const GET_BOOKS_FROM_LIBRARY = 'GET_BOOKS_FROM_LIBRARY';
 export const GET_BOOKS_ERROR = 'GET_BOOKS_ERROR';

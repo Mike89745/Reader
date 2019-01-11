@@ -4,13 +4,9 @@ import GridView from 'react-native-super-grid';
 import GridItem from "../../Components/GridItems/GridItem/GridItem";
 import InfiniteScroll from 'react-native-infinite-scroll';
 import Orientation from 'react-native-orientation';
-import { DrawerActions } from 'react-navigation';
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
-import ButtonIcon from "../Icon/Icon"
-import PouchDB from 'pouchdb-react-native';
 import CategoriesModal from './CategoriesModal/CategoriesModal';
 import find from 'pouchdb-find';
-import Toast from 'react-native-simple-toast';
 import { connect } from 'react-redux'
 import {
     GetBooksFromAPI,
@@ -26,9 +22,10 @@ import {
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import { ENDPOINT } from '../../Values/Values';
+import PouchDB from 'pouchdb-adapters-rn';
 PouchDB.plugin(find)
-const db = new PouchDB('Library');
-const chapters = new PouchDB('chapters');
+const db = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
+const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
 //const ItemSpacing = 6;
 //const ItemsPerRow = 2;
 
@@ -86,7 +83,7 @@ class GridItems extends Component {
         this.props.loadSettings();
         const initial = Orientation.getInitialOrientation();
         let size = this.state.size;
-        let ItemsPerRow = this.props.settings.LibraryLayoutSettings
+        let ItemsPerRow = this.props.settings ? this.props.settings.LibraryLayoutSettings : "Default";
         if(ItemsPerRow != "Default"){
             ItemsPerRow = parseInt(ItemsPerRow)
             if (initial === 'PORTRAIT') {
