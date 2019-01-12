@@ -27,7 +27,7 @@ export default class ReaderImage extends Component {
        
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if(nextState.width != this.state.width || nextState.height != this.state.height) console.log(this.props.imageIndex," - ");
+       // if(nextState.width != this.state.width || nextState.height != this.state.height) console.log(this.props.imageIndex," - ");
         return nextState.width != this.state.width || nextState.height != this.state.height ;
     }
     onViewportChange(){
