@@ -24,6 +24,7 @@ import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import { ENDPOINT } from '../../Values/Values';
 import PouchDB from 'pouchdb-adapters-rn';
+import RNFS from "react-native-fs";
 PouchDB.plugin(find)
 const db = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
@@ -112,7 +113,7 @@ class GridItems extends Component {
     }
     
     render() {
-        //console.log("update", this.props.category ? this.props.category : "Catalog",this.state.items)
+        console.log("update", this.props.category ? this.props.category : "Catalog",this.state.items)
         let Grid = null;
         if(this.state.items){
             if(this.state.items.length > 0){
@@ -132,7 +133,10 @@ class GridItems extends Component {
                                     delayLongPress={1000}>
                                     <View style={[styles.ItemContainer,{height: 250}]} >
                                         <GridItem 
-                                        source={{uri: ENDPOINT + "public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}} 
+                                        source={this.props.isLibrary ? 
+                                        {uri : `file://${RNFS.DocumentDirectoryPath}/thumbnails/${items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
+                                        : 
+                                        {uri: ENDPOINT + "public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}} 
                                         title={items.doc._id}/>
                                     </View>
                                 </TouchableHighlight>

@@ -33,7 +33,7 @@ import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware,
-  loggerMiddleware,
+ // loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){

@@ -95,7 +95,7 @@ export default class Chapter extends Component {
                         <Text style={styles.textHeader}>Chapter {this.props.chapter.number} - {this.props.chapter.title}</Text>
                         <Text style={styles.textDate}>{this.props.chapter.dateAdded}</Text>
                         {this.state.downloading ? <Text>Downloading</Text> : this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
-                        {this.state.pages != 0 ? <Text style={styles.textDate}>page: {this.state.pages}</Text> : null}
+                        {this.state.pages > 1 ? <Text style={styles.textDate}>page: {this.state.pages}</Text> : null}
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
                         <ChapterPopUp download={this.DownloadChapter} delete={this.deleteChapter} markAsRead={this.toggleMark}/>

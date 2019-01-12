@@ -34,7 +34,7 @@ class Reader extends Component {
         Chapters : null,
         index : null,
         currentPage: 1,
-
+        scrolled : false,
         horizontal:false,
         horizontalInv: false,
         settingsVisible : false,
@@ -70,7 +70,6 @@ class Reader extends Component {
         if(this.state.Chapters[this.state.index].type === "IMAGE"){
             let x = 0;
             const images = this.state.Images
-            if(!this.state.isPrevChapter) page += this.state.prevImages ? this.state.prevImages.length : 0;
             for (i = 0; i < page; i++) {
                 if(!this.state.horizontal){
                     if(images[i].height){
@@ -303,6 +302,18 @@ class Reader extends Component {
         chapter.lastPage = this.state.currentPage;
         chapter.lastRead = + new Date();
         this.saveChapter(chapter);
+    }
+    shouldComponentUpdate(nextProps,nextState){
+        if(this.state.Chapters && this.state.index && this.state.Images){
+            const chapter = this.state.Chapters[this.state.index];
+            if (!this.state.scrolled && this.state.currentPage >= chapter.lastPage) {
+                this.setState({scrolled: true});
+            } else  if (chapter.lastPage > 1 && !this.state.scrolled) {
+                this.scrollToPage(chapter.lastPage, true);
+            }
+        }
+       
+        return true;
     }
     render() {
         return (

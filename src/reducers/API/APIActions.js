@@ -76,7 +76,7 @@ export function GetBooksFromLibrary(category) {
         if(category){
             if(category === "Default"){
                 return(
-                    db.allDocs({endkey: '_design'}).then((Response) => {
+                    db.allDocs({endkey: '_design',include_docs: true}).then((Response) => {
                         Object.assign(data, {[`${category}`]: Response.rows});
                         dispatch(GetBooksFromLibraryRes(data,false,0,category));
                     }).catch(error => {
