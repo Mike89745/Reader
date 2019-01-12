@@ -30,7 +30,6 @@ class HistoryScreen extends Component {
         chapterToLoad : null,
     }
     isDownloaded=(chapter)=>{
-        console.log(chapter);
         let title =chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
         return RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterTitle}`).then(response => {
@@ -65,9 +64,16 @@ class HistoryScreen extends Component {
     }
     LoadBookChapters =(chapter)=>{
         this.setState({chapterToLoad : chapter});
+
+      
+
         this.props.getChaptersFromLibrary(chapter.book_id);
     } 
     RemoveChapter = (chapter) =>{
+        let chapters =  this.state.chapters
+        const chapterIndex = chapters.findIndex(x => x._id == chapter._id);
+        chapters.splice(chapterIndex,1);
+        this.setState({chapters : chapters});
         chapter.lastRead = null;
         ChaptersDB.put(chapter).then(res => {}).catch(err => {console.log(err)})
     }

@@ -98,6 +98,7 @@ class GridItems extends Component {
         this.setState({size : size,orientations:initial});
     }
     componentDidMount(){
+        this.setState({items : []})
         this.LoadItems();
     }
     showTagModal = (item) =>{
@@ -139,9 +140,10 @@ class GridItems extends Component {
         return (
             <View style={styles.container}>
                 {Grid}
+                {this.state.loading ? <View styles={styles.retryButtoncontainer}><Spinner style={styles.Spinner}/></View> : null}
                 {this.state.error ? <View styles={styles.retryButtoncontainer}>
                     <View style={styles.retryButton}>
-                        {this.state.loading ? <View styles={styles.Spinner}><Spinner/></View> : <Button title="retry" onPress={this.LoadItems} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>} 
+                        <Button title="retry" onPress={this.LoadItems} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>
                     </View>
                 </View> : null}
                 {this.state.Book ? <CategoriesModal 
@@ -168,11 +170,9 @@ const styles = StyleSheet.create({
     retryButton: {
         width:100,
         height:50,
-       
         position: 'absolute',
         left: (Dimensions.get('window').width / 2) - 50,
         top: (Dimensions.get('window').height / 2) - 75,
-        
     },
     ItemContainer: {
         flex: 1,
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     Spinner : {
-        justifyContent: 'center', 
-        alignItems: 'center',
-        flex : 1,
-    } 
+        position: 'absolute',
+        left: (Dimensions.get('window').width / 2),
+        top: (Dimensions.get('window').height / 2),
+      } 
 });
 const mapStateToProps = state => {
     return {

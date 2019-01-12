@@ -26,7 +26,7 @@ export default class HistoryItem extends Component  {
             <View style={{flexDirection:"column"}}>
               <Text style={styles.textHeader} numberOfLines={2}>{this.props.chapter.book_id}</Text>
               <Text style={styles.textStyle} numberOfLines={2}>Chapter : {this.props.chapter.number} - {this.props.chapter.title}</Text>
-              <Text style={styles.dateStyle} numberOfLines={1}>{date} </Text>
+              <Text style={styles.dateStyle} numberOfLines={2}>{date} </Text>
               <Text style={styles.dateStyle} numberOfLines={1}>page: {this.props.chapter.lastPage} </Text>
             </View>
             <View style={{position: "absolute", bottom: 10, flexDirection:"row",flex: 1}}>

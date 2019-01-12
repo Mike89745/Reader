@@ -12,11 +12,6 @@ import {
     setFilterDrawer
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
 class FilterDrawer extends Component {
-    static navigationOptions = ({ navigation }) => {
-        return {
-            drawerLockMode: 'locked-closed',
-        };
-      };
     state = {
         CheckboxRefs : [],
         text: "",

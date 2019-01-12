@@ -5,7 +5,8 @@ import { DrawerItems, SafeAreaView } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux'
 import {
-    setMainDrawer
+    setMainDrawer,
+
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
 class UserDrawer extends Component {
     state = {
@@ -16,7 +17,8 @@ class UserDrawer extends Component {
         return str === null || str.match(/^ *$/) !== null;
     }
     navigateTo(routeName){
-        this.props.navigation.navigate(routeName)
+       
+        this.props.navigation.navigate(routeName);
         this.setState({ActiveRoute : routeName});
     }
     componentDidMount(){
@@ -149,5 +151,6 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     setMainDrawer,
+
 };
 export default connect(mapStateToProps, mapDispatchToProps)(UserDrawer);

@@ -28,14 +28,12 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import {createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import {loadData, nextDownload} from "./src/reducers/downloader/downloaderActions";
 import {loadSettings} from "./src/reducers/Settings/SettingsActions";
-import Toast from 'react-native-simple-toast';
 import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware,
- //loggerMiddleware,
+  loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){
