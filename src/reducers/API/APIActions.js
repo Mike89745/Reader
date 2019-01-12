@@ -117,6 +117,11 @@ export function GetBooksFromLibrary(category) {
         }
     }
 }
+export function ClearBooks() {
+    return function(dispatch,getState) {
+       getState().Booker.CatalogBooks = [];
+    }
+}
 function SearchingBooks(){
     return{
         gettingBooks : true,

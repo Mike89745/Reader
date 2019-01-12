@@ -28,6 +28,13 @@ class HistoryScreen extends Component {
     state = {
         chapters : [],
         chapterToLoad : null,
+        update : false,
+    }
+    reRender = this.props.navigation.addListener('willFocus', () => {
+        this.RefreshComponent();
+    });
+    RefreshComponent =() =>{
+        this.setState({chapters : [], chapterToLoad: null,update : false},() => this.loadHistory());
     }
     isDownloaded=(chapter)=>{
         let title =chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -45,7 +52,9 @@ class HistoryScreen extends Component {
         }).catch(err => {console.log(err)});
       }
       componentWillReceiveProps(nextProps){
-        this.resumeReading();
+        
+        this.state.update ? null : this.resumeReading();
+        this.setState({update : true});
       }
       resumeReading =() =>{
         const chapter = this.state.chapterToLoad;
@@ -53,20 +62,18 @@ class HistoryScreen extends Component {
         this.isDownloaded(chapter).then(downloaded => {
             const chapterIndex = this.props.Chapters.findIndex(x => x._id == chapter._id)
             this.props.navigation.navigate('Reader',{
-              index : chapterIndex,
-              downloaded : !downloaded,
-              uri: downloaded ? 
-                  null
-                  :
-                  ENDPOINT + "public/books/" + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
+                index : chapterIndex,
+                downloaded : !downloaded,
+                uri: downloaded ? 
+                    null
+                    :
+                    ENDPOINT + "public/books/" + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "/",
+                refresh : this.RefreshComponent
             })
         }).catch(err => console.log(err));
     }
     LoadBookChapters =(chapter)=>{
         this.setState({chapterToLoad : chapter});
-
-      
-
         this.props.getChaptersFromLibrary(chapter.book_id);
     } 
     RemoveChapter = (chapter) =>{
@@ -99,6 +106,9 @@ class HistoryScreen extends Component {
     }  
     componentDidMount(){
         this.loadHistory();
+    }
+    componentWillUnmount(){
+        this.reRender;
     }
     render() {
         return (

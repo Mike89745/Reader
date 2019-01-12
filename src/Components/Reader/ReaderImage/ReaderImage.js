@@ -57,7 +57,12 @@ export default class ReaderImage extends Component {
                         </View>
                     </View> 
                     : null} 
-                    {this.state.Loading ? <GiftedSpinner styles={styles.Spinner}/> : null}
+                    {this.state.Loading ? 
+                        <View styles={styles.retryButtoncontainer}>
+                            <View style={styles.retryButton}>
+                                <GiftedSpinner styles={styles.Spinner}/>
+                            </View>
+                        </View> : null}
                     <PhotoView
                         loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
                         source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}

@@ -10,7 +10,8 @@ import find from 'pouchdb-find';
 import { connect } from 'react-redux'
 import {
     GetBooksFromAPI,
-    GetBooksFromLibrary
+    GetBooksFromLibrary,
+    ClearBooks,
   } from '../../reducers/API/APIActions'
 import {
     ToggleFilterDrawer,
@@ -53,7 +54,9 @@ class GridItems extends Component {
         Book : null,
         error: false,
     }
-
+    RefreshComponent =() =>{
+        this.setState({items : [],loading : true,page : 0,Book : null,error: false,},() => this.LoadItems());
+    }
     LoadItems = () => {
         let page = this.state.page + 1;
         if(this.props.isLibrary){
@@ -98,6 +101,7 @@ class GridItems extends Component {
         this.setState({size : size,orientations:initial});
     }
     componentDidMount(){
+        this.props.ClearBooks();
         this.setState({items : []})
         this.LoadItems();
     }
@@ -106,6 +110,7 @@ class GridItems extends Component {
             this.setState({Book:item},() => this.CategoriesModal.toggleModal());
         }
     }
+    
     render() {
         //console.log("update", this.props.category ? this.props.category : "Catalog",this.state.items)
         let Grid = null;
@@ -211,5 +216,6 @@ const mapDispatchToProps = {
     ToggleFilterDrawer,
     ToggleMainDrawer,
     loadSettings,
+    ClearBooks,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GridItems);

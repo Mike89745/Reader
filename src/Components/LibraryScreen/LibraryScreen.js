@@ -1,13 +1,11 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,Button} from 'react-native';
+import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-import { DrawerActions } from 'react-navigation';
 import ButtonIcon from "../Icon/Icon"
 import LibraryTab from './LibraryTab/LibraryTab';
 import {createMaterialTopTabNavigator } from "react-navigation"
 import PouchDB from 'pouchdb-adapters-rn';
-import TriStateCheckBox from '../FilterDrawer/TriStateCheckbox/TriStateCheckbox';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
@@ -37,7 +35,7 @@ export default class LibraryScreen extends Component {
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',marginRight:15}}>
-                    <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories")}/>
+                    <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories",{refresh: () => navigation.state.params.refresh()  })}/>
                     <ToggleFilterDrawerButton/>
                 </View>
             ),
@@ -45,7 +43,23 @@ export default class LibraryScreen extends Component {
       };
     state = {
         categories:null,
-    } 
+    }
+    reRender = this.props.navigation.addListener('willFocus', () => {
+        this.RefreshComponent();
+    });
+   
+    RefreshComponent =() =>{
+        this.setState({categories:null});
+        db.allDocs().then((Response) => {
+            let temp = [];
+            for(let i of Response.rows){
+                i && temp.push(i.doc.id);
+            }
+            temp.unshift("Default");
+            this.setState({categories:temp})
+        }).catch(error => console.log(error));
+    }     
+
     tabs(categories) {
         return categories.reduce((routes, category) => {
             routes[category] = this.tab(category);
@@ -68,15 +82,19 @@ export default class LibraryScreen extends Component {
         return () => (<LibraryTab category={category} nav={this.props.navigation} />);
     }
     componentWillMount(){
+        this.props.navigation.setParams({refresh : () => this.RefreshComponent()});
         db.allDocs().then((Response) => {
             let temp = [];
             for(let i of Response.rows){
-                i && temp.push(i.doc._id);
+                i && temp.push(i.id);
             }
             //temp.length > 0 ? null : temp.unshift("Default");
             temp.unshift("Default");
             this.setState({categories:temp})
         }).catch(error => console.log(error));
+    }
+    componentWillUnmount(){
+        this.reRender;
     }
     render() {
         const Tabs = this.state.categories ? createMaterialTopTabNavigator(this.tabs(this.state.categories), {

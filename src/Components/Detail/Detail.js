@@ -55,6 +55,18 @@ class Detail extends Component {
         Book: null,
         error: false,
     }
+    reRender = this.props.navigation.addListener('willFocus', () => {
+        this.RefreshComponent();
+    });
+    RefreshComponent =() =>{
+        this.props.clearChapters();
+        this.setState({ info : null,
+            inLibrary : false,
+            infoLoading : false,
+            added : false,
+            Book: null,
+            error: false},() => this.getInfo());
+    }
     getInfo = () => {
         
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
@@ -83,7 +95,7 @@ class Detail extends Component {
         this.setState({selectHeaderVisible : nextProps.selectHeaderVisible})
     }
     componentDidMount(){
-        this.props.clearChapters()
+        this.props.clearChapters();
         //this.props.toggleSelectHeader();
         this.getInfo();
         let size = this.state.size;
@@ -147,7 +159,9 @@ class Detail extends Component {
               
           });
     }
-    
+    componentWillUnmount(){
+        this.reRender;
+    }
     render() {
       //  console.log(`${RNFS.DocumentDirectoryPath}/thumbnails`);
        // console.log(`file://${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`);
