@@ -15,7 +15,7 @@ export default class Chapter extends Component {
     }
     saveChapter = () =>{
         const chapter = this.props.chapter;
-        chapter.markAsRead = this.state.MarkedAsRead;
+        chapter.MarkedAsRead = this.state.MarkedAsRead;
         this.props.SaveChapter(chapter);
     }
     getPages = () => {
@@ -38,16 +38,13 @@ export default class Chapter extends Component {
     }
     toggleMark = () => {
         let marked = this.state.MarkedAsRead;
-        this.setState({MarkedAsRead: marked});
-        this.saveChapter();
+        this.setState({MarkedAsRead: !marked},()=>this.saveChapter());
     }
     markAsRead = () => {
-        this.setState({MarkedAsRead: true});
-        this.saveChapter();
+        this.setState({MarkedAsRead: true},()=>this.saveChapter());
     }
     unmarkAsRead = () => {
-        this.setState({MarkedAsRead: false});
-        this.saveChapter();
+        this.setState({MarkedAsRead: false},()=>this.saveChapter());
     }
     deleteChapter= () =>{
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -86,7 +83,7 @@ export default class Chapter extends Component {
     render() {
         //#dddddd
         return ( 
-            <TouchableHighlight underlayColor="#ccc" onPress={() => this.toggleSelect()}
+            <TouchableHighlight underlayColor="#ccc" onPress={() => this.shouldNavigate()}
                 onLongPress={() => this.toggleSelect()}
                 delayLongPress={1000}
                 >
