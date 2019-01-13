@@ -28,6 +28,7 @@ export const DOWNLOAD_CHAPTERS= 'DOWNLOAD_CHAPTERS';
 import { AsyncStorage } from "react-native";
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import RNFS from "react-native-fs";
+import PushNotification from 'react-native-push-notification'
 import { ENDPOINT } from "../../Values/Values";
 function requestDownloads() {
     return {
@@ -208,6 +209,10 @@ export function nextDownload() {
           dispatch(startedDownloads(true))
         )
       }else{
+        PushNotification.localNotification({
+          id: "69420", //for android cancel notification (must be stringified number)
+          title: "Download Complete",
+        })
         return( dispatch(startedDownloads(false)))
       } 
     }else{

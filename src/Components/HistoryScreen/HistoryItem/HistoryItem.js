@@ -6,14 +6,14 @@ import RF from "react-native-responsive-fontsize"
 import { ENDPOINT } from '../../../Values/Values';
 export default class HistoryItem extends Component  {
     render() {
-      const RawDate = new Date(this.props.chapter.lastRead);
-      const date = 
+      const date = new Date(this.props.chapter.lastRead).toDateString();
+      /*const date = 
       RawDate.getFullYear() +"."
       + ("0" + (RawDate.getMonth() + 1)).substr(-2) 
-      + "."+ RawDate.getDate() + " "; +" "
+      + "."+ RawDate.getDate() +" "
       + RawDate.getHours() + ':' 
       + ("0" + RawDate.getMinutes()).substr(-2) + ':' 
-      + ("0" + RawDate.getSeconds()).substr(-2);
+      + ("0" + RawDate.getSeconds()).substr(-2);*/
       return (
         <View style={styles.container}>
           <View style={{flex:0.4}}>

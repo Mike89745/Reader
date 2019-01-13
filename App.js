@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import {StyleSheet, View,Button} from 'react-native';
 import Layout from "./src/Containers/Layout/Layout";
 import { MenuProvider } from 'react-native-popup-menu';
-
+import PushNotification from 'react-native-push-notification'
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import {createStore, applyMiddleware } from 'redux';
@@ -33,7 +33,7 @@ import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware,
- // loggerMiddleware,
+  loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){

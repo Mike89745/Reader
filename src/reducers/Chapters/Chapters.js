@@ -5,8 +5,12 @@ export const GETTING_CHAPTERS_ERROR = "GETTING_CHAPTERS_ERROR";
 
 export const SAVING_CHAPTERS_ERROR = "SAVING_CHAPTERS_ERROR";
 export const SAVED_CHAPTERS = "SAVED_CHAPTERS";
+
+export const LOGMSG="LOGMSG";
+
 import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
+import PushNotification from 'react-native-push-notification'
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
 import { ENDPOINT } from '../../Values/Values';
 PouchDB.plugin(find)
@@ -110,6 +114,13 @@ function savedChaptersError(error){
     errormsg : error
   }
 }
+function logMSG(MSG){
+  return {
+    type: LOGMSG,
+    res: "LOGMSG",
+    errormsg : MSG
+  }
+}
 export function saveChapters(chapters) {
   return function(dispatch) {
       return  (
@@ -143,5 +154,66 @@ export function saveChapter(chapter) {
           dispatch(savedChaptersError([err,chapter]));
         })
       )
+  }
+}
+export function UpdateTitles(Titles) {
+  return function(dispatch) {
+    let notificationMessage = ``
+    Titles.forEach(book_id => {
+      fetch(ENDPOINT + 'getChapters/' + book_id).then(response =>{
+        return response.json()
+      }).then((response) => {
+          if(response.docs.length > 0){
+              dispatch(logMSG(response.docs.length))
+              let chapters = [];
+              response.docs.map((chapter) =>{
+                  chapters.push({
+                      book_id : chapter.book_id,
+                      number : chapter.number,
+                      title : chapter.title,
+                      dateAdded : chapter.dateAdded,
+                      MarkedAsRead : false,
+                      pages : chapter.pages,
+                      lastRead : null,
+                      lastPage : 0,
+                      type: chapter.type
+                  })
+              })
+              ChaptersDB.createIndex({
+                  index: {
+                      fields: ['book_id']
+                  }
+              }).then(() => {
+                  return ChaptersDB.find({
+                      selector: {
+                          book_id : {$eq : book_id},
+                      }
+                  }).then(response => {
+                      dispatch(logMSG(response.docs.length));
+                      for (let index = 0; index < response.docs.length; index++) {
+                        response.docs[i].title === chapters[i].title && response.docs[i].number == chapters[i].number ? chapters.splice(i,1) : null;
+                      }
+                      dispatch(logMSG(chapters.length));
+                      if(chapters.length > 0 ){
+                        notificationMessage += `${book_id}\n`
+                        dispatch(saveChapters(chapters));
+                      }
+                     
+                  }).catch(err => {
+                      dispatch(getChaptersError(err));
+                  });
+              }).catch(err => {
+                dispatch(getChaptersError(err));
+              })
+          }
+      }).catch(error =>{
+        dispatch(getChaptersError(error));
+      })
+    }); 
+      return( PushNotification.localNotification({
+        id: "42069", //for android cancel notification (must be stringified number)
+        message: notificationMessage,
+        title: "Updated Titles",
+      }))
   }
 }

@@ -22,7 +22,6 @@ export default class ThumbNail extends Component  {
             }).then(response => {
               let Total = response.docs.length;
               let UnReadChapters = response.docs.filter((chapter) => {return chapter.MarkedAsRead === true}).length;
-              console.log(Total - UnReadChapters);
               this.setState({UnReadChapters : Total - UnReadChapters});
             }).catch(err => {
               console.log(err);

@@ -1,4 +1,4 @@
-import {GETTING_CHAPTERS,GETTING_CHAPTERS_ERROR,GET_CHAPTERS_FROM_API,GET_CHAPTERS_FROM_LIBRARY,SAVED_CHAPTERS,SAVING_CHAPTERS_ERROR} from "./Chapters"
+import {GETTING_CHAPTERS,GETTING_CHAPTERS_ERROR,GET_CHAPTERS_FROM_API,GET_CHAPTERS_FROM_LIBRARY,SAVED_CHAPTERS,SAVING_CHAPTERS_ERROR,LOGMSG} from "./Chapters"
 export default ChaptersReducer = (state = {loading: false,error:false},action) =>{
     switch (action.type) {
         case GETTING_CHAPTERS : 
@@ -26,6 +26,7 @@ export default ChaptersReducer = (state = {loading: false,error:false},action) =
             return Object.assign({}, state, {
                 res: action.res,
             })
+        case LOGMSG:
         case SAVING_CHAPTERS_ERROR :
             return Object.assign({}, state, {
                 res: action.res,

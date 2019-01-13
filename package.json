@@ -38,6 +38,7 @@
     "react-native-popup-menu": "^0.14.1",
     "react-native-progress": "^3.5.0",
     "react-native-progress-bar-animated": "^1.0.6",
+    "react-native-push-notification": "^3.1.2",
     "react-native-responsive-fontsize": "^0.1.2",
     "react-native-responsive-styles": "^0.2.2",
     "react-native-simple-toast": "0.0.8",
