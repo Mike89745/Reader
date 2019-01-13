@@ -9,7 +9,6 @@ export default class DowloadItem extends Component {
         percentage : 0.01,
     }
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps.value,nextProps.maxValue);
         this.setState({ 
             value: nextProps.value,maxValue : nextProps.maxValue, 
             percentage : nextProps.value/nextProps.maxValue < 0.01 ? 0.01 : nextProps.value/nextProps.maxValue,
@@ -20,7 +19,6 @@ export default class DowloadItem extends Component {
         return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue || nextProps.chapterName != this.props.chapterName || nextState.maxValue != this.state.maxValue;
     }
     render() {
-        console.log(this.state.value,this.state.maxValue);
         return (
             <View style={styles.container}>
                 <Text style={styles.textHeader}>{this.props.title ? this.props.title : null}</Text>

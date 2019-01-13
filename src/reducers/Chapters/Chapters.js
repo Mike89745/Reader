@@ -203,7 +203,6 @@ export function UpdateTitles(Titles) {
                       if(result.length > 0 ){
                         NewAdded = true;
                         notificationMessage += `${Titles[a]}\n`
-                        dispatch(logMSG(result));
                         dispatch(saveChapters(result));
                         if(TitleCount < 2){
                           dispatch(getChaptersFromLibrary(Titles[a]));

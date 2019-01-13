@@ -86,7 +86,7 @@ export default class Chapter extends Component {
     render() {
         //#dddddd
         return ( 
-            <TouchableHighlight underlayColor="#ccc" onPress={() => this.shouldNavigate()}
+            <TouchableHighlight underlayColor="#ccc" onPress={() => this.toggleSelect()}
                 onLongPress={() => this.toggleSelect()}
                 delayLongPress={1000}
                 >

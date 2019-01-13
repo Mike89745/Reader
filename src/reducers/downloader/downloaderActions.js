@@ -165,17 +165,17 @@ export function nextDownload() {
   return function(dispatch,getState) {
     dispatch(startingDownloads())
     const isPaused = getState().Downloader.isPaused;
-    let data = getState().Downloader.downloads;
+    let data = getState().Downloader.downloads ? getState().Downloader.downloads : [];
     if(data.length > 0){
       let title = data[0].title;
       let chapter = data[0].chapter;
-      let page = data[0].pageStatus.findIndex(el => el.status===0) + 1;
+      let page = data[0].pageStatus.findIndex(el => el.status===0);
       if(page === -1){
         data.shift();
         if(data.length > 0){
           title = data[0].title;
           chapter = data[0].chapter;
-          page = data[0].pageStatus.findIndex(el => el.status===0) + 1;
+          page = data[0].pageStatus.findIndex(el => el.status===0);
         }
         dispatch(saveData(data));
       }
@@ -183,19 +183,37 @@ export function nextDownload() {
         let task = RNBackgroundDownloader.download({
           id: title + "//"+ chapter + "//" + page,
           url: `${ENDPOINT}public/books/${title}/${chapter}/${page}`,
-          destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`
+          destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`
         }).begin((expectedBytes) => {
             //console.log(`Going to download ${expectedBytes} bytes!`);
         }).progress((percent) => {
             //console.log(`Downloaded: ${percent * 100}%`,page);
         }).done(() => {
             data[0].pageStatus[page].status = 1;
+            let pages = data[0].pageStatus;
+           
+            if(data.length < 2 && pages.filter(el => {return el.status === 1 ?  el : null}).length === pages.length){
+              PushNotification.localNotification({
+                id: "69420", //for android cancel notification (must be stringified number)
+                title: "Download Complete",
+                message: "",
+                ongoing: false,
+              });
+            }else{
+              PushNotification.localNotification({
+                id: "69420", //for android cancel notification (must be stringified number)
+                title: "Downloading....",
+                message : data[0].title +" "+data[0].chapter +": "+pages.filter(el => {return el.status === 1 ?  el : null}).length + "/"  +pages.length.toString(),
+                priority:"low",
+                importance : "low",
+                ongoing: true,
+              });
+            }
             dispatch(getTask("task",task));
             dispatch(saveData(data));
             dispatch(nextDownload());
         }).error((error) => {
-            console.log("error",error);
-            RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page}.jpg`).then(response => {
+            RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`).then(response => {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));
@@ -209,10 +227,7 @@ export function nextDownload() {
           dispatch(startedDownloads(true))
         )
       }else{
-        PushNotification.localNotification({
-          id: "69420", //for android cancel notification (must be stringified number)
-          title: "Download Complete",
-        })
+        
         return( dispatch(startedDownloads(false)))
       } 
     }else{
