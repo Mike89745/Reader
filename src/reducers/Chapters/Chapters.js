@@ -156,15 +156,23 @@ export function saveChapter(chapter) {
       )
   }
 }
+function comparer(otherArray){
+  return function(current){
+    return otherArray.filter(function(other){
+      return other.title === current.title && other.number === current.number
+    }).length == 0;
+  }
+}
 export function UpdateTitles(Titles) {
   return function(dispatch) {
     let notificationMessage = ``
-    Titles.forEach(book_id => {
-      fetch(ENDPOINT + 'getChapters/' + book_id).then(response =>{
+    let NewAdded = false;
+    let TitleCount =Titles.length;
+    for (let a = 0; a < TitleCount; a++) {
+      fetch(ENDPOINT + 'getChapters/' + Titles[a]).then(response =>{
         return response.json()
       }).then((response) => {
           if(response.docs.length > 0){
-              dispatch(logMSG(response.docs.length))
               let chapters = [];
               response.docs.map((chapter) =>{
                   chapters.push({
@@ -186,18 +194,32 @@ export function UpdateTitles(Titles) {
               }).then(() => {
                   return ChaptersDB.find({
                       selector: {
-                          book_id : {$eq : book_id},
+                        book_id : {$eq : Titles[a]},
                       }
                   }).then(response => {
-                      dispatch(logMSG(response.docs.length));
-                      for (let index = 0; index < response.docs.length; index++) {
-                        response.docs[i].title === chapters[i].title && response.docs[i].number == chapters[i].number ? chapters.splice(i,1) : null;
+                      let onlyInA = response.docs.filter(comparer(chapters));
+                      let onlyInB = chapters.filter(comparer(response.docs));
+                      let result = onlyInA.concat(onlyInB);
+                      if(result.length > 0 ){
+                        NewAdded = true;
+                        notificationMessage += `${Titles[a]}\n`
+                        dispatch(logMSG(result));
+                        dispatch(saveChapters(result));
+                        if(TitleCount < 2){
+                          dispatch(getChaptersFromLibrary(Titles[a]));
+                        }
                       }
-                      dispatch(logMSG(chapters.length));
-                      if(chapters.length > 0 ){
-                        notificationMessage += `${book_id}\n`
-                        dispatch(saveChapters(chapters));
+                      if(TitleCount-1 == a){
+                        let message = null;
+                        NewAdded ? message = notificationMessage : message="No new Chapters";
+                        PushNotification.localNotification({
+                          id: "42069", //for android cancel notification (must be stringified number)
+                          message: message,
+                          title: "Updated Titles",
+                        }); 
                       }
+                      
+                   
                      
                   }).catch(err => {
                       dispatch(getChaptersError(err));
@@ -209,11 +231,7 @@ export function UpdateTitles(Titles) {
       }).catch(error =>{
         dispatch(getChaptersError(error));
       })
-    }); 
-      return( PushNotification.localNotification({
-        id: "42069", //for android cancel notification (must be stringified number)
-        message: notificationMessage,
-        title: "Updated Titles",
-      }))
+    }; 
+      
   }
 }

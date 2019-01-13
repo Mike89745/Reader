@@ -17,6 +17,9 @@ import {
     toggleSelectHeader,
     clearChapters
   } from '../../reducers/downloader/downloaderActions'
+import {
+    UpdateTitles,
+  } from '../../reducers/Chapters/Chapters'
 import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
 import { ENDPOINT } from '../../Values/Values';
@@ -168,6 +171,7 @@ class Detail extends Component {
         return (
             <View> 
                 <ScrollView>
+                    <Button title="test" onPress={() => this.props.UpdateTitles([this.state.info[0]._id])}></Button>
                     {this.state.info ? 
                     <View> 
                         <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
@@ -239,6 +243,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     toggleSelectHeader,
-    clearChapters
+    clearChapters,
+    UpdateTitles
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Detail);
