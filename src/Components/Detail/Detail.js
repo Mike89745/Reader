@@ -17,12 +17,10 @@ import {
     toggleSelectHeader,
     clearChapters
   } from '../../reducers/downloader/downloaderActions'
-import {
-    UpdateTitles,
-  } from '../../reducers/Chapters/Chapters'
 import CategoriesModal from '../GridItems/CategoriesModal/CategoriesModal';
 import SimpleToast from '../../../node_modules/react-native-simple-toast';
 import { ENDPOINT } from '../../Values/Values';
+import DetailHeaderRight from './DetailHeaderRight/DetailHeaderRight';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const ChaptersDB = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
@@ -46,6 +44,7 @@ class Detail extends Component {
               },
             headerTitle: ( <Text style={{color: "#fff"}}> {params ? params.title : ''}</Text> ),
             headerLeft:  <ButtonIcon name="arrow-left" Color="#fff" onPress={() => navigation.goBack(null)} />,
+            headerRight : <DetailHeaderRight bookID={params ?params.title : null}></DetailHeaderRight>
         };
       };
     state ={
@@ -171,7 +170,6 @@ class Detail extends Component {
         return (
             <View> 
                 <ScrollView>
-                    <Button title="test" onPress={() => this.props.UpdateTitles([this.state.info[0]._id])}></Button>
                     {this.state.info ? 
                     <View> 
                         <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
@@ -244,6 +242,5 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     toggleSelectHeader,
     clearChapters,
-    UpdateTitles
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Detail);

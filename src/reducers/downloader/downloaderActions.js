@@ -388,13 +388,18 @@ function donwloadSelected() {
     res: "donwload All selected Chapters Refs",
   }
 }
-export function donwloadSelectedChapters() {
+export function downloadAll(){
+  return function(dispatch) {
+    return (dispatch(donwloadSelectedChapters(true)))
+  }
+}
+export function donwloadSelectedChapters(all = false) {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
       let queueData = getState().Downloader.downloads;
       if(!queueData) queueData = []; 
       refs ? refs.forEach(ref => {
-        if(ref.getSelect()){
+        if(ref.getSelect() || all){
           let title = ref.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
           let chapter = (ref.props.chapter.number +"-"+ref.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
           RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title).then(response => {
