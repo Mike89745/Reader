@@ -25,6 +25,7 @@ import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/Togg
 import { ENDPOINT } from '../../Values/Values';
 import PouchDB from 'pouchdb-adapters-rn';
 import RNFS from "react-native-fs";
+import GridItemsHeaderRight from './GridItemsHeaderRight/GridItemsHeaderRight';
 PouchDB.plugin(find)
 const db = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
@@ -43,7 +44,10 @@ class GridItems extends Component {
                 <ToggleMainDrawerButton/>
             ),
             headerRight: (
-                <ToggleFilterDrawerButton/>
+                <View>
+                    <ToggleFilterDrawerButton/>
+                    
+                </View>
             )
         };
       };

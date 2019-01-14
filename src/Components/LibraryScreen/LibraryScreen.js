@@ -8,6 +8,7 @@ import {createMaterialTopTabNavigator } from "react-navigation"
 import PouchDB from 'pouchdb-adapters-rn';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
+import GridItemsHeaderRight from '../GridItems/GridItemsHeaderRight/GridItemsHeaderRight';
 const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class LibraryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -37,6 +38,7 @@ export default class LibraryScreen extends Component {
                 alignItems: 'center',marginRight:15}}>
                     <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories",{refresh: () => navigation.state.params.refresh()  })}/>
                     <ToggleFilterDrawerButton/>
+                    <GridItemsHeaderRight></GridItemsHeaderRight>
                 </View>
             ),
         };
