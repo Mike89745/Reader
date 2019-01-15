@@ -9,8 +9,13 @@ import PouchDB from 'pouchdb-adapters-rn';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 import GridItemsHeaderRight from '../GridItems/GridItemsHeaderRight/GridItemsHeaderRight';
+import { connect } from 'react-redux';
+import {
+    GetBooksFromLibrary,
+    ClearBooks,
+} from '../../reducers/API/APIActions';
 const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
-export default class LibraryScreen extends Component {
+class LibraryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
         return {
@@ -84,6 +89,7 @@ export default class LibraryScreen extends Component {
         return () => (<LibraryTab category={category} nav={this.props.navigation} />);
     }
     componentWillMount(){
+        this.props.GetBooksFromLibrary()
         this.props.navigation.setParams({refresh : () => this.RefreshComponent()});
         db.allDocs().then((Response) => {
             let temp = [];
@@ -137,3 +143,12 @@ const styles = StyleSheet.create({
         fontSize: RF(2.5),
     }
 });
+const mapStateToProps = state => {
+    return {
+    };
+};
+const mapDispatchToProps = {
+    GetBooksFromLibrary,
+    ClearBooks,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(LibraryScreen);

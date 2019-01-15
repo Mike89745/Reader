@@ -6,7 +6,8 @@ import TriStateCheckBox from './TriStateCheckbox/TriStateCheckbox';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux'
 import {
-    SearchBooksFromAPI
+    SearchBooksFromAPI,
+    SearchBooksFromLibrary,
 } from '../../reducers/API/APIActions'
 import {
     setFilterDrawer
@@ -15,10 +16,14 @@ class FilterDrawer extends Component {
     state = {
         CheckboxRefs : [],
         text: "",
+        ActiveRoute : null,
         tags : ["4-Koma","Action","Adventure","Award Winning","Comedy","Cooking","Doujinshi","Drama","Ecchi","Fanstasy","Gender Bender","Harem","Historical","Horror","Isekai","Josei","Martial Arts","Mecha","Medical","Music","Mystery","Oneshot","Psychological","Romance","School Life","Sci-Fi","Seinen","Shoujo","Shoujo Ai","Shounen","Slice of life","Smut","Sports","Supernatural","Tragedy","Webtoon","Yuri","Game"]
     }
     isEmptyOrSpaces(str){
         return str === null || str.match(/^ *$/) !== null;
+    }
+    componentWillReceiveProps(NextProps){
+        this.setState({ActiveRoute : NextProps.ActiveRoute});
     }
     Search=()=>{
         let CheckedTags = [];
@@ -26,7 +31,10 @@ class FilterDrawer extends Component {
         this.state.tags.map(tag => {
             this.tagsRefs[tag].isChecked() ? CheckedTags.push( this.tagsRefs[tag].getID()) :  this.tagsRefs[tag].isIndeterminate() ? IndeterminateTags.push( this.tagsRefs[tag].getID()) : null;
         })
-        this.props.SearchBooksFromAPI(this.state.text,CheckedTags,IndeterminateTags);
+        this.state.ActiveRoute ? this.state.ActiveRoute === "Library" ? 
+            this.props.SearchBooksFromLibrary(this.state.text,CheckedTags,IndeterminateTags) 
+        :
+            this.props.SearchBooksFromAPI(this.state.text,CheckedTags,IndeterminateTags) : null;
     }
     componentWillMount(){
         this.props.setFilterDrawer(this.props.navigation);
@@ -93,10 +101,13 @@ const styles = StyleSheet.create({
     }
 });
 const mapStateToProps = state => {
-    return {};
+    return {
+        ActiveRoute : state.DrawerNav.ActiveRoute
+    };
 };
 const mapDispatchToProps = {
     SearchBooksFromAPI,
     setFilterDrawer,
+    SearchBooksFromLibrary,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(FilterDrawer);

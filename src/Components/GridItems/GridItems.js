@@ -58,26 +58,42 @@ class GridItems extends Component {
         page : 0,
         Book : null,
         error: false,
+        prevLen: null,
     }
     RefreshComponent =() =>{
         this.setState({items : [],loading : true,page : 0,Book : null,error: false,},() => this.LoadItems());
     }
     LoadItems = () => {
         let page = this.state.page + 1;
-        if(this.props.isLibrary){
-           this.props.GetBooksFromLibrary(this.props.category)
-        }else{
+        if(!this.props.isLibrary){
             this.props.GetBooksFromAPI(page)
         }
       
     }
     componentWillReceiveProps(NextProps){
-        this.setState({items : 
-            this.props.category ? NextProps.CatalogBooks ? NextProps.CatalogBooks[this.props.category] : null : NextProps.CatalogBooks,
-            error:NextProps.gettingBooksError,
-            page:NextProps.CatalogPage,
-            loading:NextProps.gettingBooks
-        })
+        if(this.props.isLibrary && NextProps.CatalogBooks){
+            if(NextProps.length !== this.state.prevLen){
+                let books = NextProps.CatalogBooks;
+                if(this.props.category !== "Default"){
+                    books = books.filter(book => {
+                        return book.doc.categories.includes(this.props.category)          
+                    });
+                }
+                this.setState({items : books,
+                    error:NextProps.gettingBooksError,
+                    page:NextProps.CatalogPage,
+                    loading:NextProps.gettingBooks,
+                    prevLen : books.length,
+                }) 
+            }
+        }else{
+            this.setState({items : NextProps.CatalogBooks,
+                error:NextProps.gettingBooksError,
+                page:NextProps.CatalogPage,
+                loading:NextProps.gettingBooks
+            }) 
+        }
+       
     }
     shouldComponentUpdate(nextProps, nextState){
         if(this.props.category){

@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux'
 import {
     setMainDrawer,
+    SetActiveRoute,
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
 import {SignIn,LoadUser,SignOut,SyncDbs} from "../../reducers/User/UserActions"
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
@@ -24,7 +25,7 @@ class UserDrawer extends Component {
         return str === null || str.match(/^ *$/) !== null;
     }
     navigateTo(routeName){
-       
+        this.props.SetActiveRoute(routeName);
         this.props.navigation.navigate(routeName);
         this.setState({ActiveRoute : routeName});
     }
@@ -35,6 +36,7 @@ class UserDrawer extends Component {
         this.props.LoadUser();
         this.props.setMainDrawer(this.props.navigation);
         let navState =this.props.navigation.state;
+        this.props.SetActiveRoute(navState.routes[navState.index].routeName);
         this.setState({ActiveRoute : navState.routes[navState.index].routeName});
     }
     signin=()=>{
@@ -234,10 +236,12 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     setMainDrawer,
+    SetActiveRoute,
     SignIn,
     LoadUser,
     SignOut,
     SyncDbs,
+    
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDrawer);

@@ -30,15 +30,13 @@ function GetBooks(CatalogBooks,error,page){
         CatalogPage : page
     }
 }
-function GetBooksFromLibraryRes(CatalogBooks,error,page,category){
+function GetBooksFromLibraryRes(CatalogBooks,error){
     return{
         gettingBooks : false,
         CatalogBooks : CatalogBooks,
         type: GET_BOOKS_FROM_LIBRARY,
         res: "Get Books from Library",
-        category: category,
         gettingBooksError : error,
-        CatalogPage : page
     }
 }
 function GetBooksError(error,errormsg){
@@ -73,48 +71,14 @@ export function GetBooksFromLibrary(category) {
         let data = getState().Booker.CatalogBooks;
         if(!data) data = [];
         dispatch(GettingBooks("Getting Books from Library"))
-        if(category){
-            if(category === "Default"){
-                return(
-                    db.allDocs({endkey: '_design',include_docs: true}).then((Response) => {
-                        Object.assign(data, {[`${category}`]: Response.rows});
-                        dispatch(GetBooksFromLibraryRes(data,false,0,category));
-                    }).catch(error => {
-                        dispatch(GetBooksError(true,error))
-                        Toast.show("Failed to get Category", Toast.LONG);
-                    })
-                )
-                    
-            }
-            else{
-                let categories = [];
-                categories.push(category);
-                return (
-                    db.createIndex({
-                            index: {
-                                fields: ["_id",'categories','tags']
-                            }
-                    }).then(() => {
-                            return db.find({
-                                selector: {
-                                    categories: {$in : categories}
-                                }
-                            }).then(res => {
-                                let newData = []
-                                res.docs.map(docs => newData.push({doc : docs}))
-                                Object.assign(data, {[`${category}`]: newData});
-                                dispatch(GetBooksFromLibraryRes(data,false,0,category));
-                            }).catch(error => {
-                                dispatch(GetBooksError(true));
-                                Toast.show("Failed to get Category", Toast.LONG);
-                            });
-                    }).catch((err) => {
-                        dispatch(GetBooksError(true,err))
-                        Toast.show("Failed to create indexes", Toast.LONG);
-                    })
-                )
-            }
-        }
+        return(
+            db.allDocs({endkey: '_design',include_docs: true}).then((Response) => {
+                dispatch(GetBooksFromLibraryRes(Response.rows,false));
+            }).catch(error => {
+                dispatch(GetBooksError(true,error))
+                Toast.show("Failed to get Category", Toast.LONG);
+            })
+        )
     }
 }
 export function ClearBooks() {
@@ -122,11 +86,11 @@ export function ClearBooks() {
        getState().Booker.CatalogBooks = [];
     }
 }
-function SearchingBooks(){
+function SearchingBooks(text){
     return{
         gettingBooks : true,
         type: SEARCHING_BOOKS,
-        res: "SEARCHING Books",
+        res: text,
         CatalogBooks : [],
         gettingBooksError : false,
     }
@@ -151,7 +115,7 @@ function SearchBooksError(error,errormsg){
 }
 export function SearchBooksFromAPI(text,INtags,NINtags) {
     return function(dispatch,getState) {
-        dispatch(SearchingBooks("Getting Books from Library"))
+        dispatch(SearchingBooks("Getting Books from API"))
         return  (
             fetch(ENDPOINT + 'Search/', {
                 headers: {
@@ -192,7 +156,7 @@ export function SearchBooksFromLibrary(text,INtags,NINtags) {
                 }).then(res => {
                     let newData = [];
                     res.docs.map(docs => newData.push({doc : docs}));
-                    if(data.length === 0) Toast.show("Nothing Found", Toast.LONG);
+                    newData.length === 0 ? Toast.show("Nothing Found", Toast.LONG) : dispatch(SearchBooks(newData,false));
                 }).catch(error => {
                     dispatch(SearchBooksError(true,error))
                     Toast.show("Search Failed! This shouldnt happen!", Toast.LONG);

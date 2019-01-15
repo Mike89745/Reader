@@ -3,6 +3,7 @@ export const SET_MAIN_DRAWER = "SET_MAIN_DRAWER";
 export const LOCK_MAIN_DRAWER = "LOCK_MAIN_DRAWER";
 export const SET_FILTER_DRAWER = "SET_FILTER_DRAWER";
 export const LOCK_FILTER_DRAWER = "LOCK_FILTER_DRAWER";
+export const SET_ACTIVE_ROUTE = "SET_ACTIVE_ROUTE";
 export function ToggleFilterDrawer() {
     return function(dispatch,getState) {
         getState().DrawerNav.FilterDrawer.toggleDrawer();
@@ -14,7 +15,17 @@ export function ToggleMainDrawer() {
     }
 }
 
-
+export function SetActiveRoute(Route){
+    return function(dispatch){
+        dispatch(ActiveRouteSet(Route));
+    }
+}
+function ActiveRouteSet(Route){
+    return{
+        type : SET_ACTIVE_ROUTE,
+        ActiveRoute : Route,
+    }
+}
 function MainDrawerSet(nav){
     return{
         type: SET_MAIN_DRAWER,
