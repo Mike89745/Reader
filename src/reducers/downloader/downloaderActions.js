@@ -166,7 +166,7 @@ export function nextDownload() {
     dispatch(startingDownloads())
     const isPaused = getState().Downloader.isPaused ? true : false;
     let data = getState().Downloader.downloads ? getState().Downloader.downloads : [];
-    if(data.length > 0 && !isPaused){
+    if(data.length > 0 && isPaused){
       let title = data[0].title;
       let chapter = data[0].chapter;
       let page = data[0].pageStatus.findIndex(el => el.status===0);
