@@ -60,6 +60,33 @@ function savedUserError(err){
         savingRes : err,
     }
 }
+export function saveUser(user){
+    return function(dispatch) {
+        User.allDocs({include_docs:true}).then(res =>{
+            if(res.rows.length === 0){
+                const newUser ={
+                    email : user.email,
+                    password : user.password,
+                    nick : user.nick,
+                }
+                User.post(newUser).then(res => {
+                    dispatch(savedUser(res))
+                }).catch(err => dispatch(savedUserError(err)))
+            }else{
+                const updateUser ={
+                    _id : res.rows[0].doc._id,
+                    _rev : res.rows[0].doc._rev,
+                    email : user.email,
+                    password : user.password,
+                    nick : user.nick,
+                }
+                User.put(updateUser).then(res => {
+                    dispatch(savedUser(res))
+                }).catch(err => dispatch(savedUserError(err)))
+            }
+        }).catch(err => dispatch(savedUserError(err)))
+    }
+}
 export function SignIn(email,password){
     return function(dispatch) {
         dispatch(signingIn());
@@ -77,11 +104,8 @@ export function SignIn(email,password){
                 dispatch(signingInError(response.msg))
             }else{
                 response.user.password = password
-                /*const newUser = {
-
-                }
-                User.put(response.user).then(res => dispatch(savedUser([res,response.user]))).catch(err => dispatch(savedUserError([err,response.user])));*/
-                dispatch(signInSucces(response.user))
+                dispatch(saveUser(response.user));
+                dispatch(signInSucces(response.user));
             }
         }).catch(err => {dispatch(signingInError(err))});
     }
@@ -130,6 +154,20 @@ export function SignUp(nick,password,email){
         }).catch(err => {dispatch(signingUpError(err))});
     }
 }
+export function SignOut(){
+    return function(dispatch) {
+        User.allDocs({include_docs:true}).then(res =>{
+            if(res.rows.length > 0){
+                User.remove(res.rows[0].doc).then(res=>{
+                    dispatch(savedUser(res));
+                    dispatch(LoadUser())
+                }).catch(err => dispatch(savedUserError(err)))
+            }else{
+                dispatch(loadUser())
+            }
+        }).catch(err => dispatch(loadedUserError(err)))
+    }
+}
 function loadedUser(user){
     return{
         type : LOADED_USER,
@@ -139,13 +177,19 @@ function loadedUser(user){
 function loadedUserError(err){
     return{
         type : LOADED_USER_ERROR,
-        LoadingUserErr : err
+        LoadingUserErr : err,
+        user : null,
     }
 }
 export function LoadUser(){
     return function(dispatch) {
-        User.allDocs().then(res =>{
-            if(res.docs.lenght > 0) dispatch(loadedUser(res.docs[0]));
+        User.allDocs({include_docs:true}).then(res =>{
+            dispatch(loadedUserError(res))
+            if(res.rows.length > 0){ 
+                dispatch(loadedUser(res.rows[0].doc));
+            }else{
+                dispatch(loadedUserError(res))
+            }
         }).catch(err => dispatch(loadedUserError(err)))
     }
 }

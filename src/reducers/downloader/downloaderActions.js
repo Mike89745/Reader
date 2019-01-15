@@ -164,9 +164,9 @@ export function ReattachDownloads() {
 export function nextDownload() {
   return function(dispatch,getState) {
     dispatch(startingDownloads())
-    const isPaused = getState().Downloader.isPaused;
+    const isPaused = getState().Downloader.isPaused ? true : false;
     let data = getState().Downloader.downloads ? getState().Downloader.downloads : [];
-    if(data.length > 0){
+    if(data.length > 0 && !isPaused){
       let title = data[0].title;
       let chapter = data[0].chapter;
       let page = data[0].pageStatus.findIndex(el => el.status===0);
@@ -198,15 +198,17 @@ export function nextDownload() {
                 title: "Download Complete",
                 message: "",
                 ongoing: false,
+               
               });
             }else{
               PushNotification.localNotification({
                 id: "69420", //for android cancel notification (must be stringified number)
                 title: "Downloading....",
                 message : data[0].title +" "+data[0].chapter +": "+pages.filter(el => {return el.status === 1 ?  el : null}).length + "/"  +pages.length.toString(),
-                priority:"low",
-                importance : "low",
-                ongoing: true,
+                priority:"min",
+                importance : "min",
+                ongoing: false,
+                vibrate: false,
               });
             }
             dispatch(getTask("task",task));
@@ -247,29 +249,22 @@ export function clearDownloads() {
       )
   }
 }
-export function toggleDownloads() {
+export function toggleDownloads(toggle = false) {
   return function(dispatch,getState) {
       dispatch(togglingDownloads())
-      let task = getState().Downloader;
-      if(task.task){
-        if(!task.isPaused){
-          task.task.pause();
-          return  (
-            dispatch(toggledDownloads(true))
-          )
+      if(!toggle){
+        const isPaused = getState().Downloader.isPaused ? true:false;
+        if(isPaused){
+          dispatch(toggledDownloads(false));
         }else{
-          task.task.resume();
-          dispatch(toggledDownloads(false))
-          return  (
-            dispatch(nextDownload())
-          )
+          dispatch(toggledDownloads(true));
+          dispatch(nextDownload());
         }
       }else{
-        dispatch(toggledDownloads(false));
-        return  (
-          dispatch(nextDownload())
-        )
+        dispatch(toggledDownloads(true));
+        dispatch(nextDownload());
       }
+      
   }
 }
 
@@ -400,33 +395,35 @@ export function donwloadSelectedChapters(all = false) {
       if(!queueData) queueData = []; 
       refs ? refs.forEach(ref => {
         if(ref.getSelect() || all){
-          let title = ref.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
-          let chapter = (ref.props.chapter.number +"-"+ref.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
-          RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title).then(response => {
-            if(!response) {
-              RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title);
+          if(!ref.getDownloaded()){
+            let title = ref.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
+            let chapter = (ref.props.chapter.number +"-"+ref.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+            RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title).then(response => {
+              if(!response) {
+                RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title);
+              }
+            });
+            RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title + "/" + chapter).then(response => {
+              if(!response) {
+                RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title+ "/" + chapter);
+              }
+            });
+            let pages = [];
+            for (let index = 0; index < ref.props.chapter.pages; index++) {
+              pages.push({status: 0});
             }
-          });
-          RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title + "/" + chapter).then(response => {
-            if(!response) {
-              RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title+ "/" + chapter);
-            }
-          });
-          let pages = [];
-          for (let index = 0; index < ref.props.chapter.pages; index++) {
-            pages.push({status: 0});
+            queueData.push({
+              title : title,
+              chapter: chapter,
+              pageStatus : pages,
+            });
+          }else{
+            dispatch(failedToAddDownloads("failed"));
           }
-          queueData.push({
-            title : title,
-            chapter: chapter,
-            pageStatus : pages,
-          });
-        }else{
-          dispatch(failedToAddDownloads("failed"));
         }
       }) : null;
       dispatch(saveData(queueData));
-      dispatch(nextDownload());
+      dispatch(toggleDownloads(true));
       return  (
        dispatch(donwloadSelected())
       )

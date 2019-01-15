@@ -24,6 +24,9 @@ export default class Chapter extends Component {
     getSelect = () =>{
         return this.state.selected;
     }
+    getDownloaded = () => {
+        return this.state.downloaded;
+    }
     select = () =>{
         this.setState({selected: true});
         this.props.onToggleSelect();

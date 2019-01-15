@@ -86,7 +86,8 @@ export default UserReducer = (state = {},action) =>{
             })
         case LOADED_USER_ERROR :  
             return Object.assign({}, state, {
-                LoadingUserErr : action.LoadingUserErr
+                LoadingUserErr : action.LoadingUserErr,
+                user : null
             })
         case SAVED_USER :
         case SAVED_USER_ERROR : 

@@ -7,8 +7,9 @@ import { connect } from 'react-redux'
 import {
     setMainDrawer,
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
-import {SignIn,LoadUser} from "../../reducers/User/UserActions"
+import {SignIn,LoadUser,SignOut,SyncDbs} from "../../reducers/User/UserActions"
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
+import AreYouSureModal from "../Modals/AreYouSureModal"
 class UserDrawer extends Component {
     state = {
         user : null,
@@ -36,20 +37,36 @@ class UserDrawer extends Component {
         let navState =this.props.navigation.state;
         this.setState({ActiveRoute : navState.routes[navState.index].routeName});
     }
+    signin=()=>{
+        this.SyncModal.showModal();
+        this.props.SignIn(this.state.email,this.state.password);
+    }
     render() {
-        console.log(this.state.UserContainer)
         return (
             <ScrollView>
                 <SafeAreaView style={{padding:0}} forceInset={{ top: 'always', horizontal: 'never' }}>
                     <View style={styles.container}>
-                       
+                        <AreYouSureModal 
+                            yes={this.props.SyncDbs} 
+                            text={"Do you want to synchronize your library?"} 
+                            ref={(ref) => this.SyncModal = ref}>
+                        </AreYouSureModal>
+                        <AreYouSureModal 
+                            yes={this.props.SignOut} 
+                            text={"Are you sure you want to sign out?"} 
+                            ref={(ref) => this.SignOutModal = ref}>
+                        </AreYouSureModal>
+                        
                        {this.state.user ? 
                        <View style={{borderBottomWidth: 1, borderBottomColor: "#000",marginBottom:0,padding:5,backgroundColor:"#3b424c"}}>
-                            <Text>{this.state.user.nick}</Text>
-                            <TouchableOpacity onPress={() => this.props.singOut} style={{alignSelf:"flex-end"}}>
+                            <Text style={[styles.textHeader,{color:"white"}]}>{this.state.user.nick}</Text>
+                            <TouchableOpacity onPress={() => console.log("penis")} style={{alignSelf:"flex-end"}}>
+                                <Text style={styles.textSignIn}>Synchronize</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.SignOutModal.toggleModal()} style={{alignSelf:"flex-end"}}>
                                 <Text style={styles.textSignIn}>Sign out</Text>
                             </TouchableOpacity>
-                              
+                           
                        </View> 
                        
                        : 
@@ -57,10 +74,9 @@ class UserDrawer extends Component {
                        <View style={{borderBottomWidth: 1, borderBottomColor: "#000",marginBottom:0,padding:5,backgroundColor:"#3b424c"}}  onLayout={(event) => {
                        this.setState({UserContainer : [event.nativeEvent.layout.width,event.nativeEvent.layout.height]});
                         }}>
-                            
                             <View>
                                 <TextInput
-                                    style={{height: 40, borderBottomColor: '#3b424c',borderBottomWidth: 2,marginLeft: 10,marginRight:25,width:150}}
+                                    style={{height: 40, borderBottomColor: '#FFF',borderBottomWidth: 2,marginLeft: 10,marginRight:25,width:150,color:"#fff"}}
                                     onChangeText={(email) => this.setState({email})}
                                     value={this.state.email}
                                     placeholder="Email"
@@ -68,8 +84,8 @@ class UserDrawer extends Component {
                                 />
                             </View>
                             <View>
-                            <TextInput
-                                    style={{height: 40, borderBottomColor: '#3b424c',borderBottomWidth: 2,marginLeft: 10,marginRight:25,width:150}}
+                                <TextInput
+                                    style={{height: 40, borderBottomColor: '#FFF',borderBottomWidth: 2,marginLeft: 10,marginRight:25,width:150,color:"#fff"}}
                                     onChangeText={(password) => this.setState({password})}
                                     value={this.state.password}
                                     placeholder="password"
@@ -81,7 +97,7 @@ class UserDrawer extends Component {
                                 <TouchableOpacity onPress={() => console.log("sign in")} style={{alignSelf:"flex-start"}}>
                                     <Text style={styles.textSignIn}>Sign Up</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.props.SignIn(this.state.email,this.state.password)} style={{alignSelf:"flex-end"}}>
+                                <TouchableOpacity onPress={() => this.signin()} style={{alignSelf:"flex-end"}}>
                                     <Text style={styles.textSignIn}>Sign in</Text>
                                 </TouchableOpacity>
                             </View>
@@ -196,6 +212,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: RF(3.5),
         color: "black"
+
     },
     Spinner : {
         position: 'absolute', 
@@ -219,6 +236,8 @@ const mapDispatchToProps = {
     setMainDrawer,
     SignIn,
     LoadUser,
+    SignOut,
+    SyncDbs,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDrawer);

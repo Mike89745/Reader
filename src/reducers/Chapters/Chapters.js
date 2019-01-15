@@ -216,6 +216,15 @@ export function UpdateTitles(Titles) {
                           message: message,
                           title: "Updated Titles",
                         }); 
+                      }else{
+                        PushNotification.localNotification({
+                          id: "42069", //for android cancel notification (must be stringified number)
+                          message: Titles[a],
+                          title: "Updating Titles",
+                          vibrate: false,
+                          priority:"min",
+                          importance : "min",
+                        }); 
                       }
                       
                    
