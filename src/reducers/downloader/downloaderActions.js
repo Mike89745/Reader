@@ -162,6 +162,7 @@ export function ReattachDownloads() {
   }
 }
 export function nextDownload() {
+
   return function(dispatch,getState) {
     dispatch(startingDownloads())
     const isPaused = getState().Downloader.isPaused ? true : false;
@@ -170,6 +171,7 @@ export function nextDownload() {
       let title = data[0].title;
       let chapter = data[0].chapter;
       let page = data[0].pageStatus.findIndex(el => el.status===0);
+     
       if(page === -1){
         data.shift();
         if(data.length > 0){
@@ -182,8 +184,8 @@ export function nextDownload() {
       if(data.length > 0 && page != -1){
         let task = RNBackgroundDownloader.download({
           id: title + "//"+ chapter + "//" + page,
-          url: `${ENDPOINT}public/books/${title}/${chapter}/${page}`,
-          destination: `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`
+          url: data[0].thumbnails ? `${ENDPOINT}public/thumbnails/${data[0].booksIDs[page]}` : `${ENDPOINT}public/books/${title}/${chapter}/${page}` ,
+          destination: data[0].thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`
         }).begin((expectedBytes) => {
             //console.log(`Going to download ${expectedBytes} bytes!`);
         }).progress((percent) => {

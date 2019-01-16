@@ -17,14 +17,19 @@ export const LOADED_USER_ERROR = "LOADED_USER_ERROR";
 export const SAVED_USER = "SAVED_USER";
 export const SAVED_USER_ERROR = "SAVED_USER_ERROR";
 
+export const LOGMSG = "LOGMSG";
+
 import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
-//import { ENDPOINT } from '../../Values/Values';
-const ENDPOINT = 'http://localhost:8000/'; // 'http://localhost:8000/' 'https://mike.xn--mp8hal61bd.ws/'
+import RNFS from "react-native-fs";
+import { ENDPOINT } from '../../Values/Values';
+import {saveData,toggleDownloads} from '../downloader/downloaderActions'
+//const ENDPOINT = 'http://localhost:8000/'; // 'http://localhost:8000/' 'https://mike.xn--mp8hal61bd.ws/'
 PouchDB.plugin(find);
 const library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
-const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
+const chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 const User = new PouchDB('User', { adapter: 'pouchdb-adapters-rn'});
+const categoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 function signingIn(){
     return{
         type : SIGNING_IN,
@@ -229,29 +234,68 @@ function syncingLibraryComplete(info){
         libInfo : info,
     }
 }
-   
-
+function logMSG(msg){
+    return{
+        type: LOGMSG,
+        msg : msg
+    }
+}   
+function CreateCategories(newBooks){
+    return function(dispatch){
+        let categories = []
+        newBooks.forEach(book =>{
+            book.categories.forEach(category =>{
+                categories.includes(category) ? null : categories.push(category);
+            })
+        });
+        dispatch(logMSG([categories]));
+        categoriesDB.allDocs({include_docs : true}).then(res =>{
+            res.rows.forEach(category =>{
+                categories.includes(category.doc.id) ? categories.splice(categories.indexOf(category.doc.id)) : null;
+            })
+            dispatch(logMSG([categories]));
+            categories.forEach(category =>{
+                categoriesDB.put({_id : category}).then(res => console.log(res)).catch(err => console.log(err,"added category err"))
+            })
+        })
+    }
+}
 export function SyncDbs(){
     return function(dispatch,getState) {
         const user = getState().UserReducer.user;
         if(user){
             dispatch(syncing());
-            library.sync(`${ENDPOINT}db/${user.nick}-library`, {
-                live: true
-            }).on('change', function (change) {
-                dispatch(syncingChange(change));
+            library.sync(`${ENDPOINT}db/${user.nick}-library`)
+            .on('change', function (change) {
+                let newBooks = change.change.docs;
+                let booksIDs = [];
+                let pages = [];
+                newBooks.forEach(book => {
+                    booksIDs.push(book._id.replace(/[/\\?%*:|"<>. ]/g, '-'));
+                    pages.push({status: 0});
+                });
+                let thumbnails = [{
+                    title: "New thumbnails",
+                    chapter : "",
+                    pageStatus : pages,
+                    thumbnails : true,
+                    booksIDs : booksIDs
+                }];
+                dispatch(CreateCategories(newBooks))
+                dispatch(saveData(thumbnails))
+                dispatch(syncingChange([change,thumbnails]));
             }).on('error', function (err) {
                 dispatch(syncingError(err));
             }).on('complete', function (info) {
                 dispatch(syncingLibraryComplete(info))
                 chapters.sync(`${ENDPOINT}db/${user.nick}-chapters`, {
-                    live: true
                 }).on('change', function (change) {
                     dispatch(syncingChange(change));
                 }).on('error', function (err) {
                     dispatch(syncingError(err));
                 }).on('complete', function (info) {
-                    dispatch(syncingComplete(info))
+                    dispatch(syncingComplete(info));
+                    dispatch(toggleDownloads());
                 });
             });
         }

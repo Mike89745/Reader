@@ -52,6 +52,7 @@ export default class CategoriesModal extends Component {
     }
 
     render() {
+        console.log(this.state.categories);
         return (
         <Modal
             animationIn="zoomIn"
@@ -67,7 +68,7 @@ export default class CategoriesModal extends Component {
                     renderItem={({item,index}) => 
                     <CheckBox 
                         isChecked={false} 
-                        text={item.doc._id} 
+                        text={item.id} 
                         ref={(CheckBoxRef) => this.addRef(CheckBoxRef,index)}/>}
                     />
             

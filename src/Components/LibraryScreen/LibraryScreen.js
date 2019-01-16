@@ -60,7 +60,7 @@ class LibraryScreen extends Component {
         db.allDocs().then((Response) => {
             let temp = [];
             for(let i of Response.rows){
-                i && temp.push(i.doc.id);
+                i && temp.push(i.id);
             }
             temp.unshift("Default");
             this.setState({categories:temp})

@@ -13,7 +13,8 @@ import {
     LOADED_USER,
     LOADED_USER_ERROR,
     SAVED_USER,
-    SAVED_USER_ERROR 
+    SAVED_USER_ERROR,
+    LOGMSG 
 } from "./UserActions";
 export default UserReducer = (state = {},action) =>{
     switch (action.type) {
@@ -93,7 +94,11 @@ export default UserReducer = (state = {},action) =>{
         case SAVED_USER_ERROR : 
             return Object.assign({}, state, {
                 savingRes : action.savingRes,
-            })          
+            })  
+        case LOGMSG : 
+        return Object.assign({}, state, {
+            msg : action.msg,
+        })            
         default:
             return state
     }

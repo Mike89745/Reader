@@ -62,7 +62,7 @@ class UserDrawer extends Component {
                        {this.state.user ? 
                        <View style={{borderBottomWidth: 1, borderBottomColor: "#000",marginBottom:0,padding:5,backgroundColor:"#3b424c"}}>
                             <Text style={[styles.textHeader,{color:"white"}]}>{this.state.user.nick}</Text>
-                            <TouchableOpacity onPress={() => console.log("penis")} style={{alignSelf:"flex-end"}}>
+                            <TouchableOpacity onPress={() => this.props.SyncDbs()} style={{alignSelf:"flex-end"}}>
                                 <Text style={styles.textSignIn}>Synchronize</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => this.SignOutModal.toggleModal()} style={{alignSelf:"flex-end"}}>
