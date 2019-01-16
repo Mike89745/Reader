@@ -10,11 +10,12 @@ import {
     SYNCING_COMPLETE,
     SYNCING_ERROR,
     SYNCING_LIBRARY_DONE,
+    SYNCING_PROGRESS,
     LOADED_USER,
     LOADED_USER_ERROR,
     SAVED_USER,
     SAVED_USER_ERROR,
-    LOGMSG 
+    LOGMSG, 
 } from "./UserActions";
 export default UserReducer = (state = {},action) =>{
     switch (action.type) {
@@ -68,7 +69,8 @@ export default UserReducer = (state = {},action) =>{
             return Object.assign({}, state, {
                 syncing : false,
                 SyncError : false,
-                info : action.info
+                syncProgress : action.syncProgress,
+                SyncMSG : action.SyncMSG
             })
         case SYNCING_ERROR:
             return Object.assign({}, state, {
@@ -79,7 +81,11 @@ export default UserReducer = (state = {},action) =>{
             return Object.assign({}, state, {
                 signingUp : false,
                 SyncError : false,
-                libInfo : action.info,
+            })
+        case SYNCING_PROGRESS : 
+            return Object.assign({}, state, {
+                syncProgress : action.syncProgress,
+                SyncMSG : action.SyncMSG
             })
         case LOADED_USER :
             return Object.assign({}, state, {

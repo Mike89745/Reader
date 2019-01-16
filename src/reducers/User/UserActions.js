@@ -11,6 +11,7 @@ export const SYNCING_COMPLETE = "SYNCING_COMPLETE";
 export const SYNCING_ERROR = "SYNCING_ERROR";
 export const SYNCING_CHANGE = "SYNCING_CHANGE";
 export const SYNCING_LIBRARY_DONE = "SYNCING_LIBRARY_DONE";
+export const SYNCING_PROGRESS = "SYNCING_PROGRESS";
 
 export const LOADED_USER = "LOADED_USER";
 export const LOADED_USER_ERROR = "LOADED_USER_ERROR";
@@ -23,7 +24,7 @@ import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 import RNFS from "react-native-fs";
 import { ENDPOINT } from '../../Values/Values';
-import {saveData,toggleDownloads} from '../downloader/downloaderActions'
+import {saveData,toggleDownloads,loadData} from '../downloader/downloaderActions'
 //const ENDPOINT = 'http://localhost:8000/'; // 'http://localhost:8000/' 'https://mike.xn--mp8hal61bd.ws/'
 PouchDB.plugin(find);
 const library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
@@ -219,58 +220,67 @@ function syncingError(err){
         errorMsg: err,
     }
 }
-function syncingComplete(info){
+export function syncingComplete(info){
     return{
         type : SYNCING_COMPLETE,
         syncing : false,
         SyncError : false,
-        info : info
+        syncProgress : 100,
+        SyncMSG : "Syncing Complete!"
     }
 }
-function syncingLibraryComplete(info){
-     return{
-        type: SYNCING_LIBRARY_DONE,
-        SyncError : false,
-        libInfo : info,
-    }
-}
-function logMSG(msg){
+function syncingProgress(progress,msg){
     return{
-        type: LOGMSG,
-        msg : msg
+        type: SYNCING_PROGRESS,
+        syncProgress : progress,
+        SyncMSG : msg
     }
-}   
+}
 function CreateCategories(newBooks){
     return function(dispatch){
+        dispatch(syncingProgress(50,"Creating Categories..."))
+        
         let categories = []
-        newBooks.forEach(book =>{
-            book.categories.forEach(category =>{
-                categories.includes(category) ? null : categories.push(category);
-            })
-        });
-        dispatch(logMSG([categories]));
-        categoriesDB.allDocs({include_docs : true}).then(res =>{
-            res.rows.forEach(category =>{
-                categories.includes(category.doc.id) ? categories.splice(categories.indexOf(category.doc.id)) : null;
-            })
-            dispatch(logMSG([categories]));
-            categories.forEach(category =>{
-                categoriesDB.put({_id : category}).then(res => console.log(res)).catch(err => console.log(err,"added category err"))
-            })
-        })
+        if(newBooks){
+            if(newBooks.length > 0){
+                newBooks.forEach(book =>{
+                    book.categories.forEach(category =>{
+                        categories.includes(category) ? null : categories.push(category);
+                    })
+                });
+                categoriesDB.allDocs({include_docs : true}).then(res =>{
+                    res.rows.forEach(category =>{
+                        categories.includes(category.doc.id) ? categories.splice(categories.indexOf(category.doc.id)) : null;
+                    })
+                    categories.forEach(category =>{
+                        categoriesDB.put({_id : category}).catch(err => console.log(err,"added category err"))
+                    })
+                    dispatch(syncingProgress(75,"Downloading thumbnails..."))
+                    dispatch(toggleDownloads());
+                })
+            }else{
+                dispatch(syncingComplete())
+            }
+        }else{
+            dispatch(syncingComplete())
+        }
+       
+      
     }
 }
 export function SyncDbs(){
     return function(dispatch,getState) {
         const user = getState().UserReducer.user;
+        let newBooks = [];
         if(user){
             dispatch(syncing());
+            dispatch(syncingProgress(0,"Syncing Library..."))
             library.sync(`${ENDPOINT}db/${user.nick}-library`)
             .on('change', function (change) {
-                let newBooks = change.change.docs;
+                newBooks = change.change.docs;
                 let booksIDs = [];
                 let pages = [];
-                newBooks.forEach(book => {
+                change.change.docs.forEach(book => {
                     booksIDs.push(book._id.replace(/[/\\?%*:|"<>. ]/g, '-'));
                     pages.push({status: 0});
                 });
@@ -281,21 +291,21 @@ export function SyncDbs(){
                     thumbnails : true,
                     booksIDs : booksIDs
                 }];
-                dispatch(CreateCategories(newBooks))
                 dispatch(saveData(thumbnails))
                 dispatch(syncingChange([change,thumbnails]));
+                dispatch(loadData())
             }).on('error', function (err) {
                 dispatch(syncingError(err));
             }).on('complete', function (info) {
-                dispatch(syncingLibraryComplete(info))
+                dispatch(syncingProgress(25,"Syncing Chapters..."))
                 chapters.sync(`${ENDPOINT}db/${user.nick}-chapters`, {
                 }).on('change', function (change) {
                     dispatch(syncingChange(change));
                 }).on('error', function (err) {
                     dispatch(syncingError(err));
                 }).on('complete', function (info) {
-                    dispatch(syncingComplete(info));
-                    dispatch(toggleDownloads());
+                    dispatch(CreateCategories(newBooks))
+                   
                 });
             });
         }

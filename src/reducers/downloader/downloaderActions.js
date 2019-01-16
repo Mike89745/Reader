@@ -29,6 +29,7 @@ import { AsyncStorage } from "react-native";
 import RNBackgroundDownloader from 'react-native-background-downloader';
 import RNFS from "react-native-fs";
 import PushNotification from 'react-native-push-notification'
+import {syncingComplete} from "../User/UserActions"
 import { ENDPOINT } from "../../Values/Values";
 function requestDownloads() {
     return {
@@ -171,7 +172,6 @@ export function nextDownload() {
       let title = data[0].title;
       let chapter = data[0].chapter;
       let page = data[0].pageStatus.findIndex(el => el.status===0);
-     
       if(page === -1){
         data.shift();
         if(data.length > 0){
@@ -202,6 +202,9 @@ export function nextDownload() {
                 ongoing: false,
                
               });
+              if(data[0].thumbnails){
+                dispatch(syncingComplete())
+              }
             }else{
               PushNotification.localNotification({
                 id: "69420", //for android cancel notification (must be stringified number)
@@ -258,6 +261,7 @@ export function toggleDownloads(toggle = false) {
         const isPaused = getState().Downloader.isPaused ? true:false;
         if(isPaused){
           dispatch(toggledDownloads(false));
+         
         }else{
           dispatch(toggledDownloads(true));
           dispatch(nextDownload());

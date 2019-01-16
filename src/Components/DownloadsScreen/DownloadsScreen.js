@@ -50,12 +50,8 @@ class DownloadsScreen extends Component {
         this.props.loadData();
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ Downloads: nextProps.Downloads,task:nextProps.task,isPaused : nextProps.isPaused});  
+        this.setState({ Downloads: nextProps.Downloads ?  nextProps.Downloads : [],task:nextProps.task,isPaused : nextProps.isPaused});  
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return true
-    }
-
 
     render() {
 
@@ -63,8 +59,8 @@ class DownloadsScreen extends Component {
             <ScrollView style={styles.container}>
                 {this.state.Downloads ? this.state.Downloads.map((item,index) => (
                 <DowloadItem 
-                    title={item.title ? item.title : "undefined"} 
-                    chapterName={item.chapter ? item.chapter : "undefined"} 
+                    title={item.title ? item.title : " "} 
+                    chapterName={item.chapter ? item.chapter : " "} 
                     maxValue={item.pageStatus ? item.pageStatus.length : 3} 
                     value={item.pageStatus ? item.pageStatus.filter(el => {return el.status === 1 ?  el : null}).length : 0} 
                     key={index + item.title}/>
@@ -89,8 +85,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         Downloads: state.Downloader.downloads,
-        isFetching: state.Downloader.isFetching,
-        res: state.Downloader.res,
         task : state.Downloader.task,
         isPaused : state.Downloader.isPaused,
     };

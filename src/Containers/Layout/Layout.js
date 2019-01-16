@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,Text,Button} from 'react-native';
+import { StyleSheet, View,Text} from 'react-native';
 import GridItems from "../../Components/GridItems/GridItems";
 import Detail from "../../Components/Detail/Detail";
 import {createStackNavigator,createDrawerNavigator} from 'react-navigation';
-import { DrawerActions } from 'react-navigation';
 import HistoryScreen from "../../Components/HistoryScreen/HistoryScreen"
 import LibraryScreen from "../../Components/LibraryScreen/LibraryScreen"
 import ButtonIcon from "../../Components/Icon/Icon"
@@ -12,11 +11,8 @@ import DownloadsScreen from '../../Components/DownloadsScreen/DownloadsScreen';
 import LibraryCategories from '../../Components/LibraryScreen/LibraryCategories/LibraryCategories';
 import FilterDrawer from '../../Components/FilterDrawer/FilterDrawer';
 import UserDrawer from '../../Components/UserDrawer/UserDrawer';
-import GeneralSettings from '../../Components/SettingsScreen/GeneralSettings/GeneralSettings';
 import Settings from '../../Components/SettingsScreen/SettingScreen';
-import ReaderSettings from '../../Components/SettingsScreen/ReaderSetting/ReaderSetting';
-import AdvancedSettings from '../../Components/SettingsScreen/AdvancedSettings/AdvancedSettings';
-import DownloaderSettings from '../../Components/SettingsScreen/DownloadeSettings/DownloaderSettings';
+import SyncProgressModal from '../../Components/Modals/SyncProgressModal';
 import { connect } from 'react-redux'
 import {
     setMainDrawer,
@@ -181,6 +177,7 @@ class Layout extends Component{
     render() {
         return (
             <View style={styles.container}>
+                <SyncProgressModal></SyncProgressModal>
                 <RootStack style={styles.container}/>
             </View>
         )
