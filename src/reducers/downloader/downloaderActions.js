@@ -163,7 +163,6 @@ export function ReattachDownloads() {
   }
 }
 export function nextDownload() {
-
   return function(dispatch,getState) {
     dispatch(startingDownloads())
     const isPaused = getState().Downloader.isPaused ? true : false;
@@ -173,6 +172,9 @@ export function nextDownload() {
       let chapter = data[0].chapter;
       let page = data[0].pageStatus.findIndex(el => el.status===0);
       if(page === -1){
+        if(data[0].thumbnails){
+          dispatch(syncingComplete())
+        }
         data.shift();
         if(data.length > 0){
           title = data[0].title;
@@ -193,10 +195,9 @@ export function nextDownload() {
         }).done(() => {
             data[0].pageStatus[page].status = 1;
             let pages = data[0].pageStatus;
-           
             if(data.length < 2 && pages.filter(el => {return el.status === 1 ?  el : null}).length === pages.length){
               PushNotification.localNotification({
-                id: "69420", //for android cancel notification (must be stringified number)
+                id: "69420", 
                 title: "Download Complete",
                 message: "",
                 ongoing: false,
@@ -207,7 +208,7 @@ export function nextDownload() {
               }
             }else{
               PushNotification.localNotification({
-                id: "69420", //for android cancel notification (must be stringified number)
+                id: "69420", 
                 title: "Downloading....",
                 message : data[0].title +" "+data[0].chapter +": "+pages.filter(el => {return el.status === 1 ?  el : null}).length + "/"  +pages.length.toString(),
                 priority:"min",
@@ -224,9 +225,15 @@ export function nextDownload() {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));
-                  if(!isPaused) dispatch(nextDownload());
+                  if(isPaused) dispatch(nextDownload());
                 }else{
                   dispatch(startedDownloads(error))
+                  PushNotification.localNotification({
+                    id: "69420", 
+                    title: "Download Error, please clear queue",
+                    message: "",
+                    ongoing: false,
+                  });
                 }
             });
         });
@@ -234,10 +241,57 @@ export function nextDownload() {
           dispatch(startedDownloads(true))
         )
       }else{
-        
+        if(data.length === 0 && isPaused){
+          PushNotification.localNotification({
+            id: "69420", 
+            title: "Download Complete",
+            message: "",
+            ongoing: false,
+           
+          });
+          
+        }else if(data.length > 0 && !isPaused){
+          PushNotification.localNotification({
+            id: "69420", 
+            title: "Download Paused",
+            message: "",
+            ongoing: false,
+          });
+        }else{
+          PushNotification.localNotification({
+            id: "69420", 
+            title: "Download Error, please clear queue",
+            message: "",
+            ongoing: false,
+          });
+        }
         return( dispatch(startedDownloads(false)))
       } 
     }else{
+      if(data.length === 0 && isPaused){
+        PushNotification.localNotification({
+          id: "69420", 
+          title: "Download Complete",
+          message: "",
+          ongoing: false,
+         
+        });
+      
+      }else if(data.length > 0 && !isPaused){
+        PushNotification.localNotification({
+          id: "69420", 
+          title: "Download Paused",
+          message: "",
+          ongoing: false,
+        });
+      }else{
+        PushNotification.localNotification({
+          id: "69420", 
+          title: "Download Error, please clear queue",
+          message: "",
+          ongoing: false,
+        });
+      }
       return( dispatch(startedDownloads(false)))
     } 
   }

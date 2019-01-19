@@ -127,45 +127,26 @@ class Reader extends Component {
             });
         }
     }
-    nextChapter = () =>{
+    prevChapter = () =>{
         let index = this.state.index + 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
-            this.setState({index : index});
+            const chapter = this.state.Chapters[index];
             chapter.lastRead = + new Date();
             chapter.MarkedAsRead = true;
             this.saveChapter(chapter);
-            this.saveChapter(chapter);
-            if(this.state.fromWeb){
-                this.loadChapter();
-                this.scrollToStart(false);
-            }else{
-                const chapter = this.state.Chapters[index];
-                RNFS.exists(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
-                    if(result === true){
-                        this.loadChapter();
-                        this.scrollToStart(false);
-                    }
-                });
-            }
+            this.scrollToStart(false);
+            this.setState({index : index},()=>this.loadChapter());
         }
     }
-    prevChapter = () =>{
+    nextChapter = () =>{
         let index = this.state.index - 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
             const chapter = this.state.Chapters[index];
             chapter.lastRead = + new Date();
+            chapter.MarkedAsRead = true;
             this.saveChapter(chapter);
-            if(this.state.fromWeb){
-                this.loadChapter();
-                this.scrollToStart(false);
-            }else{
-                RNFS.exists(`${RNFS.DocumentDirectoryPath}/${chapter.book_id}/${chapter.number}${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
-                    if(result === true){
-                        this.loadChapter();
-                        this.scrollToStart(false);
-                    }
-                });
-            }
+            this.scrollToStart(false);
+            this.setState({index : index},()=>this.loadChapter());
         }
     }
     componentWillReceiveProps(nextProps){
@@ -182,12 +163,20 @@ class Reader extends Component {
         });
     }
     componentDidMount(){
-        this.loadChapter(this.props.navigation.getParam("uri",null));
+        this.loadChapter();
     }
-    loadChapter(fromWeb = this.state.fromWeb){
+    loadChapter(chapter){
+        let title = chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
+        let chapter = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+        RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
+            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
+               chapter.pages === response.length ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
+            })
+        }).catch(err => {console.log(err)});
+    }
+    loadChapterFromWeb(){
         const chapter = this.state.Chapters[this.state.index];
-        
-        if(fromWeb){
+        if(chapter.type === "IMAGE"){
             let images = [];
             for (let index = 1; index < chapter.pages; index++) {
                 images.push({path : 
@@ -208,37 +197,57 @@ class Reader extends Component {
                 Images: images,
                 currentPage:1,
             });
-            //this.scrollToPage(chapter.lastPage);
-        }else{
-            RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-')}/${chapter.number}-${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
-                if(chapter.type === "IMAGE"){
-                    result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")));
-                    const Height = Dimensions.get('window').height/2;
-                    result.forEach((element) => {
-                        element.key = element.path;
-                        element.height = Height;
-                    });  
-                    this.setState({
-                        Images: result,
-                        currentPage:1,
-                        fromWeb:false,
-                    });
-                }
-                if(chapter.type === "PDF"){
-                    this.setState({
-                        fromWeb:false,
-                        uri:result[0].path
-                    })
-                }
-    
-                return Promise.all([RNFS.stat(result[0].path), result[0].path]);
-            })
-            .catch((err) => {
-                console.log(err.message, err.code);
-            });
         }
-       
+        else if(chapter.type === "PDF"){
+            this.setState({
+                uri:ENDPOINT 
+                + "public/books/"
+                + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
+                + chapter.number + "-" 
+                + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
+                + index + ".pdf"
+            })
+        }else if(chapter.type === "EPUB"){
+            this.setState({
+                uri:ENDPOINT 
+                + "public/books/"
+                + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
+                + chapter.number + "-" 
+                + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
+                + index + ".epub"
+            })
+        }
     }
+    loadChapterFromStorage(){
+        const chapter = this.state.Chapters[this.state.index];
+        RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-')}/${chapter.number}-${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
+            if(chapter.type === "IMAGE"){
+                result.sort((a, b) => parseInt(a.name.replace(/\.[^/.]+$/, "")) - parseInt(b.name.replace(/\.[^/.]+$/, "")));
+                const Height = Dimensions.get('window').height/2;
+                result.forEach((element) => {
+                    element.key = element.path;
+                    element.height = Height;
+                });  
+                this.setState({
+                    Images: result,
+                    currentPage:1,
+                    fromWeb:false,
+                });
+            }
+            if(chapter.type === "PDF"){
+                this.setState({
+                    fromWeb:false,
+                    uri:result[0].path
+                })
+            }
+
+            return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+        })
+        .catch((err) => {
+            console.log(err.message, err.code);
+        });
+    }
+    
     startReached(e){
         let lastScrollHeight = this.state.lastScrollHeight
         let offset = this.state.horizontal ? e.nativeEvent.contentOffset.x : e.nativeEvent.contentOffset.y;
