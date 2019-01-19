@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,TouchableWithoutFeedback,Text,Dimensions,Button,FlatList} from 'react-native';
+import { StyleSheet, View,TouchableWithoutFeedback,Text,Dimensions,StatusBar ,FlatList} from 'react-native';
 import ReaderImage from "./ReaderImage/ReaderImage"
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import RNFS from "react-native-fs"
@@ -10,6 +10,7 @@ import ReaderPDF from './ReaderPDFView/ReaderPDF';
 import { connect } from 'react-redux'
 import {
     loadSettings,
+    saveSettings,
 } from '../../reducers/Settings/SettingsActions'
 import {
     saveChapter,
@@ -30,7 +31,7 @@ class Reader extends Component {
         fromWeb: false, 
 
         lastScrollHeight: null,
-
+        hidden: true,
         Chapters : null,
         index : null,
         currentPage: 1,
@@ -132,7 +133,7 @@ class Reader extends Component {
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
             const chapter = this.state.Chapters[index];
             chapter.lastRead = + new Date();
-            chapter.MarkedAsRead = true;
+            chapter.lastPage = this.state.currentPage;
             this.saveChapter(chapter);
             this.scrollToStart(false);
             this.setState({index : index},()=>this.loadChapter());
@@ -143,7 +144,7 @@ class Reader extends Component {
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
             const chapter = this.state.Chapters[index];
             chapter.lastRead = + new Date();
-            chapter.MarkedAsRead = true;
+            this.state.currentPage === chapter.pages ? chapter.MarkedAsRead = true : chapter.lastPage = this.state.currentPage;
             this.saveChapter(chapter);
             this.scrollToStart(false);
             this.setState({index : index},()=>this.loadChapter());
@@ -165,13 +166,17 @@ class Reader extends Component {
     componentDidMount(){
         this.loadChapter();
     }
-    loadChapter(chapter){
+    loadChapter(chapter = this.state.Chapters[this.state.index]){
         let title = chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
-        let chapter = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
-        RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-               chapter.pages === response.length ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
-            })
+        let chapterName = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+        RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}`).then(response => {
+            if(response){
+                RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}`).then(response => {
+                    chapter.pages === response.length ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
+                })
+            }else{
+                this.loadChapterFromWeb()
+            } 
         }).catch(err => {console.log(err)});
     }
     loadChapterFromWeb(){
@@ -292,6 +297,7 @@ class Reader extends Component {
         this.SettingsModal.toggleModal();
     }
     ChangeSettings=(setting)=>{
+        this.props.saveSettings(setting,"ReaderLayout")
         switch(setting) {
             case "H":
                 this.setState({horizontal:true,horizontalInv:false});
@@ -383,16 +389,14 @@ class Reader extends Component {
                     chapter = {this.state.Chapters[this.state.index].title}
                 />
                 <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/> 
-                </View>
+            </View>
                 : null }
             </View>
+            
         )
     }
 }
-/*<Button title="test" onPress={() => this.xd()} styles={{ position: 'absolute', top: 50}}<View style={{flex:1,position: 'absolute', top: 50}}>
-                    <Button title="Open" onPress={() => this.openFileSelector()}/>
-                    <Button title="test" onPress={() => this.xd()}/>
-                </View>/>*/
+
 const styles = StyleSheet.create({
     PageCounterContainer:{
         width: '100%', 
@@ -433,6 +437,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     loadSettings,
     saveChapter,
-    saveChapters
+    saveChapters,
+    saveSettings
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Reader);

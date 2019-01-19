@@ -9,27 +9,7 @@ export default class BottomNav extends Component {
         maxValue : 1,
         pos : new Animated.Value(0)
     }
-    toggleNav = (toggle) =>{
-        if(toggle){
-            Animated.timing(
-                this.state.pos,
-                { 
-                    toValue: -100,
-                    duration: 500,
-                    easing: Easing.linear(),
-                }
-              ).start();
-        }else{
-            Animated.timing(
-                this.state.pos,
-                { 
-                    easing: Easing.linear(),
-                    toValue: 0,
-                    duration: 500,
-                }
-              ).start();
-        }
-    }
+  
     setPage(value){
         this.props.setPage(value-1);
         this.setState({value:value});
@@ -46,7 +26,7 @@ export default class BottomNav extends Component {
     render() {
         return (
             
-            <Animated.View style={[styles.container,{bottom: this.state.pos}]} ref={(ref) => { this.BottomNav = ref; }}>
+            <View style={[styles.container]} ref={(ref) => { this.BottomNav = ref; }}>
                 <ButtonIcon name="skip-previous" Color="#fff" onPress={() => this.props.prevChapter()}/>
                 <View style={styles.SliderContainer}>
                     <View>
@@ -70,7 +50,7 @@ export default class BottomNav extends Component {
                     </View>
                 </View>
                 <ButtonIcon style={{alignItems: "flex-end",}} name="skip-next" Color="#FFF" onPress={() => this.props.nextChapter()}/>  
-            </Animated.View>
+            </View>
         )
     }
 }
@@ -86,6 +66,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center',
         flexWrap: 'wrap',
+        bottom:0,
         flexDirection: "row",
         
     },

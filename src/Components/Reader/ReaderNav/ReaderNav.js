@@ -1,11 +1,10 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions,} from 'react-native';
+import { StyleSheet, View, Dimensions,StatusBar} from 'react-native';
 import TopNav from './TopNav/TopNav';
 import BottomNav from './BottomNav/BottomNav';
 import * as Animatable from 'react-native-animatable';
 export default class ReaderNav extends Component {
-
     state={
         pages: null,
         currentPage: null,
@@ -17,14 +16,20 @@ export default class ReaderNav extends Component {
         let shown =this.state.shown;
         this.BottomNav.toggleNav(shown);
         this.setState({shown : !shown});
+        StatusBar.setHidden(!shown);
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ pages: nextProps.pages,currentPage: nextProps.currentPage,title : nextProps.title,chapter : nextProps.chapter });  
     }
-    
+    componentWillMount(){
+        StatusBar.setHidden(true);
+    }
+    componentWillUnmount(){
+        StatusBar.setHidden(false);
+    }
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <TopNav 
                     ref={(ref) => { this.TopNav = ref; }}
                     nav={this.props.nav} 
@@ -47,14 +52,14 @@ export default class ReaderNav extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+      
         position: 'absolute',
-        justifyContent: 'center', 
-        alignItems: 'center',
-        position: 'absolute',
+        top:0,
+        left:0,
+        right:0,
         bottom: 0,
         width: "100%",
-        height: Dimensions.get("window").height,
+        height: "100%",
     },
    
   

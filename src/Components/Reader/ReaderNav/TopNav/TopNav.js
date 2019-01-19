@@ -3,19 +3,17 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions,Text} from 'react-native';
 import ButtonIcon from '../../../Icon/Icon';
 export default class TopNav extends Component {
-    state = {
-        top: 24
+    state={
+        height:Dimensions.get("screen").height - 50
     }
-    _onLayout(){
-        let width = Dimensions.get("screen").width
-        let height = Dimensions.get("screen").height
-        width > height ? this.setState({top: 100}) : this.setState({top: 24})
+    onLayout(){
+        this.setState({height:Dimensions.get("screen").height - 50});
     }
     render() {
         return (
-            <View style={[styles.container,{top: this.state.top}]} onLayout={() => this._onLayout()}>
+            <View style={[styles.container, {bottom: this.state.height}]} onLayout={() => this.onLayout()}>
                 <ButtonIcon name="arrow-left" Color="#fff" onPress={() => this.props.nav.goBack(null)} />
-                <View style={{flex: 1,paddingTop:5}}>
+                <View style={{flex: 1}}>
                     <View style={{flexDirection: 'row'}}>
                         <Text numberOfLines={1} style={{color:"#fff",flex:1}}>{this.props.title ? this.props.title : "title"}</Text>
                     </View>
@@ -37,9 +35,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#3b424c",
         height:50,
         position: 'absolute',
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        flexWrap: 'wrap',
         flexDirection: "row",
-        alignItems: "flex-start",
     },
-   
-   
 });
