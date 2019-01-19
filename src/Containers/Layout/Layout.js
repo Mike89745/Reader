@@ -139,7 +139,7 @@ const Drawer = createDrawerNavigator(
         Catalog: {screen : CatalogStack},
         History: {screen : HistoryStack},
         Library: {screen : LibraryStack},
-        Download : {screen:DownloadStack},
+        Downloads : {screen:DownloadStack},
         Settings : {screen : SettingsStack},
     },
     {

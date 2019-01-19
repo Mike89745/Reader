@@ -12,7 +12,6 @@ import GridItemsHeaderRight from '../GridItems/GridItemsHeaderRight/GridItemsHea
 import { connect } from 'react-redux';
 import {
     GetBooksFromLibrary,
-    ClearBooks,
 } from '../../reducers/API/APIActions';
 const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 class LibraryScreen extends Component {
@@ -50,12 +49,20 @@ class LibraryScreen extends Component {
       };
     state = {
         categories:null,
+        syncing : false,
     }
     reRender = this.props.navigation.addListener('willFocus', () => {
         this.RefreshComponent();
     });
-   
+    componentWillReceiveProps(NextProps){
+        console.log(!NextProps.syncing && this.state.syncing,"syncing :" + !NextProps.syncing + "&&" +this.state.syncing);
+        if(!NextProps.syncing && this.state.syncing){
+            this.RefreshComponent();
+        } 
+        this.setState({syncing : NextProps.syncing})
+    }
     RefreshComponent =() =>{
+        this.props.GetBooksFromLibrary()
         this.setState({categories:null});
         db.allDocs().then((Response) => {
             let temp = [];
@@ -89,17 +96,7 @@ class LibraryScreen extends Component {
         return () => (<LibraryTab category={category} nav={this.props.navigation} />);
     }
     componentWillMount(){
-        this.props.GetBooksFromLibrary()
         this.props.navigation.setParams({refresh : () => this.RefreshComponent()});
-        db.allDocs().then((Response) => {
-            let temp = [];
-            for(let i of Response.rows){
-                i && temp.push(i.id);
-            }
-            //temp.length > 0 ? null : temp.unshift("Default");
-            temp.unshift("Default");
-            this.setState({categories:temp})
-        }).catch(error => console.log(error));
     }
     componentWillUnmount(){
         this.reRender;
@@ -145,10 +142,10 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
+        syncing : state.UserReducer.syncing,
     };
 };
 const mapDispatchToProps = {
     GetBooksFromLibrary,
-    ClearBooks,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryScreen);

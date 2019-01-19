@@ -220,7 +220,7 @@ export function nextDownload() {
             dispatch(saveData(data));
             dispatch(nextDownload());
         }).error((error) => {
-            RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`).then(response => {
+            RNFS.exists(data[0].thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`).then(response => {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));

@@ -11,6 +11,10 @@ Commads
   react-native run-android --variant=release
   adb reverse tcp:8000 tcp:8000
   react-native log-android
+
+
+  $ cd android
+  $ ./gradlew assembleRelease
 */
 /*
 Main Colors

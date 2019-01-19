@@ -22,7 +22,8 @@ export default UserReducer = (state = {},action) =>{
         case SIGNING_IN:
             return Object.assign({}, state, {
                 signingIn : action.signingIn,
-                error : false
+                error : false,
+                msg : null,
             })
         case SIGN_IN_SUCCES:
             return Object.assign({}, state, {
@@ -41,7 +42,8 @@ export default UserReducer = (state = {},action) =>{
         case SIGNING_UP:
             return Object.assign({}, state, {
                 signingUp : action.signingIn,
-                error : false
+                error : false,
+                msg : null,
             })
         case SIGN_UP_ERROR:
             return Object.assign({}, state, {
@@ -52,7 +54,8 @@ export default UserReducer = (state = {},action) =>{
         case SIGN_UP_SUCCES:
             return Object.assign({}, state, {
                 signingUp : false,
-                error : action.error
+                error : action.error,
+                msg : action.msg
             })
 
         case SYNCING:

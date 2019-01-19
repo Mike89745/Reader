@@ -31,6 +31,12 @@ const library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 const User = new PouchDB('User', { adapter: 'pouchdb-adapters-rn'});
 const categoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
+function Logmsg(msg){
+    return{
+        type:LOGMSG,
+        msg : msg,
+    }
+}
 function signingIn(){
     return{
         type : SIGNING_IN,
@@ -106,14 +112,15 @@ export function SignIn(email,password){
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            if(response.error) {
-                dispatch(signingInError(response.msg))
+            //dispatch(Logmsg(response));
+            if(response.err) {
+                dispatch(signingInError("Wrong password or username"));
             }else{
                 response.user.password = password
                 dispatch(saveUser(response.user));
                 dispatch(signInSucces(response.user));
             }
-        }).catch(err => {dispatch(signingInError(err))});
+        }).catch(err => {dispatch(signingInError("Login error, please try again later."))});
     }
 }
 
@@ -129,6 +136,7 @@ function signUpSucces(){
         type : SIGN_UP_SUCCES,
         signingUp : false,
         error : false,
+        msg : "You Have Been registred!"
     }
 }
 function signingUpError(err){
@@ -152,11 +160,12 @@ export function SignUp(nick,password,email){
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            if(response.error) {
-                dispatch(signingUpError(response.msg))
+            dispatch(Logmsg(response))
+            /*if(response.error) {
+                dispatch(signingUpError(""))
             }else{
                 dispatch(signUpSucces(response.user))
-            }
+            }*/
         }).catch(err => {dispatch(signingUpError(err))});
     }
 }
@@ -177,7 +186,8 @@ export function SignOut(){
 function loadedUser(user){
     return{
         type : LOADED_USER,
-        user : user
+        user : user,
+        LoadingUserErr : false
     }
 }
 function loadedUserError(err){
@@ -194,9 +204,9 @@ export function LoadUser(){
             if(res.rows.length > 0){ 
                 dispatch(loadedUser(res.rows[0].doc));
             }else{
-                dispatch(loadedUserError(res))
+                dispatch(loadedUserError(true))
             }
-        }).catch(err => dispatch(loadedUserError(err)))
+        }).catch(err => dispatch(loadedUserError(true)))
     }
 }
 function syncing(){
@@ -244,20 +254,28 @@ function CreateCategories(newBooks){
         if(newBooks){
             if(newBooks.length > 0){
                 newBooks.forEach(book =>{
-                    book.categories.forEach(category =>{
-                        categories.includes(category) ? null : categories.push(category);
-                    })
+                    if(book.categories){
+                        book.categories.forEach(category =>{
+                            categories.includes(category) ? null : categories.push(category);
+                        })
+                    }
                 });
-                categoriesDB.allDocs({include_docs : true}).then(res =>{
-                    res.rows.forEach(category =>{
-                        categories.includes(category.doc.id) ? categories.splice(categories.indexOf(category.doc.id)) : null;
+                if(categories.length > 0){
+                    categoriesDB.allDocs({include_docs : true}).then(res =>{
+                        res.rows.forEach(category =>{
+                            categories.includes(category.doc.id) ? categories.splice(categories.indexOf(category.doc.id)) : null;
+                        })
+                        categories.forEach(category =>{
+                            categoriesDB.put({_id : category}).catch(err => console.log(err,"added category err"))
+                        })
+                        dispatch(syncingProgress(75,"Downloading thumbnails..."))
+                        dispatch(toggleDownloads());
                     })
-                    categories.forEach(category =>{
-                        categoriesDB.put({_id : category}).catch(err => console.log(err,"added category err"))
-                    })
-                    dispatch(syncingProgress(75,"Downloading thumbnails..."))
+                }else{
+                    dispatch(syncingProgress(75,"Downloading thumbnails..."));
                     dispatch(toggleDownloads());
-                })
+                }
+                
             }else{
                 dispatch(syncingComplete())
             }

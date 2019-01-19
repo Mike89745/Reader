@@ -167,7 +167,7 @@ export function UpdateTitles(Titles) {
   return function(dispatch) {
     let notificationMessage = ``
     let NewAdded = false;
-    let TitleCount =Titles.length;
+    let TitleCount = Titles.length;
     for (let a = 0; a < TitleCount; a++) {
       fetch(ENDPOINT + 'getChapters/' + Titles[a]).then(response =>{
         return response.json()
@@ -233,14 +233,24 @@ export function UpdateTitles(Titles) {
                 dispatch(getChaptersError(err));
               })
           }else{
-            PushNotification.localNotification({
-              id: "42069", //for android cancel notification (must be stringified number)
-              message: Titles[a],
-              title: "Updating Titles",
-              vibrate: false,
-              priority:"low",
-              importance : "min",
-            }); 
+            if(TitleCount-1 == a){
+              let message = null;
+              NewAdded ? message = notificationMessage : message = "No new Chapters";
+              PushNotification.localNotification({
+                id: "42069", //for android cancel notification (must be stringified number)
+                message: message,
+                title: "Updated Titles",
+              }); 
+            }else{
+              PushNotification.localNotification({
+                id: "42069", //for android cancel notification (must be stringified number)
+                message: Titles[a],
+                title: "Updating Titles",
+                vibrate: false,
+                priority:"low",
+                importance : "min",
+              }); 
+            }
           }
       }).catch(error =>{
         dispatch(getChaptersError(error));
