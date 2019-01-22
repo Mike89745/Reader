@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,TouchableWithoutFeedback,Text,Dimensions,StatusBar ,FlatList} from 'react-native';
+import { StyleSheet, View,TouchableWithoutFeedback,Text,Dimensions,Button ,FlatList} from 'react-native';
 import ReaderImage from "./ReaderImage/ReaderImage"
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import RNFS from "react-native-fs"
@@ -131,7 +131,7 @@ class Reader extends Component {
     prevChapter = () =>{
         let index = this.state.index + 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
-            const chapter = this.state.Chapters[index];
+            const chapter = this.state.Chapters[index + 1];
             chapter.lastRead = + new Date();
             chapter.lastPage = this.state.currentPage;
             this.saveChapter(chapter);
@@ -142,9 +142,9 @@ class Reader extends Component {
     nextChapter = () =>{
         let index = this.state.index - 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
-            const chapter = this.state.Chapters[index];
+            const chapter = this.state.Chapters[index + 1];
             chapter.lastRead = + new Date();
-            this.state.currentPage === chapter.pages ? chapter.MarkedAsRead = true : chapter.lastPage = this.state.currentPage;
+            this.state.currentPage + 1 >= chapter.pages ? chapter.MarkedAsRead = true : chapter.lastPage = this.state.currentPage;
             this.saveChapter(chapter);
             this.scrollToStart(false);
             this.setState({index : index},()=>this.loadChapter());
@@ -336,6 +336,7 @@ class Reader extends Component {
             {this.state.Chapters ? 
             this.state.Chapters[this.state.index].type ==="IMAGE" ?(
                 <Viewport.Tracker style={styles.container} preTriggerRatio={0.5}>
+               
                     <FlatList 
                         scrollEventThrottle={16}
                         horizontal = {this.state.horizontal}
@@ -349,9 +350,12 @@ class Reader extends Component {
                         windowSize={this.state.Images ? this.state.Images.length : 21}
                         maxToRenderPerBatch={1}
                         removeClippedSubviews={true}
+                        style={{zIndex:1,elevation:1}}
                         onScrollEndDrag={(e) => this.startReached(e)}
                         renderItem={({item,index}) =>
+                       
                             <ReaderImage 
+                                showNav = {this.Nav.ToggleNav}
                                 fromWeb={this.state.fromWeb} 
                                 source={item.path} 
                                 imageIndex={index}
@@ -359,6 +363,7 @@ class Reader extends Component {
                             />
                         }
                     />
+                 
                 </Viewport.Tracker>)
             : null : null}
             { this.state.Chapters ? this.state.Chapters[this.state.index].type === "PDF" ?  
@@ -375,7 +380,7 @@ class Reader extends Component {
             : null : null}
              { this.state.Chapters ?this.state.Chapters[this.state.index].type ==="EPUB" ? <Text>Epub</Text> : null : null}
              {this.state.Chapters ?   
-             <View>         
+             <View style={{position:"relative",flex:1,zIndex:100,elevation:5}}>         
                 <ReaderNav 
                     ref={(ref) => { this.Nav = ref; }}
                     nav={this.props.navigation} 
@@ -398,35 +403,10 @@ class Reader extends Component {
 }
 
 const styles = StyleSheet.create({
-    PageCounterContainer:{
-        width: '100%', 
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-        justifyContent: 'center', 
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0
-    },
-    PageCounter:{
-        color: 'white',
-        textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset:{width: 5, height: 5},
-        textShadowRadius:10,
-    },
     container :{
         flex:1,
         backgroundColor: "black"
     },
-    Spinner : {
-        position: 'absolute', 
-        top: 0, 
-        left: 0, 
-        right: 0, 
-        bottom: 0, 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        flex : 1,
-        height: Dimensions.get("window").height
-    }
 });
 const mapStateToProps = state => {
     return {

@@ -31,7 +31,6 @@ class Detail extends Component {
         return {
             headerStyle: {
                 backgroundColor: '#3b424c',
-                
                 shadowColor: "#fff",
                 shadowOffset: {
                     width: 0,
@@ -39,10 +38,9 @@ class Detail extends Component {
                 },
                 shadowOpacity:0,
                 shadowRadius: 0,
-
                 elevation: 0,
               },
-            headerTitle: ( <Text style={{color: "#fff"}}> {params ? params.title : ''}</Text> ),
+            headerTitle: ( <View style={{width: Math.round(Dimensions.get("screen").width/1.5)}}><Text style={{color: "#fff"}}>{params ? params.title : ''}</Text></View>),
             headerLeft:  <ButtonIcon name="arrow-left" Color="#fff" onPress={() => navigation.goBack(null)} />,
             headerRight : <DetailHeaderRight bookID={params ?params.title : null}></DetailHeaderRight>
         };

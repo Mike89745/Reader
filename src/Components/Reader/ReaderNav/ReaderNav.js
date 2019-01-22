@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions,StatusBar} from 'react-native';
+import { StyleSheet, View, Animated,StatusBar} from 'react-native';
 import TopNav from './TopNav/TopNav';
 import BottomNav from './BottomNav/BottomNav';
 import * as Animatable from 'react-native-animatable';
@@ -11,12 +11,18 @@ export default class ReaderNav extends Component {
         title : null,
         chapter : null,
         shown : false,
+        opacity: new Animated.Value(0)
     }
     ToggleNav =()=>{
         let shown =this.state.shown;
-        this.BottomNav.toggleNav(shown);
         this.setState({shown : !shown});
-        StatusBar.setHidden(!shown);
+        StatusBar.setHidden(shown);
+        if(shown){
+            Animated.timing(this.state.opacity, { toValue: 0,duration:300,useNativeDriver:true }).start();
+        }else{
+            Animated.timing(this.state.opacity, { toValue: 1,duration:300,useNativeDriver:true }).start();
+        }
+        
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ pages: nextProps.pages,currentPage: nextProps.currentPage,title : nextProps.title,chapter : nextProps.chapter });  
@@ -29,7 +35,7 @@ export default class ReaderNav extends Component {
     }
     render() {
         return (
-            <View style={styles.container}>
+            <Animated.View style={[styles.container,{opacity:this.state.opacity}]}>
                 <TopNav 
                     ref={(ref) => { this.TopNav = ref; }}
                     nav={this.props.nav} 
@@ -45,14 +51,16 @@ export default class ReaderNav extends Component {
                     prevChapter={this.props.prevChapter}
                     currentPage={this.state.currentPage}
                 />
-            </View>
+            </Animated.View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-      
+        flex: 1,
+        elevation: 5,
+        zIndex : 100,
         position: 'absolute',
         top:0,
         left:0,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,Dimensions,Image,Button} from 'react-native';
+import { StyleSheet, View,Dimensions,Image,Button,TouchableWithoutFeedback} from 'react-native';
 import PhotoView from 'react-native-photo-view';
 import { Viewport } from '@skele/components'
 import GiftedSpinner from '../../../../node_modules/react-native-gifted-spinner';
@@ -23,11 +23,8 @@ export default class ReaderImage extends Component {
                 this.props.setHeight(Math.floor(height * ratio),this.props.imageIndex);
             },(err)=>{console.log(err)});
         }
-       
-       
     }
     shouldComponentUpdate(nextProps, nextState) {
-       // if(nextState.width != this.state.width || nextState.height != this.state.height) console.log(this.props.imageIndex," - ");
         return nextState.width != this.state.width || nextState.height != this.state.height ;
     }
     onViewportChange(){
@@ -35,17 +32,9 @@ export default class ReaderImage extends Component {
         this.setState({inView : !inView});
         this.calcImageSize(!inView);
     }
-    Test=()=>{
-        console.log("test");
-    }
-    componentDidMount() {
-        //console.log(this.props.source);
-    }
-    componentWillUnmount(){
-      //  console.log(this.props.imageIndex,"unmounted");
-    }
     render() {
         return (
+            <TouchableWithoutFeedback onPress={() => this.props.showNav()}>
             <ViewportAwareView styles={styles.container} 
             onViewportEnter={() => this.onViewportChange()}
             onViewportLeave={() => this.onViewportChange()}>
@@ -78,19 +67,12 @@ export default class ReaderImage extends Component {
                     />
                 </View> 
             </ViewportAwareView>
+            </TouchableWithoutFeedback>
         )
 
     }
 }
-/*<PhotoView
-loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
-source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
-minimumZoomScale={1}
-maximumZoomScale={3}
-androidScaleType="fitCenter"
-fadeDuration = {200}
-style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "red"}}
-/>*/
+
 const styles = StyleSheet.create({
     retryButtoncontainer:{
         width: Dimensions.get('window').width,

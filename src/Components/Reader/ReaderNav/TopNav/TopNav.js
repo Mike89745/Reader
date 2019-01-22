@@ -4,10 +4,10 @@ import { StyleSheet, View, Dimensions,Text} from 'react-native';
 import ButtonIcon from '../../../Icon/Icon';
 export default class TopNav extends Component {
     state={
-        height:Dimensions.get("screen").height - 50
+        height:Dimensions.get("screen").height - 74
     }
     onLayout(){
-        this.setState({height:Dimensions.get("screen").height - 50});
+        this.setState({height:Dimensions.get("screen").height - 74});
     }
     render() {
         return (

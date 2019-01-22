@@ -6,7 +6,9 @@ export const LOCK_FILTER_DRAWER = "LOCK_FILTER_DRAWER";
 export const SET_ACTIVE_ROUTE = "SET_ACTIVE_ROUTE";
 export function ToggleFilterDrawer() {
     return function(dispatch,getState) {
-        getState().DrawerNav.FilterDrawer.toggleDrawer();
+        const FilterDrawer = getState().DrawerNav.FilterDrawer;
+        FilterDrawer.toggleDrawer();
+       
     }
 }
 export function ToggleMainDrawer() {

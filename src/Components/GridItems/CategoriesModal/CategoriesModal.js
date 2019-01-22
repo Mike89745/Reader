@@ -4,6 +4,7 @@ import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
 import CheckBox from './Checkbox/CheckBox';
 import PouchDB from 'pouchdb-adapters-rn';
+import { nextDownload } from '../../../reducers/downloader/downloaderActions';
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const CategoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class CategoriesModal extends Component {
@@ -50,9 +51,19 @@ export default class CategoriesModal extends Component {
     componentDidMount() {
         this.loadCategories()
     }
-
+    shouldComponentUpdate(NextState,NextProps){
+        if(!this.state.categories && NextState.categories){
+            return true
+        }
+        else if(!NextState.categories && this.state.categories){
+            return true
+        }
+        else if(this.state.categories && NextState.categories){
+            return this.state.categories.length != NextState.categories.length 
+        }
+        
+    }
     render() {
-        console.log(this.state.categories);
         return (
         <Modal
             animationIn="zoomIn"

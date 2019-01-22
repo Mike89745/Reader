@@ -9,7 +9,6 @@ export default class BottomNav extends Component {
         maxValue : 1,
         pos : new Animated.Value(0)
     }
-  
     setPage(value){
         this.props.setPage(value-1);
         this.setState({value:value});
@@ -57,6 +56,7 @@ export default class BottomNav extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        elevation:10,
         paddingTop: 5,
         width: '100%', 
         backgroundColor: "#3b424c",

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text,ScrollView,Button} from 'react-native';
-import RF from "react-native-responsive-fontsize"
 import Chapter from "./Chapter/Chapter"
-import RNFS from "react-native-fs";
 import { connect } from 'react-redux'
 import {
     loadData,

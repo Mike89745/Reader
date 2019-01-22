@@ -24,7 +24,7 @@ Main Colors
 */
 
 import React, {Component} from 'react';
-import {StyleSheet, View,Button} from 'react-native';
+import {StyleSheet, View,Button,StatusBar} from 'react-native';
 import Layout from "./src/Containers/Layout/Layout";
 import { MenuProvider } from 'react-native-popup-menu';
 import PushNotification from 'react-native-push-notification'
@@ -37,11 +37,12 @@ import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware,
-  loggerMiddleware,
+ // loggerMiddleware,
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){
     store.dispatch(loadSettings());
+    StatusBar.setBackgroundColor("#3b424c");
   }
   render() {
     return (

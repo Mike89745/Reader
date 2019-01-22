@@ -20,6 +20,10 @@ import {
     ToggleFilterDrawer,
     ToggleMainDrawer
   } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+import PouchDB from 'pouchdb-adapters-rn';
+import find from 'pouchdb-find';
+PouchDB.plugin(find)
+const db = new PouchDB('Settings', { adapter: 'pouchdb-adapters-rn'});
 const SettingsStack = createStackNavigator(
     {
         Settings:{screen : Settings},
@@ -65,6 +69,7 @@ const DownloadStack = createStackNavigator(
 const HistoryStack = createStackNavigator(
     {
         HistoryScreen: {screen : HistoryScreen},
+        Details: {screen : Detail},
         Reader: {screen : Reader},
     },
     {
@@ -118,9 +123,8 @@ const CatalogStack = createStackNavigator(
         drawerLabel: 'Katalog',
         initialRouteName: 'Catalog',
         headerMode: 'float',
-        
         navigationOptions: ({navigation}) => ({
-
+            drawerLockMode:"locked-closed",
             headerTitle: ( <Text style={{color:"white"}}>Catalog</Text> ),
             headerLeft: (
                 <ButtonIcon
@@ -132,8 +136,6 @@ const CatalogStack = createStackNavigator(
         })
     }
 );
-
-
 const Drawer = createDrawerNavigator(
     {
         Catalog: {screen : CatalogStack},
@@ -153,6 +155,17 @@ const Drawer = createDrawerNavigator(
         drawerCloseRoute: 'MainDrawerClose',
     }
 );
+Drawer.navigationOptions = ({ navigation }) => {
+    let name = (navigation.state.index !== undefined ? navigation.state.routes[navigation.state.index] : navigation.state.routeName)
+    let drawerLockMode = 'locked-closed'
+    name = name.routes[name.index]  
+    if (name.routeName === 'LibraryScreen' || name.routeName === 'Catalog') {
+        drawerLockMode = 'unlocked'
+    }
+    return {
+        drawerLockMode,
+    };
+}
 
 
 const RootStack = createDrawerNavigator(
@@ -169,9 +182,21 @@ const RootStack = createDrawerNavigator(
         headerMode: 'none',
         drawerOpenRoute: 'FilterDrawerOpen',
         drawerCloseRoute: 'FilterDrawerClose',
+        drawerLockMode:"locked-closed"
     }
 );
-
+RootStack.navigationOptions = ({ navigation }) => {
+    let name = (navigation.state.index !== undefined ? navigation.state.routes[navigation.state.index] : navigation.state.routeName)
+    let drawerLockMode = 'locked-closed'
+    console.log(name)
+   // name = name.routes[name.index]
+    if (name.routeName === 'LibraryScreen' || name.routeName === 'Catalog') {
+        drawerLockMode = 'unlocked'
+    }
+    return {
+        drawerLockMode,
+    };
+}
 
 class Layout extends Component{
     render() {
