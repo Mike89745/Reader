@@ -27,7 +27,7 @@ export default class Chapter extends Component {
                     </View>
                 </View>
                 {this.state.visible ?  <View>
-                    <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eget felis eu est posuere auctor. Sed ornare nulla pharetra, venenatis tellus in, lacinia felis. Sed porttitor vestibulum lacinia. Pellentesque quis velit quis est iaculis posuere. Fusce ultricies augue non dolor scelerisque, id laoreet quam faucibus. Cras dictum egestas arcu. Sed purus quam, suscipit at tempor nec, rhoncus ut risus. Aenean efficitur dapibus imperdiet. Duis suscipit placerat pharetra.</Text>
+                    <Text>{this.props.text}</Text>
                 </View> : null }
                 
             </View>

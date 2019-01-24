@@ -23,7 +23,6 @@ import { ENDPOINT } from '../../Values/Values';
 import DetailHeaderRight from './DetailHeaderRight/DetailHeaderRight';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
-const ChaptersDB = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 
 class Detail extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -170,7 +169,7 @@ class Detail extends Component {
                 <ScrollView>
                     {this.state.info ? 
                     <View> 
-                        <View style={{flexDirection : "row",padding: 10, height : this.state.height, backgroundColor: "#Dee"}}>
+                        <View style={{flexDirection : "row",padding: 10, height : this.state.height}}>
                             <View style={{width : this.state.size,paddingRight: 10}}>
                                 <ThumbNail 
                                 source={this.state.added ? 
@@ -183,7 +182,7 @@ class Detail extends Component {
                         </View>
                         <View style={styles.content}>
                             <Description description={this.state.info[0].description}/>
-                            <View style={{flex:1,alignSelf:"flex-end",flexDirection:"row",paddingTop: 8}}>
+                            <View style={{flex:1,alignSelf:"flex-end",flexDirection:"row",paddingTop: 0}}>
                                 <ButtonIcon name={this.state.added ? "bookmark-minus" : "bookmark-plus"} backgroundColor="#3b424c" borderRadius={50} Color="#fff" onPress={() => this.addToLibrary()}/>
                             </View>
                             <TagList tags={this.state.info[0].tags}/>

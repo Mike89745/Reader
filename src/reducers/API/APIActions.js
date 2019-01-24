@@ -3,14 +3,22 @@ import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 PouchDB.plugin(find)
 const db = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
-const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
+
 export const GET_BOOKS = 'GET_BOOKS';
 export const GET_BOOKS_FROM_LIBRARY = 'GET_BOOKS_FROM_LIBRARY';
 export const GET_BOOKS_ERROR = 'GET_BOOKS_ERROR';
 export const GETTINGS_BOOKS = 'GETTINGS_BOOKS';
+
 export const SEARCH_BOOKS = 'SEARCH_BOOKS';
 export const SEARCHING_BOOKS = 'SEARCHING_BOOKS';
 export const SEARCH_BOOKS_ERROR = 'SEARCH_BOOKS_ERROR';
+
+export const GETTING_REVIEWS = "GETTING_REVIEWS";
+export const GOT_REVIEWS = "GOT_REVIEWS";
+export const GOT_REVIEWS_ERROR = "GOT_REVIEWS_ERROR";
+export const CREATED_REVIEW = "CREATED_REVIEW";
+export const CREATED_REVIEW_ERROR = "CREATED_REVIEW_ERROR";
+
 import {ENDPOINT} from "../../Values/Values"
 function GettingBooks(res){
     return{
@@ -66,7 +74,7 @@ export function GetBooksFromAPI(page) {
         )
     }
 }
-export function GetBooksFromLibrary(category) {
+export function GetBooksFromLibrary() {
     return function(dispatch,getState) {
         let data = getState().Booker.CatalogBooks;
         if(!data) data = [];
@@ -166,5 +174,74 @@ export function SearchBooksFromLibrary(text,INtags,NINtags) {
                 Toast.show("Failed to create indexese", Toast.LONG);
             })
         )
+    }
+}
+export function CreateReview(Review){
+    return function(dispatch){
+        fetch(`http://localhost:8000/addReview`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(Review),
+        }).then((response) => {
+            response.json().then((body) => {
+                body.error ? dispatch(CreateReviewError(true,body.error)) : dispatch(CreatedReview())
+            });
+        });
+    }
+}
+export function getReviewsFromAPI(book_id){
+    return function(dispatch){
+        dispatch(gettingReviews());
+        fetch("http://localhost:8000/getReviews/"+ book_id.replace(/[/\\?%*:|"<>. ]/g, '-'), )
+        .then(response =>{
+            return response.json()
+        }).then((response) => {
+            let data = [];
+            console.log(response);
+            response.docs.map(el => data.push({doc:el}));
+            if(data.length === 0) Toast.show("Nothing Found", Toast.LONG);
+            dispatch(gotReviews(data,false))
+        }).catch(error => {
+            dispatch(gotReviewsError(true,error))
+            //Toast.show("Searched Failed", Toast.LONG);
+        })
+    }
+}
+function gettingReviews(){
+    return{
+        type: GETTING_REVIEWS,
+        gettingReviews : true
+    }
+}
+function gotReviews(Reviews,error){
+    return{
+        type: GOT_REVIEWS,
+        Reviews : Reviews,
+        gettingReviews : false
+    }
+}
+function gotReviewsError(error,errormsg){
+    return{
+        type: GOT_REVIEWS_ERROR,
+        gettingReviews : false,
+        ReviewError: error,
+        ReviewErrorMSG : errormsg,
+    }
+}
+function CreateReviewError(error,errormsg){
+    return{
+        type: CREATED_REVIEW_ERROR,
+        ReviewError: error,
+        ReviewErrorMSG : errormsg,
+    }
+}
+ 
+function CreatedReview(){
+    return{
+        type: CREATED_REVIEW,
+        ReviewError : false,
     }
 }

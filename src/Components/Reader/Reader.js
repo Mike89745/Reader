@@ -232,7 +232,8 @@ class Reader extends Component {
                 result.forEach((element) => {
                     element.key = element.path;
                     element.height = Height;
-                });  
+                }); 
+                console.log(result); 
                 this.setState({
                     Images: result,
                     currentPage:1,
@@ -380,7 +381,7 @@ class Reader extends Component {
             : null : null}
              { this.state.Chapters ?this.state.Chapters[this.state.index].type ==="EPUB" ? <Text>Epub</Text> : null : null}
              {this.state.Chapters ?   
-             <View style={{position:"relative",flex:1,zIndex:100,elevation:5}}>         
+             <View>         
                 <ReaderNav 
                     ref={(ref) => { this.Nav = ref; }}
                     nav={this.props.navigation} 

@@ -50,8 +50,15 @@ export default class CategoriesModal extends Component {
     }
     componentDidMount() {
         this.loadCategories()
+        this.setState({CheckedCategories:this.props.currentCategories});
+    }
+    componentWillReceiveProps(NextProps){
+        this.setState({CheckedCategories:NextProps.currentCategories});
     }
     shouldComponentUpdate(NextState,NextProps){
+        if(NextProps.currentCategories){
+            return true
+        }
         if(!this.state.categories && NextState.categories){
             return true
         }
@@ -78,7 +85,7 @@ export default class CategoriesModal extends Component {
                     data={this.state.categories}
                     renderItem={({item,index}) => 
                     <CheckBox 
-                        isChecked={false} 
+                        isChecked={this.state.CheckedCategories ? this.state.CheckedCategories.includes(item.id) : false} 
                         text={item.id} 
                         ref={(CheckBoxRef) => this.addRef(CheckBoxRef,index)}/>}
                     />

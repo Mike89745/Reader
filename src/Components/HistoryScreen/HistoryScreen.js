@@ -58,19 +58,21 @@ class HistoryScreen extends Component {
       }
       resumeReading =() =>{
         const chapter = this.state.chapterToLoad;
-        this.props.getChaptersFromLibrary(chapter.book_id);
-        this.isDownloaded(chapter).then(downloaded => {
-            const chapterIndex = this.props.Chapters.findIndex(x => x._id == chapter._id)
-            this.props.navigation.navigate('Reader',{
-                index : chapterIndex,
-                downloaded : !downloaded,
-                uri: downloaded ? 
-                    null
-                    :
-                    ENDPOINT + "public/books/" + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "/",
-                refresh : this.RefreshComponent
-            })
-        }).catch(err => console.log(err));
+        if(chapter){
+            this.props.getChaptersFromLibrary(chapter.book_id);
+            this.isDownloaded(chapter).then(downloaded => {
+                const chapterIndex = this.props.Chapters.findIndex(x => x._id == chapter._id)
+                this.props.navigation.navigate('Reader',{
+                    index : chapterIndex,
+                    downloaded : !downloaded,
+                    uri: downloaded ? 
+                        null
+                        :
+                        ENDPOINT + "public/books/" + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "/",
+                    refresh : this.RefreshComponent
+                })
+            }).catch(err => console.log(err));
+        }
     }
     LoadBookChapters =(chapter)=>{
         this.setState({chapterToLoad : chapter});
@@ -104,6 +106,10 @@ class HistoryScreen extends Component {
 //            SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
         })
     }  
+    NavigateToDetail=(chapter)=>{
+        console.log(chapter.book_id);
+        this.props.navigation.navigate('Details',{_id : chapter.book_id})
+    }
     componentDidMount(){
         this.loadHistory();
     }
@@ -114,7 +120,7 @@ class HistoryScreen extends Component {
         return (
             <ScrollView style={styles.container}>
              {this.state.chapters ? this.state.chapters.map((item,index) => (
-               <HistoryItem chapter={item} key={item._id} removeChapter={this.RemoveChapter} resumeReading = {this.LoadBookChapters}/>
+               <HistoryItem chapter={item} key={item._id} removeChapter={this.RemoveChapter} resumeReading = {this.LoadBookChapters} NavigateToDetail={this.NavigateToDetail}/>
              ))
             :null}
             </ScrollView>

@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
         fontSize: RF(2.5),
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: '#0099CC'
+        borderColor: '#3b424c'
     }
 });

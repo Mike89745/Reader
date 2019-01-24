@@ -55,7 +55,6 @@ class LibraryScreen extends Component {
         this.RefreshComponent();
     });
     componentWillReceiveProps(NextProps){
-        console.log(!NextProps.syncing && this.state.syncing,"syncing :" + !NextProps.syncing + "&&" +this.state.syncing);
         if(!NextProps.syncing && this.state.syncing){
             this.RefreshComponent();
         } 

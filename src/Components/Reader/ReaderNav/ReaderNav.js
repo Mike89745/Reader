@@ -59,8 +59,6 @@ export default class ReaderNav extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        elevation: 5,
-        zIndex : 100,
         position: 'absolute',
         top:0,
         left:0,

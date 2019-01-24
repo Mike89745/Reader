@@ -35,7 +35,7 @@ export default class ReaderImage extends Component {
     render() {
         return (
             <TouchableWithoutFeedback onPress={() => this.props.showNav()}>
-            <ViewportAwareView styles={styles.container} 
+            <ViewportAwareView  styles={styles.container} 
             onViewportEnter={() => this.onViewportChange()}
             onViewportLeave={() => this.onViewportChange()}>
                 <View style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "black"}} onLayout={() => this.calcImageSize(true)}>

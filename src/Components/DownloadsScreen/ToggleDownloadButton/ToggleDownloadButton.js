@@ -22,7 +22,7 @@ class ToggleDownloadButton extends Component {
         return (
                 <ButtonIcon
                     onPress={() => this.props.toggleDownloads()}
-                    name={this.state.isPaused ? "play" : "pause"}
+                    name={this.state.isPaused ? "pause" : "play"}
                     Color="#ffffff"
                 />
         )

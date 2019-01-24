@@ -11,6 +11,7 @@ import DownloadsScreen from '../../Components/DownloadsScreen/DownloadsScreen';
 import LibraryCategories from '../../Components/LibraryScreen/LibraryCategories/LibraryCategories';
 import FilterDrawer from '../../Components/FilterDrawer/FilterDrawer';
 import UserDrawer from '../../Components/UserDrawer/UserDrawer';
+import ReviewScreen from '../../Components/Detail/ReviewScreen/ReviewScreen'
 import Settings from '../../Components/SettingsScreen/SettingScreen';
 import SyncProgressModal from '../../Components/Modals/SyncProgressModal';
 import { connect } from 'react-redux'
@@ -20,10 +21,18 @@ import {
     ToggleFilterDrawer,
     ToggleMainDrawer
   } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
-import PouchDB from 'pouchdb-adapters-rn';
-import find from 'pouchdb-find';
-PouchDB.plugin(find)
-const db = new PouchDB('Settings', { adapter: 'pouchdb-adapters-rn'});
+const DetailStack = createStackNavigator(
+    {
+        Detail:{screen:Detail},
+        ReviewScreen:{screen : ReviewScreen},
+    },
+    {
+        drawerLabel: 'Detail',
+        initialRouteName: 'Detail',
+        headerMode: 'float',
+        
+    }
+);
 const SettingsStack = createStackNavigator(
     {
         Settings:{screen : Settings},
@@ -69,7 +78,7 @@ const DownloadStack = createStackNavigator(
 const HistoryStack = createStackNavigator(
     {
         HistoryScreen: {screen : HistoryScreen},
-        Details: {screen : Detail},
+        Details: {screen : DetailStack},
         Reader: {screen : Reader},
     },
     {
@@ -93,7 +102,7 @@ const HistoryStack = createStackNavigator(
 const LibraryStack = createStackNavigator(
     {
         LibraryScreen: {screen : LibraryScreen},
-        Details: {screen : Detail},
+        Details: {screen : DetailStack},
         Reader: {screen : Reader},
         LibraryCategories : {screen : LibraryCategories}
     },
@@ -116,7 +125,7 @@ const LibraryStack = createStackNavigator(
 const CatalogStack = createStackNavigator(
     {
         Catalog: {screen : GridItems},
-        Details: {screen : Detail},
+        Details: {screen : DetailStack},
         Reader: {screen : Reader},
     },
     {
@@ -188,8 +197,6 @@ const RootStack = createDrawerNavigator(
 RootStack.navigationOptions = ({ navigation }) => {
     let name = (navigation.state.index !== undefined ? navigation.state.routes[navigation.state.index] : navigation.state.routeName)
     let drawerLockMode = 'locked-closed'
-    console.log(name)
-   // name = name.routes[name.index]
     if (name.routeName === 'LibraryScreen' || name.routeName === 'Catalog') {
         drawerLockMode = 'unlocked'
     }

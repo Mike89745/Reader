@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, View,TouchableOpacity,Text,Dimensions } from 'react-native';
-import Spinner from 'react-native-gifted-spinner';
 import ThumbNail from "../../Detail/ThumbNail/ThumbNail"
 import RF from "react-native-responsive-fontsize" 
 import { ENDPOINT } from '../../../Values/Values';
@@ -16,13 +15,15 @@ export default class HistoryItem extends Component  {
       + ("0" + RawDate.getSeconds()).substr(-2);*/
       return (
         <View style={styles.container}>
-          <View style={{flex:0.4}}>
-            <ThumbNail
-              style={{alignSelf:"flex-start"}}
-              source={{uri : ENDPOINT + "public/thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
-            />
+          <View style={{flex:0.375}}>
+            <TouchableOpacity onPress={() => this.props.NavigateToDetail(this.props.chapter)} style={{width:"100%",height:"100%"}}>
+              <ThumbNail
+                style={{alignSelf:"flex-start"}}
+                source={{uri : ENDPOINT + "public/thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
+              />
+            </TouchableOpacity>
           </View>
-          <View style={{flexDirection:"column",flex:0.6}}>
+          <View style={{flexDirection:"column",flex:0.625,padding:5}}>
             <View style={{flexDirection:"column"}}>
               <Text style={styles.textHeader} numberOfLines={2}>{this.props.chapter.book_id}</Text>
               <Text style={styles.textStyle} numberOfLines={2}>Chapter : {this.props.chapter.number} - {this.props.chapter.title}</Text>
