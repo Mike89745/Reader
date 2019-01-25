@@ -12,7 +12,7 @@ class Register extends Component {
         emailMatch : false
     }
     Register=()=>{
-        if(this.state.emailMatch && this.state.passwordMatch) this.props.SignIn(this.state.nick,this.state.password,this.state.email);
+        if(this.state.emailMatch && this.state.passwordMatch && this.state.nick) this.props.SignIn(this.state.nick,this.state.password,this.state.email);
     }
     shouldComponentUpdate(nextProps, nextState) {
         if(this.state.email && nextState.email){

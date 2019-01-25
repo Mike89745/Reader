@@ -42,7 +42,7 @@ const store = createStore(RootReducer,applyMiddleware(
 export default class ReaderApp extends Component {
   componentDidMount(){
     store.dispatch(loadSettings());
-    StatusBar.setBackgroundColor("#3b424c");
+    StatusBar.setBackgroundColor("#30353d");
   }
   render() {
     return (

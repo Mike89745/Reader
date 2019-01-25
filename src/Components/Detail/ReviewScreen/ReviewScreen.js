@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet,View,Text,Dimensions,TextInput,TouchableOpacity} from 'react-native';
+import { StyleSheet,View,Text,Dimensions,TextInput,Button,ScrollView} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from '../../Icon/Icon';
 import RNPickerSelect from 'react-native-picker-select';
@@ -71,7 +71,7 @@ class ReviewScreen extends Component {
   
     render() {
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={{padding:15}}>
                 <Text style={styles.textStyle}>Book Rating</Text>
                     <RNPickerSelect
@@ -91,28 +91,30 @@ class ReviewScreen extends Component {
                 </View>
                 <View style={{padding:15,flex:1}}>
                     <Text style={styles.textStyle}>Review Text</Text>
-                    <View style={{flex:1,height:250}}>
+                    <View style={{flex:1}}>
                         <TextInput
                             onChangeText={(ReviewText) => this.setState({ReviewText})}
                             value={this.state.ReviewText}
-                            placeholder="Review Text"
-                            placeholderTextColor={"#000"}
                             multiline={true}
                             underlineColorAndroid='transparent'
+                            style={styles.ReviewTextStyle}
                         />
                     </View>
-                    <View style={{flex:1,flexDirection:"row",alignContent:"flex-end"}}>
-                        <TouchableOpacity onPress={() => this.CreateReview()}>
-                            <Text style={styles.textHeader}>Add Review</Text>
-                        </TouchableOpacity>
+                    <View style={{flex:1,flexDirection:"row",justifyContent: 'center',alignItems: 'center',width:"100%",paddingTop: 10}}>
+                        <Button title="Add Review" onPress={() => this.CreateReview()} color="#3b424c"/>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    ReviewTextStyle:{
+        borderBottomColor: '#3b424c',
+        borderBottomWidth: 1,
+        padding: 5,
+    },
     container: {
         flex: 1
     },

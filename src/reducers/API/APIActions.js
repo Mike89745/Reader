@@ -203,7 +203,7 @@ export function getReviewsFromAPI(book_id){
             let data = [];
             console.log(response);
             response.docs.map(el => data.push({doc:el}));
-            if(data.length === 0) Toast.show("Nothing Found", Toast.LONG);
+            if(data.length === 0) Toast.show("No Reviews", Toast.LONG);
             dispatch(gotReviews(data,false))
         }).catch(error => {
             dispatch(gotReviewsError(true,error))
