@@ -89,7 +89,7 @@ export function getChaptersFromLibrary(book_id) {
                 book_id : {$eq : book_id},
               }
           }).then(response => {
-              response.docs.length > 0 ? dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,response.docs.sort((a, b) => b.number - a.number))) : null
+              response.docs.length > 0 ? dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,response.docs.sort((a, b) => b.number - a.number))) : dispatch(gotChapters(GET_CHAPTERS_FROM_LIBRARY,null))
           }).catch(err => {
               dispatch(getChaptersError(err));
               SimpleToast.show("Error getting chapters",SimpleToast.LONG);

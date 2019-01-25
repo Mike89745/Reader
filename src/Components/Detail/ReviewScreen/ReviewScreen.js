@@ -21,7 +21,7 @@ class ReviewScreen extends Component {
                 shadowRadius: 0,
                 elevation: 0,
               },
-            headerTitle: ( <View style={{width: Math.round(Dimensions.get("screen").width/1.5)}}><Text style={{color: "#fff"}}>{params ? params.title : ''}</Text></View>),
+            headerTitle: ( <View style={{width: Math.round(Dimensions.get("screen").width/1.5)}}><Text style={{color: "#fff"}}>{params ? params.bookID : ''}</Text></View>),
             headerLeft:  <ButtonIcon name="arrow-left" Color="#fff" onPress={() => navigation.goBack(null)} />,
         };
       };
@@ -63,7 +63,7 @@ class ReviewScreen extends Component {
             book_id : this.state.bookID,
             text : this.state.ReviewText,
             rating : this.state.Rating,
-            user : this.state.user.nick,
+            userName : this.state.user.nick,
             dateAdded : new Date().toDateString(),
         }
         this.props.CreateReview(Review);

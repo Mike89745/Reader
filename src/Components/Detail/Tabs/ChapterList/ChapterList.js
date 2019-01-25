@@ -50,9 +50,9 @@ class ChapterList extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         if(this.state.Downloads && nextState.Downloads){
-            return nextState.chapters != this.state.chapters || nextState.Downloads.length != this.state.Downloads.length || nextState.selectHeaderVisible != this.state.selectHeaderVisible;
+            return nextState.chapters != this.state.chapters || nextState.Downloads.length != this.state.Downloads.length || nextState.selectHeaderVisible != this.state.selectHeaderVisible || nextState.loading != this.state.loading;
         }else{
-            return nextState.chapters != this.state.chapters || nextState.selectHeaderVisible != this.state.selectHeaderVisible;
+            return nextState.chapters != this.state.chapters || nextState.selectHeaderVisible != this.state.selectHeaderVisible || nextState.loading != this.state.loading;
         }
     }
     navigateToReader = (chapterIndex,downloaded) =>{
@@ -70,7 +70,10 @@ class ChapterList extends Component {
         this.props.getChaptersFromLibrary(this.props.screenProps.bookID);
     }
     render() {
+        console.log(this.state.chapters || this.state.loading);
+        console.log(this.state.chapters, this.state.loading);
         return (
+            <View style={{flex:1}}>
             <ScrollView style={styles.container} nestedScrollEnabled={true}>
                 {this.state.chapters ? this.state.chapters.map((item,index) => 
                  <Chapter 
@@ -88,13 +91,15 @@ class ChapterList extends Component {
                  />) 
                  : null
                 }
-                {this.state.chapters|| this.state.loading ? null:
-                    <View style={styles.retryButton}>
-                        <Button title="Load Reviews" onPress={() => this.props.getChaptersFromAPI(this.props.screenProps.bookID)} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>
-                    </View> 
-                }
-                {this.state.loading ? <View styles={styles.retryButtoncontainer}><Spinner style={styles.Spinner}/></View> : null}
+               
             </ScrollView>
+            {this.state.chapters || this.state.loading ? null :
+                <View style={styles.retryButton}>
+                    <Button title="Load Chapters" onPress={() => this.props.getChaptersFromAPI(this.props.screenProps.bookID)} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>
+                </View> 
+            }
+            <View styles={styles.retryButtoncontainer}><Spinner style={styles.Spinner}/></View>
+            </View>
         )
     }
 }

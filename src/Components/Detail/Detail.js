@@ -28,6 +28,7 @@ class Detail extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
         return {
+           
             headerStyle: {
                 backgroundColor: '#3b424c',
                 shadowColor: "#fff",

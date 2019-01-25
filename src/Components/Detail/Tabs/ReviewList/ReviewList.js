@@ -26,7 +26,7 @@ class ReviewList extends Component {
             <View style={{flex:1}}>
                 <ScrollView style={styles.container} nestedScrollEnabled={true}>
                     {this.state.Reviews ? this.state.Reviews.map((item) =>  
-                        <Review userName={item.userName} Rating={item.rating} text={item.text}/> ) 
+                        <Review Review={item.doc}/> ) 
                     :
                     null
                     }

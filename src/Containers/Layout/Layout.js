@@ -78,7 +78,8 @@ const DownloadStack = createStackNavigator(
 const HistoryStack = createStackNavigator(
     {
         HistoryScreen: {screen : HistoryScreen},
-        Details: {screen : DetailStack},
+        Details: {screen : Detail},
+        ReviewScreen:{screen : ReviewScreen},
         Reader: {screen : Reader},
     },
     {
@@ -102,7 +103,8 @@ const HistoryStack = createStackNavigator(
 const LibraryStack = createStackNavigator(
     {
         LibraryScreen: {screen : LibraryScreen},
-        Details: {screen : DetailStack},
+        Details: {screen : Detail},
+        ReviewScreen:{screen : ReviewScreen},
         Reader: {screen : Reader},
         LibraryCategories : {screen : LibraryCategories}
     },
@@ -125,7 +127,8 @@ const LibraryStack = createStackNavigator(
 const CatalogStack = createStackNavigator(
     {
         Catalog: {screen : GridItems},
-        Details: {screen : DetailStack},
+        Details: {screen : Detail},
+        ReviewScreen:{screen : ReviewScreen},
         Reader: {screen : Reader},
     },
     {

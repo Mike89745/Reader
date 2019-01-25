@@ -178,7 +178,7 @@ export function SearchBooksFromLibrary(text,INtags,NINtags) {
 }
 export function CreateReview(Review){
     return function(dispatch){
-        fetch(`http://localhost:8000/addReview`, {
+        fetch(`${ENDPOINT}addReview`, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -187,7 +187,8 @@ export function CreateReview(Review){
             body: JSON.stringify(Review),
         }).then((response) => {
             response.json().then((body) => {
-                body.error ? dispatch(CreateReviewError(true,body.error)) : dispatch(CreatedReview())
+                console.log(body);
+                body.error ? dispatch(CreateReviewError(true,body.errormsg)) : dispatch(CreatedReview())
             });
         });
     }
@@ -195,7 +196,7 @@ export function CreateReview(Review){
 export function getReviewsFromAPI(book_id){
     return function(dispatch){
         dispatch(gettingReviews());
-        fetch("http://localhost:8000/getReviews/"+ book_id.replace(/[/\\?%*:|"<>. ]/g, '-'), )
+        fetch(`${ENDPOINT}getReviews/${book_id.replace(/[/\\?%*:|"<>. ]/g, '-')}`, )
         .then(response =>{
             return response.json()
         }).then((response) => {
