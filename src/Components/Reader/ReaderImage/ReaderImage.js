@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View,Dimensions,Image,Button,TouchableWithoutFeedback} from 'react-native';
-import PhotoView from 'react-native-photo-view';
+import PhotoView from 'react-native-photo-view-ex';
 import { Viewport } from '@skele/components'
 import GiftedSpinner from '../../../../node_modules/react-native-gifted-spinner';
 const ViewportAwareView = Viewport.Aware(View)
@@ -25,7 +25,7 @@ export default class ReaderImage extends Component {
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return nextState.width != this.state.width || nextState.height != this.state.height ;
+        return nextState.width != this.state.width || nextState.height != this.state.height || nextState.error != this.state.error;
     }
     onViewportChange(){
         let inView = this.state.inView;
@@ -34,7 +34,6 @@ export default class ReaderImage extends Component {
     }
     render() {
         return (
-            <TouchableWithoutFeedback onPress={() => this.props.showNav()}>
             <ViewportAwareView  styles={styles.container} 
             onViewportEnter={() => this.onViewportChange()}
             onViewportLeave={() => this.onViewportChange()}>
@@ -53,6 +52,7 @@ export default class ReaderImage extends Component {
                             </View>
                         </View> : null}
                     <PhotoView
+                        onTap={() => this.props.showNav()}
                         loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
                         source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
                         minimumZoomScale={1}
@@ -67,7 +67,6 @@ export default class ReaderImage extends Component {
                     />
                 </View> 
             </ViewportAwareView>
-            </TouchableWithoutFeedback>
         )
 
     }
@@ -89,8 +88,10 @@ const styles = StyleSheet.create({
         
     },
     container:{
+        backgroundColor: "black",
         flex: 1,
-        backgroundColor: "black"
+        position:"absolute",
+        zIndex: -1,
     },
     Spinner : {
         position: 'absolute', 

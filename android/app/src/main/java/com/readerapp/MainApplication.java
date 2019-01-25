@@ -3,13 +3,13 @@ package com.readerapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.amarcruz.photoview.PhotoViewPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import dog.craftz.sqlite_2.RNSqlite2Package;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import org.wonday.pdf.RCTPdfView;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.reactnative.photoview.PhotoViewPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.walmartreact.ReactOrientationListener.ReactOrientationListener;
 import com.github.yamill.orientation.OrientationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;

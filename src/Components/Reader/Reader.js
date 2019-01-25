@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View,TouchableWithoutFeedback,Text,Dimensions,Button ,FlatList} from 'react-native';
+import { StyleSheet, View,StatusBar,Text,Dimensions,Button ,FlatList} from 'react-native';
 import ReaderImage from "./ReaderImage/ReaderImage"
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import RNFS from "react-native-fs"
@@ -17,6 +17,8 @@ import {
     saveChapters
 } from '../../reducers/Chapters/Chapters'
 import { ENDPOINT } from '../../Values/Values';
+import TopNav from './ReaderNav/TopNav/TopNav';
+import BottomNav from './ReaderNav/BottomNav/BottomNav';
 const defHeight = Dimensions.get('window').height/2;
 class Reader extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -39,6 +41,7 @@ class Reader extends Component {
         horizontal:false,
         horizontalInv: false,
         settingsVisible : false,
+        shown : false,
     }
     _viewabilityConfig = {
         itemVisiblePercentThreshold: 50,
@@ -165,6 +168,7 @@ class Reader extends Component {
     }
     componentDidMount(){
         this.loadChapter();
+        StatusBar.setHidden(true);
     }
     loadChapter(chapter = this.state.Chapters[this.state.index]){
         let title = chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -318,6 +322,7 @@ class Reader extends Component {
         chapter.lastPage = this.state.currentPage;
         chapter.lastRead = + new Date();
         this.saveChapter(chapter);
+        StatusBar.setHidden(false);
     }
     shouldComponentUpdate(nextProps,nextState){
         if(this.state.Chapters && this.state.index && this.state.Images){
@@ -331,12 +336,19 @@ class Reader extends Component {
        
         return true;
     }
+    ToggleNav =()=>{
+        let shown =this.state.shown;
+        this.setState({shown : !shown});
+        StatusBar.setHidden(shown);
+        this.BottomNav.ToggleNav(shown);
+        this.TopNav.ToggleNav(shown);
+    }
     render() {
         return (
             <View style={{flex:1}}>
             {this.state.Chapters ? 
             this.state.Chapters[this.state.index].type ==="IMAGE" ?(
-                <Viewport.Tracker style={styles.container} preTriggerRatio={0.5}>
+                <Viewport.Tracker style={[styles.container]} preTriggerRatio={0.5}>
                
                     <FlatList 
                         scrollEventThrottle={16}
@@ -356,7 +368,7 @@ class Reader extends Component {
                         renderItem={({item,index}) =>
                        
                             <ReaderImage 
-                                showNav = {this.Nav.ToggleNav}
+                                showNav = {this.ToggleNav}
                                 fromWeb={this.state.fromWeb} 
                                 source={item.path} 
                                 imageIndex={index}
@@ -380,23 +392,28 @@ class Reader extends Component {
                
             : null : null}
              { this.state.Chapters ?this.state.Chapters[this.state.index].type ==="EPUB" ? <Text>Epub</Text> : null : null}
-             {this.state.Chapters ?   
-             <View>         
-                <ReaderNav 
-                    ref={(ref) => { this.Nav = ref; }}
+            {this.state.Chapters ?   
+                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/> 
+            : null }
+            {this.state.Chapters ?
+                <TopNav 
+                    ref={(ref) => { this.TopNav = ref; }}
                     nav={this.props.navigation} 
+                    showSettings={this.showSettings} 
+                    title={this.state.Chapters[this.state.index].book_id} 
+                    chapter={this.state.Chapters[this.state.index].title}
+                />
+            : null }
+            {this.state.Chapters ?
+                <BottomNav
+                    ref={(ref) => { this.BottomNav = ref; }}
                     pages={this.state.Chapters[this.state.index].pages} 
-                    setPage={this.scrollToPage}
+                    setPage={this.setPage} 
                     nextChapter={this.nextChapter}
                     prevChapter={this.prevChapter}
                     currentPage={this.state.currentPage}
-                    showSettings={this.showSettings}
-                    title = {this.state.Chapters[this.state.index].book_id}
-                    chapter = {this.state.Chapters[this.state.index].title}
                 />
-                <ReaderSettingsModal  ref={(ref) => { this.SettingsModal = ref; }} ChangeSettings={this.ChangeSettings}/> 
-            </View>
-                : null }
+            : null }
             </View>
             
         )

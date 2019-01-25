@@ -11,7 +11,7 @@ export default class ReaderNav extends Component {
         title : null,
         chapter : null,
         shown : false,
-        opacity: new Animated.Value(0)
+        opacity: new Animated.Value(1)
     }
     ToggleNav =()=>{
         let shown =this.state.shown;
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: "100%",
         height: "100%",
+        elevation:999,
     },
    
   

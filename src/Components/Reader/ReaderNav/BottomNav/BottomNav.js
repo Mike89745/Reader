@@ -1,13 +1,21 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,Slider,Animated,Easing} from 'react-native';
+import { StyleSheet, View, Text,Slider,Animated} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from '../../../Icon/Icon';
 export default class BottomNav extends Component {
     state = {
         value: 1,
         maxValue : 1,
-        pos : new Animated.Value(0)
+        opacity : new Animated.Value(1)
+    }
+    ToggleNav = (shown) =>{
+        if(shown){
+            Animated.timing(this.state.opacity, { toValue: 0,duration:300,useNativeDriver:true }).start();
+        }else{
+            Animated.timing(this.state.opacity, { toValue: 1,duration:300,useNativeDriver:true }).start();
+        }
+        
     }
     setPage(value){
         this.props.setPage(value-1);
@@ -25,7 +33,7 @@ export default class BottomNav extends Component {
     render() {
         return (
             
-            <View style={[styles.container]} ref={(ref) => { this.BottomNav = ref; }}>
+            <Animated.View style={[styles.container,{opacity:this.state.opacity}]} ref={(ref) => { this.BottomNav = ref; }}>
                 <ButtonIcon name="skip-previous" Color="#fff" onPress={() => this.props.prevChapter()}/>
                 <View style={styles.SliderContainer}>
                     <View>
@@ -49,14 +57,13 @@ export default class BottomNav extends Component {
                     </View>
                 </View>
                 <ButtonIcon style={{alignItems: "flex-end",}} name="skip-next" Color="#FFF" onPress={() => this.props.nextChapter()}/>  
-            </View>
+            </Animated.View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        elevation:10,
         paddingTop: 5,
         width: '100%', 
         backgroundColor: "#3b424c",
@@ -68,7 +75,8 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         bottom:0,
         flexDirection: "row",
-        
+        elevation:99,
+        zIndex:100,
     },
     SliderContainer:{
         flex: 1, 
