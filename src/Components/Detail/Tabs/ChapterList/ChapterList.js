@@ -70,8 +70,6 @@ class ChapterList extends Component {
         this.props.getChaptersFromLibrary(this.props.screenProps.bookID);
     }
     render() {
-        console.log(this.state.chapters || this.state.loading);
-        console.log(this.state.chapters, this.state.loading);
         return (
             <View style={{flex:1}}>
             <ScrollView style={styles.container} nestedScrollEnabled={true}>

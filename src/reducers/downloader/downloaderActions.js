@@ -171,6 +171,7 @@ export function nextDownload() {
       let title = data[0].title;
       let chapter = data[0].chapter;
       let page = data[0].pageStatus.findIndex(el => el.status===0);
+      let type = data[0].type;
       if(page === -1){
         if(data[0].thumbnails){
           dispatch(syncingComplete())
@@ -180,19 +181,27 @@ export function nextDownload() {
           title = data[0].title;
           chapter = data[0].chapter;
           page = data[0].pageStatus.findIndex(el => el.status===0);
+          type = data[0].type;
         }
         dispatch(saveData(data));
       }
       if(data.length > 0 && page != -1){
         let task = RNBackgroundDownloader.download({
           id: title + "//"+ chapter + "//" + page,
-          url: data[0].thumbnails ? `${ENDPOINT}public/thumbnails/${data[0].booksIDs[page]}` : `${ENDPOINT}public/books/${title}/${chapter}/${page}` ,
-          destination: data[0].thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`
+          url: data[0].thumbnails ? 
+          `${ENDPOINT}public/thumbnails/${data[0].booksIDs[page]}` : 
+          `${ENDPOINT}public/books/${title}/${chapter}/${type === "IMAGE" ? page : chapter + `${type === "PDF" ? ".pdf" : ".epub"}`}` ,
+          destination: 
+          data[0].thumbnails ? 
+          `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` 
+          : 
+          `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${type === "IMAGE" ? page +1 :chapter}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`
         }).begin((expectedBytes) => {
             //console.log(`Going to download ${expectedBytes} bytes!`);
         }).progress((percent) => {
             //console.log(`Downloaded: ${percent * 100}%`,page);
         }).done(() => {
+
             data[0].pageStatus[page].status = 1;
             let pages = data[0].pageStatus;
             if(data.length < 2 && pages.filter(el => {return el.status === 1 ?  el : null}).length === pages.length){
@@ -203,6 +212,7 @@ export function nextDownload() {
                 ongoing: false,
                
               });
+              dispatch(clearDownloads());
               if(data[0].thumbnails){
                 dispatch(syncingComplete())
               }
@@ -221,7 +231,7 @@ export function nextDownload() {
             dispatch(saveData(data));
             dispatch(nextDownload());
         }).error((error) => {
-            RNFS.exists(data[0].thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.jpg`).then(response => {
+            RNFS.exists(data[0].thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`).then(response => {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));
@@ -230,8 +240,8 @@ export function nextDownload() {
                   dispatch(startedDownloads(error))
                   PushNotification.localNotification({
                     id: "69420", 
-                    title: "Download Error, please clear queue",
-                    message: "",
+                    title: "Download Error",
+                    message: "please clear queue",
                     ongoing: false,
                   });
                 }
@@ -249,7 +259,7 @@ export function nextDownload() {
             ongoing: false,
            
           });
-          
+          dispatch(clearDownloads());
         }else if(data.length > 0 && !isPaused){
           PushNotification.localNotification({
             id: "69420", 
@@ -260,8 +270,8 @@ export function nextDownload() {
         }else{
           PushNotification.localNotification({
             id: "69420", 
-            title: "Download Error, please clear queue",
-            message: "",
+            title: "Download Error",
+            message: "please clear queue",
             ongoing: false,
           });
         }
@@ -274,9 +284,9 @@ export function nextDownload() {
           title: "Download Complete",
           message: "",
           ongoing: false,
-         
+          
         });
-      
+        dispatch(clearDownloads());
       }else if(data.length > 0 && !isPaused){
         PushNotification.localNotification({
           id: "69420", 
@@ -287,8 +297,8 @@ export function nextDownload() {
       }else{
         PushNotification.localNotification({
           id: "69420", 
-          title: "Download Error, please clear queue",
-          message: "",
+          title: "Download Error",
+          message: "Please clear queue.",
           ongoing: false,
         });
       }
@@ -458,6 +468,7 @@ export function donwloadSelectedChapters(all = false) {
           if(!ref.getDownloaded()){
             let title = ref.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
             let chapter = (ref.props.chapter.number +"-"+ref.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+            let type = ref.props.chapter.type;
             RNFS.exists(RNFS.DocumentDirectoryPath + "/" + title).then(response => {
               if(!response) {
                 RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + title);
@@ -469,10 +480,16 @@ export function donwloadSelectedChapters(all = false) {
               }
             });
             let pages = [];
-            for (let index = 0; index < ref.props.chapter.pages; index++) {
+            if(type === "IMAGE"){
+              for (let index = 0; index < ref.props.chapter.pages; index++) {
+                pages.push({status: 0});
+              }
+            }else{
               pages.push({status: 0});
             }
+           
             queueData.push({
+              type : type,
               title : title,
               chapter: chapter,
               pageStatus : pages,

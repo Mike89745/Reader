@@ -6,13 +6,7 @@ import ButtonIcon from '../../Icon/Icon';
 import RNPickerSelect from 'react-native-picker-select';
 export default class GeneralSettings extends Component {
     state = {
-        StartScreenSettings: "Library",
-        StartScreenItems: [
-            {label:"Library", value : "Library"},
-            {label:"Catalog", value : "Catalog"},
-            {label:"History", value : "History"},
-            {label:"Downloads", value : "Downloads"}
-        ],
+       
         LibraryLayoutSettings : "Default",
         LibraryLayoutItems :  [
             {label:"Default", value : "Default"},
@@ -59,23 +53,6 @@ export default class GeneralSettings extends Component {
         return (
             <View style={styles.container}>
               <Text style={styles.textHeader}>General Settings</Text>
-                <View style={{padding:15}}>
-                    <Text>Start Screen</Text>
-                    <RNPickerSelect
-                        placeholder={{
-                            label: 'Select Start Screen...',
-                            value: null,
-                            color: '#9EA0A4',
-                        }}
-                        items={this.state.StartScreenItems}
-                        onValueChange={(value) => {
-                            this.saveStartScreen(value,"StartScreen")
-                        }}
-                        style={pickerSelectStyles.inputAndroid}
-                        value={this.state.StartScreenSettings}
-                        hideIcon={true}
-                    />
-                </View>
                 <View style={{padding:15}}>
                     <Text>Library books per row</Text>
                     <RNPickerSelect

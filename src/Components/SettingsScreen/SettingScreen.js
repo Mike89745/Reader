@@ -12,6 +12,7 @@ import {
     loadSettings,
     saveSettings
   } from '../../reducers/Settings/SettingsActions'
+import AdvancedSettings from './AdvancedSettings/AdvancedSettings';
 class Settings extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -47,6 +48,7 @@ class Settings extends Component {
                     <GeneralSettings ReduxSaveSettings={this.ReduxSaveSettings} LibraryLayoutSettings={this.state.settings.LibraryLayoutSettings} StartScreenSettings={this.state.settings.StartScreen}/>
                     <ReaderSettings ReduxSaveSettings={this.ReduxSaveSettings} ReaderSettings={this.state.settings.ReaderLayout}/>
                     <DownloaderSettings ReduxSaveSettings={this.ReduxSaveSettings} DownloaderWiFiSettings={this.state.settings.DownloadOverWiFi}/>
+                    <AdvancedSettings></AdvancedSettings>
                 </View>) : null}
                
             </ScrollView>

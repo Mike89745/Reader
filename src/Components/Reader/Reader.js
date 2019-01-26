@@ -173,11 +173,22 @@ class Reader extends Component {
     loadChapter(chapter = this.state.Chapters[this.state.index]){
         let title = chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapterName = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+        let type = chapter.type;
         RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}`).then(response => {
             if(response){
-                RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}`).then(response => {
-                    chapter.pages === response.length ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
-                })
+                if(type === "IMAGE"){
+                    RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}`).then(response => {
+                        chapter.pages === response.length ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
+                    }).catch(err => this.loadChapterFromWeb());
+                }else{
+                    console.log(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}/${chapterName}.${type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : null}`);
+                    RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}/${chapterName}.${type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : null}`).then(response => {
+                        response ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
+                    }).catch(err => {
+                        this.loadChapterFromWeb();
+                    });
+                }
+               
             }else{
                 this.loadChapterFromWeb()
             } 
@@ -208,15 +219,17 @@ class Reader extends Component {
             });
         }
         else if(chapter.type === "PDF"){
+         
             this.setState({
                 uri:ENDPOINT 
                 + "public/books/"
                 + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
-                + chapter.number + "-" 
-                + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
-                + index + ".pdf"
+                + chapter.number + "-" + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
+                + chapter.number + "-" +chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + ".pdf"
             })
+            this.setCurrentPage(chapter.lastPage);
         }else if(chapter.type === "EPUB"){
+        
             this.setState({
                 uri:ENDPOINT 
                 + "public/books/"
@@ -247,8 +260,9 @@ class Reader extends Component {
             if(chapter.type === "PDF"){
                 this.setState({
                     fromWeb:false,
-                    uri:result[0].path
+                    uri: "file://" + result[0].path
                 })
+                this.setCurrentPage(chapter.lastPage);
             }
 
             return Promise.all([RNFS.stat(result[0].path), result[0].path]);
@@ -380,10 +394,13 @@ class Reader extends Component {
                 </Viewport.Tracker>)
             : null : null}
             { this.state.Chapters ? this.state.Chapters[this.state.index].type === "PDF" ?  
+            
                 <ReaderPDF 
+                    showNav = {this.ToggleNav}
                     setPages={this.setPages} 
                     setCurrentPage={this.setCurrentPage} 
-                    source={{uri:'http://samples.leanpub.com/thereactnativebook-sample.pdf',cache:true}}
+                    currentPage = {this.state.currentPage}
+                    source={{uri:this.state.uri,cache:true}}
                     horizontal = {this.state.horizontal}
                     horizontalInv={this.state.horizontalInv}
                     spacing = {3}
@@ -408,7 +425,7 @@ class Reader extends Component {
                 <BottomNav
                     ref={(ref) => { this.BottomNav = ref; }}
                     pages={this.state.Chapters[this.state.index].pages} 
-                    setPage={this.setPage} 
+                    setPage={this.setCurrentPage} 
                     nextChapter={this.nextChapter}
                     prevChapter={this.prevChapter}
                     currentPage={this.state.currentPage}

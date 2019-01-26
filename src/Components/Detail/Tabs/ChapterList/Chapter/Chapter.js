@@ -61,10 +61,25 @@ export default class Chapter extends Component {
     isDownloaded(){
         let title = this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+        let type = this.props.chapter.type;
+       
         RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
-                this.props.chapter.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,})
-            })
+            if(response){
+                if(type === "IMAGE"){
+                    RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}`).then(response => {
+                        this.props.chapter.pages === response.length ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false,})
+                    }).catch(err =>{
+                        this.setState({error: true,downloaded: false})
+                    });
+                }else{
+                    RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${chapter}.${type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : null}`).then(response => {
+                        response ? this.setState({downloaded: true,error:false}) : this.setState({error: true,downloaded: false})
+                    }).catch(err => {
+                        this.setState({error: true,downloaded: false})
+                    });
+                }
+                
+            } 
         }).catch(err => {console.log(err)});
     }
     shouldNavigate =()=>{

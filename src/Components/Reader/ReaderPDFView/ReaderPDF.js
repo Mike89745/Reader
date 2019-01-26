@@ -1,33 +1,48 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions, View,TouchableWithoutFeedback} from 'react-native';
 
 import Pdf from 'react-native-pdf';
 import Toast from 'react-native-simple-toast';
 export default class ReaderPDF extends Component {
-   
+    state = {
+        page : null,
+        source : null,
+    }
+    componentWillReceiveProps(nextProps){
+        this.setState({page : nextProps.currentPage,source : nextProps.source})
+    }
+    shouldComponentUpdate(nextProps,nextState){
+        const shouldUpdate = this.state.source && nextState.source ? 
+        this.state.source.uri != nextState.source.uri : !this.state.source && nextState.source ? nextState.source.uri ? true : false : false;
+        return nextState.page != this.state.page || shouldUpdate
+    }
     render() {
         return (
             <View style={styles.container}>
-            <Pdf
-                enablePaging={this.props.horizontal}
-                enableRTL={this.props.horizontalInv}
-                source={this.props.source}
-                page={10}
-                horizontal={this.props.horizontal}
-                ref={(ref) => { this.pdfRef = ref; }}
-                onLoadComplete={(numberOfPages,filePath)=>{
-                    this.props.setPages(numberOfPages)
-                }}
-                onPageChanged={(page,numberOfPages)=>{
-                    this.props.setPages(numberOfPages)
-                    this.props.setCurrentPage(page)
-                }}
-                onError={(error)=>{
-                    Toast.show("Error Loading PDF",Toast.LONG)
-                    console.log(error);
-                }}
-                style={styles.pdf}/>
-        </View>
+                {this.state.source ? this.state.source.uri ?  
+                <Pdf
+                    enablePaging={this.props.horizontal}
+                    enableRTL={this.props.horizontalInv}
+                    source={this.props.source}
+                    page = {this.state.page}
+                    onPageSingleTap = {()=> this.props.showNav()}
+                    horizontal={this.props.horizontal}
+                    ref={(ref) => { this.pdfRef = ref; }}
+                    onLoadComplete={(numberOfPages,filePath)=>{
+                        this.props.setPages(numberOfPages)
+                    }}
+                    onPageChanged={(page,numberOfPages)=>{
+                        this.props.setPages(numberOfPages)
+                        this.props.setCurrentPage(page)
+                    }}
+                    onError={(error)=>{
+                        Toast.show("Error Loading PDF",Toast.LONG)
+                        console.log(error);
+                    }}
+                    style={styles.pdf}/>
+                : null : null}
+               
+            </View>
         )
 
     }

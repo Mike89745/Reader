@@ -5,7 +5,7 @@ import ButtonIcon from '../../../Icon/Icon';
 export default class TopNav extends Component {
     state={
         height:Dimensions.get("screen").height - 74,
-        opacity: new Animated.Value(1),
+        opacity: new Animated.Value(0),
     }
     ToggleNav =(shown=false)=>{
         if(shown){

@@ -307,7 +307,8 @@ export function SyncDbs(){
                     chapter : "",
                     pageStatus : pages,
                     thumbnails : true,
-                    booksIDs : booksIDs
+                    booksIDs : booksIDs,
+                    type : "IMAGE",
                 }];
                 dispatch(saveData(thumbnails))
                 dispatch(syncingChange([change,thumbnails]));

@@ -7,7 +7,7 @@ export default class BottomNav extends Component {
     state = {
         value: 1,
         maxValue : 1,
-        opacity : new Animated.Value(1)
+        opacity : new Animated.Value(0)
     }
     ToggleNav = (shown) =>{
         if(shown){

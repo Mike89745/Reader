@@ -27,7 +27,7 @@ export default class LibraryCategoriesModal extends Component {
             useNativeDriver={true}
         >
             <View style={styles.container}>
-                <Text style={[styles.textHeader,{padding:5,paddingBottom:5}]}>{this.props.text}</Text>
+                <Text style={[styles.textHeader,{padding:5,paddingBottom:20}]}>{this.props.text}</Text>
                 <View style={{flex:1,alignSelf:"flex-end",}}>
                     <View style={{flexDirection: "row"}}>
                         <TouchableOpacity onPress={() => this.toggleModal()} >
