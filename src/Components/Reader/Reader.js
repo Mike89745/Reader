@@ -91,14 +91,7 @@ class Reader extends Component {
                 animated: animated
             })
         }
-        else if(this.state.Chapters[this.state.index].type === "PDF"){
-           /* let height = Dimensions.get("screen").height
-            this.ScrollRef.scrollToPage({
-                x: height * page,
-                y: 0,
-                animated:true,
-            })*/
-        }
+        
     }
     scrollToEnd=(animated = true)=>{
         if(this.state.Chapters[this.state.index].type === "IMAGE"){
@@ -250,7 +243,6 @@ class Reader extends Component {
                     element.key = element.path;
                     element.height = Height;
                 }); 
-                console.log(result); 
                 this.setState({
                     Images: result,
                     currentPage:1,
@@ -425,7 +417,7 @@ class Reader extends Component {
                 <BottomNav
                     ref={(ref) => { this.BottomNav = ref; }}
                     pages={this.state.Chapters[this.state.index].pages} 
-                    setPage={this.setCurrentPage} 
+                    setPage={ this.state.Chapters[this.state.index].type ==="PDF" ? this.setCurrentPage : this.scrollToPage} 
                     nextChapter={this.nextChapter}
                     prevChapter={this.prevChapter}
                     currentPage={this.state.currentPage}

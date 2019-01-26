@@ -57,7 +57,6 @@ export default class Chapter extends Component {
             alert(`Deleted`);
         }).catch(err => console.log(err,"Delete error"));
     }
-   
     isDownloaded(){
         let title = this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -78,10 +77,10 @@ export default class Chapter extends Component {
                         this.setState({error: true,downloaded: false})
                     });
                 }
-                
             } 
         }).catch(err => {console.log(err)});
     }
+    
     shouldNavigate =()=>{
         if(this.props.selectHeaderVisible){
             this.toggleSelect();
@@ -109,11 +108,11 @@ export default class Chapter extends Component {
                     <View style={{flex:0.8}}>
                         <Text style={styles.textHeader}>Chapter {this.props.chapter.number} - {this.props.chapter.title}</Text>
                         <Text style={styles.textDate}>{this.props.chapter.dateAdded}</Text>
-                        {this.state.downloading ? <Text>Downloading</Text> : this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
+                        {this.props.queued ? <Text>Queued</Text> : this.state.error ? <Text>Error</Text> : this.state.downloaded ? <Text>Downloaded</Text> : null}
                         {this.state.pages > 1 ? <Text style={styles.textDate}>page: {this.state.pages}</Text> : null}
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
-                        <ChapterPopUp download={this.DownloadChapter} delete={this.deleteChapter} markAsRead={this.toggleMark}/>
+                        <ChapterPopUp chapter={this.props.chapter} delete={this.deleteChapter} markAsRead={this.toggleMark}/>
                     </View>
                 </View>
             </TouchableHighlight>

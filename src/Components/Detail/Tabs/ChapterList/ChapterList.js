@@ -65,6 +65,14 @@ class ChapterList extends Component {
                 ENDPOINT + "public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         })
     }
+    isChapterQueued =(chapter)=>{
+        let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
+        const Downloads = this.state.Downloads;
+        for (let index = 0; index < Downloads.length; index++) {
+            if(Downloads[index].title === chapterTitle) return true;
+        }
+        return false;
+    }
     componentDidMount(){
         this.props.loadData();
         this.props.getChaptersFromLibrary(this.props.screenProps.bookID);
@@ -82,8 +90,7 @@ class ChapterList extends Component {
                     ref={(chapterRef) => this.addRef(chapterRef,index)}
                     onToggleSelect ={this.onToggleSelect}
                     index = {index}
-                    queued = {false}
-                    downloading = {false}
+                    queued = {this.isChapterQueued(item)}
                     selectHeaderVisible = {this.state.selectHeaderVisible}
                     SaveChapter = {this.SaveChapter}
                  />) 

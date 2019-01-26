@@ -222,8 +222,8 @@ export function UpdateTitles(Titles) {
                           message: Titles[a],
                           title: "Updating Titles",
                           vibrate: false,
-                          priority:"low",
-                          importance : "min",
+                          priority:"default",
+                          importance : "default",
                         }); 
                       }
                   }).catch(err => {
@@ -247,8 +247,8 @@ export function UpdateTitles(Titles) {
                 message: Titles[a],
                 title: "Updating Titles",
                 vibrate: false,
-                priority:"low",
-                importance : "min",
+                priority:"default",
+                importance : "default",
               }); 
             }
           }

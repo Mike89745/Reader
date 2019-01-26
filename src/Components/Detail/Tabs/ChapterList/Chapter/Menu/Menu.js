@@ -8,7 +8,9 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-export default class ChapterPopUp extends Component {
+import { connect } from 'react-redux';
+import { DownloadSingle } from "../../../../../../reducers/downloader/downloaderActions";
+class ChapterPopUp extends Component {
     render() {
         return (
             <Menu>
@@ -23,7 +25,7 @@ export default class ChapterPopUp extends Component {
                   </View> 
                 </MenuTrigger>
                 <MenuOptions>
-                    <MenuOption onSelect={() => this.props.download()} ><Text style={{padding: 5}}>Download</Text></MenuOption>
+                    <MenuOption onSelect={() => this.props.DownloadSingle(this.props.chapter)} ><Text style={{padding: 5}}>Download</Text></MenuOption>
                     <MenuOption onSelect={() => this.props.markAsRead()} ><Text style={{padding: 5}}>Mark as read</Text></MenuOption>
                     <MenuOption onSelect={() => this.props.delete()} ><Text style={{padding: 5}}>Delete</Text></MenuOption>
                     
@@ -91,3 +93,12 @@ const optionsStyles = {
       color: 'brown',
     },
   };
+  const mapStateToProps = state => {
+    return {
+      
+    };
+};
+const mapDispatchToProps = {
+  DownloadSingle
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ChapterPopUp);

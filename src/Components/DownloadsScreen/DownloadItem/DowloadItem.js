@@ -21,8 +21,8 @@ export default class DowloadItem extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.textHeader}>{this.props.title ? this.props.title : null}</Text>
-                <Text style={styles.textStyle}>{this.props.chapterName ? this.props.chapterName : null}</Text>
+                <Text style={styles.textHeader}>{this.props.title ? this.props.title.replace("-"," ") : null}</Text>
+                <Text style={styles.textStyle}>{this.props.chapterName ? this.props.chapterName.replace("-"," ") : null}</Text>
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center'}}>

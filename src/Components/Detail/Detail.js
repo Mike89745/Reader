@@ -96,7 +96,7 @@ class Detail extends Component {
     }
     componentDidMount(){
         this.props.clearChapters();
-        //this.props.toggleSelectHeader();
+        this.props.selectHeaderVisible ? this.props.toggleSelectHeader() : null;
         this.getInfo();
         let size = this.state.size;
         let height = Math.floor(Dimensions.get('window').height/3);
@@ -163,8 +163,6 @@ class Detail extends Component {
         this.reRender;
     }
     render() {
-      //  console.log(`${RNFS.DocumentDirectoryPath}/thumbnails`);
-       // console.log(`file://${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`);
         return (
             <View> 
                 <ScrollView>
