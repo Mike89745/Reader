@@ -10,7 +10,8 @@ import {
     SearchBooksFromLibrary,
 } from '../../reducers/API/APIActions'
 import {
-    setFilterDrawer
+    setFilterDrawer,
+    ToggleFilterDrawer,
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
 class FilterDrawer extends Component {
     state = {
@@ -35,6 +36,7 @@ class FilterDrawer extends Component {
             this.props.SearchBooksFromLibrary(this.state.text,CheckedTags,IndeterminateTags) 
         :
             this.props.SearchBooksFromAPI(this.state.text,CheckedTags,IndeterminateTags) : null;
+        this.props.ToggleFilterDrawer();
     }
     componentWillMount(){
         this.props.setFilterDrawer(this.props.navigation);
@@ -109,5 +111,6 @@ const mapDispatchToProps = {
     SearchBooksFromAPI,
     setFilterDrawer,
     SearchBooksFromLibrary,
+    ToggleFilterDrawer,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(FilterDrawer);

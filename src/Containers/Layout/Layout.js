@@ -21,18 +21,6 @@ import {
     ToggleFilterDrawer,
     ToggleMainDrawer
   } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
-const DetailStack = createStackNavigator(
-    {
-        Detail:{screen:Detail},
-        ReviewScreen:{screen : ReviewScreen},
-    },
-    {
-        drawerLabel: 'Detail',
-        initialRouteName: 'Detail',
-        headerMode: 'float',
-        
-    }
-);
 const SettingsStack = createStackNavigator(
     {
         Settings:{screen : Settings},
@@ -103,7 +91,10 @@ const HistoryStack = createStackNavigator(
 const LibraryStack = createStackNavigator(
     {
         LibraryScreen: {screen : LibraryScreen},
-        Details: {screen : Detail},
+        Details: {
+            screen : Detail,
+            navigationOptions: ({navigation}) => ({drawerLockMode:"locked-closed"})
+        },
         ReviewScreen:{screen : ReviewScreen},
         Reader: {screen : Reader},
         LibraryCategories : {screen : LibraryCategories}

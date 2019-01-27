@@ -67,7 +67,7 @@ class ChapterList extends Component {
     }
     isChapterQueued =(chapter)=>{
         let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
-        const Downloads = this.state.Downloads;
+        const Downloads = this.state.Downloads ? this.state.Downloads : [];
         for (let index = 0; index < Downloads.length; index++) {
             if(Downloads[index].title === chapterTitle) return true;
         }

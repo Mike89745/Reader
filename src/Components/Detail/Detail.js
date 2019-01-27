@@ -40,6 +40,7 @@ class Detail extends Component {
                 shadowRadius: 0,
                 elevation: 0,
               },
+            drawerLockMode : "locked-closed",
             headerTitle: ( <View style={{width: Math.round(Dimensions.get("screen").width/1.5)}}><Text style={{color: "#fff"}}>{params ? params.title : ''}</Text></View>),
             headerLeft:  <ButtonIcon name="arrow-left" Color="#fff" onPress={() => navigation.goBack(null)} />,
             headerRight : <DetailHeaderRight bookID={params ?params.title : null}></DetailHeaderRight>

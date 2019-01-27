@@ -11,12 +11,13 @@ export default class Chapter extends Component {
         this.setState({visible : !visible});
     }
     render() {
+        console.log(this.props.Review)
         return ( 
             <View style={styles.container} >
                 <View style={styles.smallContainer} >
                     <View style={{flex:0.8}}>
                         <Text style={styles.textHeader}>{this.props.Review.user}</Text>
-                        <Text style={styles.textDate}>Rating {this.props.Review.Rating}/10</Text>
+                        <Text style={styles.textDate}>Rating {this.props.Review.rating}/10</Text>
                     </View>
                     <View style={{flex:0.2,alignItems:"flex-end",}}>
                          <ButtonIcon

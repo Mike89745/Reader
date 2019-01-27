@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet,ScrollView,View} from 'react-native';
-import {SafeAreaView } from 'react-navigation';
+import {SafeAreaView, StackActions, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux'
 import {
     setMainDrawer,
@@ -20,6 +20,7 @@ class UserDrawer extends Component {
         ],
     }
     navigateTo=(routeName)=>{
+        this.props.navigation.dispatch(StackActions.popToTop());
         this.props.SetActiveRoute(routeName);
         this.props.navigation.navigate(routeName);
     }
@@ -40,7 +41,7 @@ class UserDrawer extends Component {
                         {this.state.navOptions ? this.state.navOptions.map((option,index) => (
                             <NavOption RouteName={option.RouteName} navigateTo={this.navigateTo} icon={option.icon} key={option.RouteName}/>))
                         :null}
-                    </View>
+                    </View>     
                 </SafeAreaView>
         </ScrollView>
         )

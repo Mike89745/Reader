@@ -4,7 +4,7 @@ export const SIGNING_IN = "SIGNING_IN";
 
 export const SIGN_UP_SUCCES = "SIGN_UP_SUCCES";
 export const SIGN_UP_ERROR = "SIGN_UP_ERROR";
-export const SIGNING_UP = "SIGNING_IN";
+export const SIGNING_UP = "SIGNING_UP";
 
 export const SYNCING = "SYNCING";
 export const SYNCING_COMPLETE = "SYNCING_COMPLETE";
@@ -160,12 +160,11 @@ export function SignUp(nick,password,email){
         }).then((response) => {
             return response.json()
         }).then((response) => {
-            dispatch(Logmsg(response))
-            /*if(response.error) {
+            if(response.error) {
                 dispatch(signingUpError(""))
             }else{
-                dispatch(signUpSucces(response.user))
-            }*/
+                dispatch(signUpSucces())
+            }
         }).catch(err => {dispatch(signingUpError(err))});
     }
 }
