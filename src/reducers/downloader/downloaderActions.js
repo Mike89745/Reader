@@ -173,7 +173,7 @@ export function nextDownload() {
       let page = data[0].pageStatus.findIndex(el => el.status===0);
       let type = data[0].type;
       if(page === -1){
-        if(data[0].thumbnails){
+        if(data[0].Thumbnails){
           dispatch(syncingComplete())
         }
         data.shift();
@@ -188,12 +188,12 @@ export function nextDownload() {
       if(data.length > 0 && page != -1){
         let task = RNBackgroundDownloader.download({
           id: title + "//"+ chapter + "//" + page,
-          url: data[0].thumbnails ? 
-          `${ENDPOINT}public/thumbnails/${data[0].booksIDs[page]}` : 
+          url: data[0].Thumbnails ? 
+          `${ENDPOINT}public/Thumbnails/${data[0].booksIDs[page]}` : 
           `${ENDPOINT}public/books/${title}/${chapter}/${type === "IMAGE" ? page + 1 : chapter + `${type === "PDF" ? ".pdf" : ".epub"}`}` ,
           destination: 
-          data[0].thumbnails ? 
-          `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` 
+          data[0].Thumbnails ? 
+          `${RNFS.DocumentDirectoryPath}/Thumbnails/${data[0].booksIDs[page]}.jpg` 
           : 
           `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${type === "IMAGE" ? page + 1 :chapter}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`
         }).begin((expectedBytes) => {
@@ -213,7 +213,7 @@ export function nextDownload() {
                
               });
               dispatch(clearDownloads());
-              if(data[0].thumbnails){
+              if(data[0].Thumbnails){
                 dispatch(syncingComplete())
               }
             }else{
@@ -231,7 +231,7 @@ export function nextDownload() {
             dispatch(saveData(data));
             dispatch(nextDownload());
         }).error((error) => {
-            RNFS.exists(data[0].thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`).then(response => {
+            RNFS.exists(data[0].Thumbnails ? `${RNFS.DocumentDirectoryPath}/Thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`).then(response => {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));

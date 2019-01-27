@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions,Button,Text,ScrollView } from 'react-native';
 import Info from "./Info/Info";
-import ThumbNail from "./ThumbNail/ThumbNail";
+import Thumbnail from "./Thumbnail/Thumbnail";
 import Description from "./Description/Description";
 import TagList from "./TagList/TagList";
 import Tabs from "./Tabs/Tabs";
@@ -53,21 +53,10 @@ class Detail extends Component {
         size : 150,
         height : 0,
         added : false,
-        Book: null,
         error: false,
+        selectHeaderVisible : false,
     }
-    reRender = this.props.navigation.addListener('willFocus', () => {
-        this.RefreshComponent();
-    });
-    RefreshComponent =() =>{
-        this.props.clearChapters();
-        this.setState({ info : null,
-            inLibrary : false,
-            infoLoading : false,
-            added : false,
-            Book: null,
-            error: false},() => this.getInfo());
-    }
+   
     getInfo = () => {
         
         Library.get(this.props.navigation.getParam("_id",null)).then((response) => {
@@ -112,7 +101,8 @@ class Detail extends Component {
         this.state.selectHeaderVisible ? this.props.toggleSelectHeader() : null;
     }
     addToLibrary = () => {
-        Library.get(this.state.info[0]._id).then((response) => {
+        const book = this.state.info[0];
+        Library.get(book._id).then((response) => {
             Library.remove(response).then(response =>{
                 this.setState({added : false});
             }).catch((err) => {
@@ -121,20 +111,21 @@ class Detail extends Component {
             });
         }).catch((error) => {
             if(error.status == 404){
+                
                 const book ={
-                    _id :this.state.info[0]._id, 
-                    author :  this.state.info[0].author,
-                    artist :  this.state.info[0].artist,
-                    rating : this.state.info[0].rating,
-                    status : this.state.info[0].status,
-                    description : this.state.info[0].description,
-                    tags: this.state.info[0].tags,
+                    _id :book._id, 
+                    author :  book.author,
+                    artist :  book.artist,
+                    rating : book.rating,
+                    status : book.status,
+                    description : book.description,
+                    tags: book.tags,
                     categories: [],
                     lastRead: null,
                 }
                 Library.put(book).then((response) => {
                     this.CategoriesModal.toggleModal();
-                    this.saveThumbNail(book._id.replace(/[/\\?%*:|"<>. ]/g, '-')) 
+                    this.saveThumbnail(book._id.replace(/[/\\?%*:|"<>. ]/g, '-')) 
                     this.setState({added : true,error:false});
                 }).catch((err) => {
                     SimpleToast.show("Error saving book, this shouldnt happen",SimpleToast.LONG);
@@ -142,27 +133,25 @@ class Detail extends Component {
             }
         });
     }
-    saveThumbNail(bookID){
-        RNFS.exists(`${RNFS.DocumentDirectoryPath}/thumbnails`).then(response => {
+    saveThumbnail(bookID){
+        RNFS.exists(`${RNFS.DocumentDirectoryPath}/Thumbnails`).then(response => {
             if(!response) { 
-                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/thumbnails`);
+                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/Thumbnails`);
             }
         });
         let task = RNBackgroundDownloader.download({
             id: "//"+ bookID + "//Thumbnail",
-            url: `${ENDPOINT}public/thumbnails/${bookID}`,
-            destination: `${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`
+            url: `${ENDPOINT}public/Thumbnails/${bookID}`,
+            destination: `${RNFS.DocumentDirectoryPath}/Thumbnails/${bookID}.jpg`
           }).begin((expectedBytes) => {
           }).progress((percent) => {
           }).done(() => {
-              console.log(`${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`)
+              console.log(`${RNFS.DocumentDirectoryPath}/Thumbnails/${bookID}.jpg`)
           }).error((error) => {
               
           });
     }
-    componentWillUnmount(){
-        this.reRender;
-    }
+    
     render() {
         return (
             <View> 
@@ -171,11 +160,11 @@ class Detail extends Component {
                     <View> 
                         <View style={{flexDirection : "row",padding: 10, height : this.state.height}}>
                             <View style={{width : this.state.size,paddingRight: 10}}>
-                                <ThumbNail 
+                                <Thumbnail 
                                 source={this.state.added ? 
-                                {uri : `file://${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
+                                {uri : `file://${RNFS.DocumentDirectoryPath}/Thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
                                 :
-                                {uri: (ENDPOINT + "public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
+                                {uri: (ENDPOINT + "public/Thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
                                 />
                             </View>
                             <Info style={styles.Info} info={this.state.info[0]}/>
@@ -214,7 +203,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
     },
-    ThumbNail:{
+    Thumbnail:{
         flex : 2,
         marginRight : 10,
     },

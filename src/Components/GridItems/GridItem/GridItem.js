@@ -6,7 +6,7 @@ import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 PouchDB.plugin(find)
 const chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
-export default class ThumbNail extends Component  {
+export default class GridItem extends Component  {
     state = { loaded: false,UnReadChapters: null }
     componentWillMount(){
       if(this.props.isLibrary){

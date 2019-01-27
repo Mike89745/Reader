@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View,Image } from 'react-native';
 import Loading from 'react-native-gifted-spinner';
-export default class ThumbNail extends Component  {
+export default class Thumbnail extends Component  {
     state = { loaded: false }
     render() {
       return (

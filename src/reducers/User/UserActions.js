@@ -301,16 +301,16 @@ export function SyncDbs(){
                     booksIDs.push(book._id.replace(/[/\\?%*:|"<>. ]/g, '-'));
                     pages.push({status: 0});
                 });
-                let thumbnails = [{
+                let Thumbnails = [{
                     title: "New thumbnails",
                     chapter : "",
                     pageStatus : pages,
-                    thumbnails : true,
+                    Thumbnails : true,
                     booksIDs : booksIDs,
                     type : "IMAGE",
                 }];
-                dispatch(saveData(thumbnails))
-                dispatch(syncingChange([change,thumbnails]));
+                dispatch(saveData(Thumbnails))
+                dispatch(syncingChange([change,Thumbnails]));
                 dispatch(loadData())
             }).on('error', function (err) {
                 dispatch(syncingError(err));

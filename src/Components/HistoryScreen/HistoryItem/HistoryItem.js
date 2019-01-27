@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View,TouchableOpacity,Text,Dimensions } from 'react-native';
-import ThumbNail from "../../Detail/ThumbNail/ThumbNail"
+import Thumbnail from "../../Detail/Thumbnail/Thumbnail"
 import RF from "react-native-responsive-fontsize" 
 import { ENDPOINT } from '../../../Values/Values';
 export default class HistoryItem extends Component  {
@@ -17,9 +17,9 @@ export default class HistoryItem extends Component  {
         <View style={styles.container}>
           <View style={{flex:0.375}}>
             <TouchableOpacity onPress={() => this.props.NavigateToDetail(this.props.chapter)} style={{width:"100%",height:"100%"}}>
-              <ThumbNail
+              <Thumbnail
                 style={{alignSelf:"flex-start"}}
-                source={{uri : ENDPOINT + "public/thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
+                source={{uri : ENDPOINT + "public/Thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
               />
             </TouchableOpacity>
           </View>
