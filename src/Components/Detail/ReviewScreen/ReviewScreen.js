@@ -46,9 +46,7 @@ class ReviewScreen extends Component {
         ReviewError:null,
         ReviewErrorMSG: null,
     }
-    reRender = this.props.navigation.addListener('willFocus', () => {
-        this.setState({ReviewText:null,Rating:null,ReviewError:null,ReviewErrorMSG: null})
-    });
+   
     componentWillReceiveProps(NextProps){
         this.setState({user:NextProps.user,ReviewError:NextProps.ReviewError,ReviewErrorMSG: NextProps.ReviewErrorMSG})
     }

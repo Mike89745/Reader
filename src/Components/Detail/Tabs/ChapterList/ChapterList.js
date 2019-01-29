@@ -4,7 +4,6 @@ import Chapter from "./Chapter/Chapter"
 import { connect } from 'react-redux'
 import {
     loadData,
-    saveData,
     setchapterRefs,
     toggleSelectHeader,
     donwloadSelectedChapters,
@@ -13,7 +12,6 @@ import {
     getChaptersFromAPI,
     getChaptersFromLibrary,
     saveChapter,
-    saveChapters,
   } from '../../../../reducers/Chapters/Chapters'
 import { ENDPOINT } from '../../../../Values/Values';
 import Spinner from 'react-native-gifted-spinner';
@@ -68,7 +66,7 @@ class ChapterList extends Component {
     isChapterQueued =(chapter)=>{
         let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
         const Downloads = this.state.Downloads ? this.state.Downloads : [];
-        for (let index = 0; index < Downloads.length; index++) {
+        for (let index = 0; index < Downloads.length; index++) {    
             if(Downloads[index].title === chapterTitle) return true;
         }
         return false;
@@ -136,7 +134,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     return {
         Downloads: state.Downloader.downloads,
-        isFetching: state.Downloader.isFetching,
         chapterRefs: state.Downloader.chapterRefs,
         selectHeaderVisible: state.Downloader.selectHeaderVisible,
         Chapters : state.ChaptersReducer.Chapters,
@@ -146,12 +143,10 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     loadData,
-    saveData,
     setchapterRefs,
     toggleSelectHeader,
     getChaptersFromAPI,
     getChaptersFromLibrary,
     saveChapter,
-    saveChapters,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ChapterList);

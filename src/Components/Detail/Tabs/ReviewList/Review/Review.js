@@ -11,7 +11,6 @@ export default class Chapter extends Component {
         this.setState({visible : !visible});
     }
     render() {
-        console.log(this.props.Review)
         return ( 
             <View style={styles.container} >
                 <View style={styles.smallContainer} >

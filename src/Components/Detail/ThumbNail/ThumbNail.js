@@ -8,7 +8,7 @@ export default class Thumbnail extends Component  {
         <View style={{flex: 1}}>
           <Image
             source={ this.props.source}
-            onLoad={() => this._onLoad()} 
+            onLoad={() => this.onLoad()} 
             style ={{flex: 1}}
             resizeMode={"contain"}
             />
@@ -18,7 +18,7 @@ export default class Thumbnail extends Component  {
         </View>
       )
     }
-    _onLoad = () => {
+    onLoad = () => {
       this.setState(() => ({ loaded: true }))
     }
 }

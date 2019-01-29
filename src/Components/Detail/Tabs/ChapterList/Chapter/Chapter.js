@@ -18,9 +18,7 @@ export default class Chapter extends Component {
         chapter.MarkedAsRead = this.state.MarkedAsRead;
         this.props.SaveChapter(chapter);
     }
-    getPages = () => {
-        return this.state.pages;
-    }
+    
     getSelect = () =>{
         return this.state.selected;
     }

@@ -15,20 +15,16 @@ import {
     unmarkAsRead,
   } from '../../../../../../reducers/downloader/downloaderActions'
 class SelectHeader extends Component {
-    state = {
-        height: 50,
-    }
-    
     render() {
         return (
             
-            <View style={{flex: 1,height : this.state.height, backgroundColor: "#000",flexDirection:"row",width: Dimensions.get("screen").width,position: 'absolute',
+            <View style={{flex: 1,height : 50, backgroundColor: "#3b424c",flexDirection:"row",width: Dimensions.get("screen").width,position: 'absolute',
             top:0, zIndex : 100,
             }}>
                <View style={{flexDirection:"row",alignContent:"flex-start"}}>
                 <ButtonIcon
                         onPress={() => this.props.toggleSelectHeader()}
-                        name="arrow-left"
+                        name="close"
                         Color="#ffffff"
                     />
                 </View>
@@ -61,7 +57,6 @@ class SelectHeader extends Component {
 }
 const mapStateToProps = state => {
     return {
-        selectHeaderVisible: state.Downloader.selectHeaderVisible ? state.Downloader.selectHeaderVisible : false ,
     };
 };
 const mapDispatchToProps = {
