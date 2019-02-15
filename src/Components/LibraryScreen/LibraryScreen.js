@@ -40,7 +40,7 @@ class LibraryScreen extends Component {
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',marginRight:15}}>
-                    <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories",{refresh: () => navigation.state.params.refresh()  })}/>
+                    <ButtonIcon Color="#ffffff" name="tag-multiple" onPress={() => navigation.navigate("LibraryCategories")}/>
                     <ToggleFilterDrawerButton/>
                     <GridItemsHeaderRight></GridItemsHeaderRight>
                 </View>
@@ -73,14 +73,14 @@ class LibraryScreen extends Component {
         }).catch(error => console.log(error));
     }     
 
-    tabs(categories) {
+    CreateTabs(categories) {
         return categories.reduce((routes, category) => {
-            routes[category] = this.tab(category);
+            routes[category] = this.CreateTab(category);
             return routes;
         }, {});
     }
     
-    tab(category) {
+    CreateTab(category) {
         const screen = this.getTabForCategory(category);
         return {
             screen: screen,
@@ -101,7 +101,7 @@ class LibraryScreen extends Component {
         this.reRender;
     }
     render() {
-        const Tabs = this.state.categories ? createMaterialTopTabNavigator(this.tabs(this.state.categories), {
+        const Tabs = this.state.categories ? createMaterialTopTabNavigator(this.CreateTabs(this.state.categories), {
             tabBarOptions: {
                 activeBackgroundColor: "#FFF",  
                 activeTintColor: '#FFF',

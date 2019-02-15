@@ -20,21 +20,13 @@ class Auth extends Component {
     Hide =()=>{
         this.setState({signIn:false,signUp:false});
     }
-    ShowLogin =()=>{
-        if(!this.state.signIn){
-            this.setState({signIn:true});
-          
-        }else{
-            this.setState({signIn:false});
-           
-        }
+    ToggleLogin =()=>{
+        let signIn = this.state.signIn
+        this.setState({signIn:!signIn});
     }
-    ShowRegister=()=>{
-        if(!this.state.signUp){
-            this.setState({signUp:true});
-        }else{
-            this.setState({signUp:false});
-        }
+    ToggleRegister=()=>{
+        let signUp = this.state.signUp
+        this.setState({signUp:!signUp});
     }
     componentWillReceiveProps(nextProps){
         this.setState({user : nextProps.user,signingIn: nextProps.signingIn,signingInError : nextProps.signingInError,AuthMsg: nextProps.AuthMsg})
@@ -55,7 +47,7 @@ class Auth extends Component {
                 {this.state.AuthMsg ? <Text style={styles.textSignIn}>{this.state.AuthMsg}</Text> : null}
                 {this.state.signIn || this.state.signUp ? null :
                     <View style={{flex:1,flexDirection:"row"}}>
-                        <TouchableOpacity onPress={() => this.ShowRegister()} style={{alignSelf:"flex-start"}}>
+                        <TouchableOpacity onPress={() => this.ToggleRegister()} style={{alignSelf:"flex-start"}}>
                             <Text style={styles.textSignIn}>Register</Text>
                         </TouchableOpacity>
 
@@ -63,7 +55,7 @@ class Auth extends Component {
                             <Text style={styles.textSignIn}> or </Text>
                         </View>
                         
-                        <TouchableOpacity onPress={() => this.ShowLogin()} style={{alignSelf:"flex-end"}}>
+                        <TouchableOpacity onPress={() => this.ToggleLogin()} style={{alignSelf:"flex-end"}}>
                             <Text style={styles.textSignIn}>Login</Text>
                         </TouchableOpacity>
                     </View>

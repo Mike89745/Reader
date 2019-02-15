@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-import ButtonIcon from '../../Icon/Icon';
 import RNPickerSelect from 'react-native-picker-select';
 export default class GeneralSettings extends Component {
     state = {
@@ -20,34 +18,18 @@ export default class GeneralSettings extends Component {
             {label:"8", value : "8"},
         ],
     }
-  
-    saveStartScreen(value,key){
-        this.setState({
-            StartScreenSettings: value,
-        });
-        this.props.ReduxSaveSettings(value,key);
-    }
-    saveLibraryLayoutSettings(value,key){
-        this.setState({
-            LibraryLayoutSettings: value,
-        });
+    saveSettings(value,key){
+        this.setState({LibraryLayoutSettings: value});
         this.props.ReduxSaveSettings(value,key);
     }
     componentDidMount(){
-        this.setState({
-            LibraryLayoutSettings:this.props.LibraryLayoutSettings,
-            StartScreenSettings:this.props.StartScreenSettings
-            
-        });
+        this.setState({LibraryLayoutSettings:this.props.LibraryLayoutSettings});
     }
     componentWillReceiveProps(nextProps){
-        this.setState({
-            LibraryLayoutSettings:nextProps.LibraryLayoutSettings,
-            StartScreenSettings:nextProps.StartScreenSettings
-        });
+        this.setState({LibraryLayoutSettings:nextProps.LibraryLayoutSettings});
     }
     shouldComponentUpdate(nextProps, nextState){
-        return nextState.LibraryLayoutSettings != this.state.LibraryLayoutSettings || nextState.StartScreenSettings != this.state.StartScreenSettings 
+        return nextState.LibraryLayoutSettings != this.state.LibraryLayoutSettings
     }
     render() {
         return (
@@ -63,7 +45,7 @@ export default class GeneralSettings extends Component {
                         }}
                         items={this.state.LibraryLayoutItems}
                         onValueChange={(value) => {
-                            this.saveLibraryLayoutSettings(value,"LibraryLayoutSettings")
+                            this.saveSettings(value,"LibraryLayoutSettings")
                         }}
                         style={pickerSelectStyles.inputAndroid}
                         value={this.state.LibraryLayoutSettings}

@@ -206,7 +206,7 @@ export function nextDownload() {
             let pages = data[0].pageStatus;
             if(data.length < 2 && pages.filter(el => {return el.status === 1 ?  el : null}).length === pages.length){
               PushNotification.localNotification({
-                id: "69420", 
+                id: "7726", // jakékoli string číslo
                 title: "Download Complete",
                 message: "",
                 ongoing: false,

@@ -4,21 +4,23 @@ import RF from "react-native-responsive-fontsize";
 import AreYouSureModal from "../../Modals/AreYouSureModal"
 import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
-PouchDB.plugin(find)
+import SimpleToast from '../../../node_modules/react-native-simple-toast';
+PouchDB.plugin(find);
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const Chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 const CategoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class AdvancedSettings extends Component {
     deleteDBs=()=>{
         Library.destroy().then(res =>{
-            console.log(res,1);
             Chapters.destroy().then(res => {
-                console.log(res,2);
                 CategoriesDB.destroy().then(res =>{
-                    console.log(res,3);
-                }).catch(err=> console.log(err,3))
-            }).catch(err=> console.log(err,2))
-        }).catch(err=> console.log(err,1));
+                    new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
+                    new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
+                    new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
+                }).catch(err=> SimpleToast.show("Error deleting Library!",SimpleToast.LONG))
+            }).catch(err=> SimpleToast.show("Error deleting Chapters!",SimpleToast.LONG))
+        }).catch(err=> SimpleToast.show("Error deleting Categories!",SimpleToast.LONG));
+       
     }
 
     render() {

@@ -45,7 +45,7 @@ class Settings extends Component {
             <ScrollView style={{flex:1}}>
             {this.state.settings ?( 
                 <View style={{flex:1,padding:5}}>
-                    <GeneralSettings ReduxSaveSettings={this.ReduxSaveSettings} LibraryLayoutSettings={this.state.settings.LibraryLayoutSettings} StartScreenSettings={this.state.settings.StartScreen}/>
+                    <GeneralSettings ReduxSaveSettings={this.ReduxSaveSettings} LibraryLayoutSettings={this.state.settings.LibraryLayoutSettings}/>
                     <ReaderSettings ReduxSaveSettings={this.ReduxSaveSettings} ReaderSettings={this.state.settings.ReaderLayout}/>
                     <DownloaderSettings ReduxSaveSettings={this.ReduxSaveSettings} DownloaderWiFiSettings={this.state.settings.DownloadOverWiFi}/>
                     <AdvancedSettings></AdvancedSettings>

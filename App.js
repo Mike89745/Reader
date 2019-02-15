@@ -36,8 +36,8 @@ import {loadSettings} from "./src/reducers/Settings/SettingsActions";
 import RootReducer from './src/reducers/MainReducer';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
-  thunkMiddleware,
-  //loggerMiddleware,
+  thunkMiddleware, // pro async metody
+  //loggerMiddleware, // Debug logger
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){
@@ -46,7 +46,7 @@ export default class ReaderApp extends Component {
   }
   render() {
     return (
-      <Provider store={store}>
+      <Provider store={store}> 
         <MenuProvider>
           <View style={styles.container}>
             <Layout/>

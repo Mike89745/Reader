@@ -9,10 +9,7 @@ import DowloadItem from './DownloadItem/DowloadItem';
 import PopUpMenu from "../PopUpMenu/PopUpMenu"
 import {
     loadData,
-    saveData,
     clearDownloads,
-    nextDownload,
-    toggleDownloads,
   } from '../../reducers/downloader/downloaderActions'
 import ToggleDownloadButton from './ToggleDownloadButton/ToggleDownloadButton';
 class DownloadsScreen extends Component {

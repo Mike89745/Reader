@@ -22,9 +22,7 @@ export default class TriStateCheckBox extends Component {
         let isIndeterminate = this.state.isIndeterminate;
         if(isChecked === false && isIndeterminate == false) {
             isChecked = true;
-            isIndeterminate = false;
         } else if(isChecked === true && isIndeterminate == false) {
-            isChecked = true;
             isIndeterminate = true;
         } else if(isChecked === true && isIndeterminate == true) {
             isChecked = false;

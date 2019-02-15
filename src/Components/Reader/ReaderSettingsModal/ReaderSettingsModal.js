@@ -7,7 +7,6 @@ import RNPickerSelect from 'react-native-picker-select';
 export default class ReaderSettingsModal extends Component {
     state = {
         modalVisible: false,
-        viewerLayout: null,
         ReaderSettings: "Scroll",
         ReaderSettingsItems: [
             {label:"Scroll", value : "Scroll"},
@@ -25,9 +24,6 @@ export default class ReaderSettingsModal extends Component {
     toggleModal=()=>{
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible });
-    }
-    componentWillReceiveProps(nextProps) {
-       this.state.modalVisible != nextProps.settingsVisible ? this.setState({ modalVisible: nextProps.settingsVisible}) : null;  
     }
     render() {
         return (

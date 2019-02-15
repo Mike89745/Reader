@@ -15,9 +15,6 @@ class ToggleDownloadButton extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.isPaused != this.state.isPaused;
     }
-    componentDidMount(){
-        this.setState({ isPaused: this.props.isPaused});  
-    }
     render() {
         return (
                 <ButtonIcon

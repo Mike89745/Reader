@@ -7,7 +7,7 @@ import find from 'pouchdb-find';
 PouchDB.plugin(find)
 const chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 export default class GridItem extends Component  {
-    state = { loaded: false,UnReadChapters: null }
+    state = { loaded: false,unReadChapters: null }
     componentWillMount(){
       if(this.props.isLibrary){
         chapters.createIndex({
@@ -21,8 +21,8 @@ export default class GridItem extends Component  {
             }
             }).then(response => {
               let Total = response.docs.length;
-              let UnReadChapters = response.docs.filter((chapter) => {return chapter.MarkedAsRead === true}).length;
-              this.setState({UnReadChapters : Total - UnReadChapters});
+              let unReadChapters = response.docs.filter((chapter) => {return chapter.MarkedAsRead === true}).length;
+              this.setState({unReadChapters : Total - unReadChapters});
             }).catch(err => {
               console.log(err);
             });
@@ -41,8 +41,8 @@ export default class GridItem extends Component  {
             onLoad={() => this._onLoad()}
             resizeMode="cover"
             />
-            {this.state.UnReadChapters ? <View style={[styles.UnReadChaptersContainer,{width: (this.state.UnReadChapters.toString().length * 5) + 25 - 5}]}>
-              <Text style={{color:"#FFF",padding:2}}>{this.state.UnReadChapters}</Text>
+            {this.state.unReadChapters ? <View style={[styles.unReadChaptersContainer,{width: (this.state.unReadChapters.toString().length * 5) + 25 - 5}]}>
+              <Text style={{color:"#FFF",padding:2}}>{this.state.unReadChapters}</Text>
             </View> : null}
             
             <LinearGradient style={styles.TitleContainer} colors={['transparent', '#3b424c']}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: "row",
   },
-  UnReadChaptersContainer:{
+  unReadChaptersContainer:{
     backgroundColor:"#3b424c",
     height: 25,
     position: 'absolute',

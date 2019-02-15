@@ -36,42 +36,20 @@ class HistoryScreen extends Component {
     RefreshComponent =() =>{
         this.setState({chapters : [], chapterToLoad: null,update : false},() => this.loadHistory());
     }
-    isDownloaded=(chapter)=>{
-        let title =chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
-        let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
-        return RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterTitle}`).then(response => {
-            if(response) RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${title}/${chapterTitle}`).then(response => {
-               chapter.pages === response.length ? isDownloaded = true : isDownloaded = false;
-               if( chapter.pages === response.length){
-                    return true
-               }else{
-                    return false
-               }
-            })
-            return false
-        }).catch(err => {console.log(err)});
-      }
-      componentWillReceiveProps(nextProps){
-        
+   
+    componentWillReceiveProps(nextProps){
         this.state.update ? null : this.resumeReading();
         this.setState({update : true});
-      }
-      resumeReading =() =>{
+    }
+    resumeReading =() =>{
         const chapter = this.state.chapterToLoad;
         if(chapter){
             this.props.getChaptersFromLibrary(chapter.book_id);
-            this.isDownloaded(chapter).then(downloaded => {
-                const chapterIndex = this.props.Chapters.findIndex(x => x._id == chapter._id)
-                this.props.navigation.navigate('Reader',{
-                    index : chapterIndex,
-                    downloaded : !downloaded,
-                    uri: downloaded ? 
-                        null
-                        :
-                        ENDPOINT + "public/books/" + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "/",
-                    refresh : this.RefreshComponent
-                })
-            }).catch(err => console.log(err));
+            const chapterIndex = this.props.Chapters.findIndex(x => x._id == chapter._id)
+            this.props.navigation.navigate('Reader',{
+                index : chapterIndex,
+                refresh : this.RefreshComponent
+            });
         }
     }
     LoadBookChapters =(chapter)=>{
@@ -84,6 +62,7 @@ class HistoryScreen extends Component {
         chapters.splice(chapterIndex,1);
         this.setState({chapters : chapters});
         chapter.lastRead = null;
+        chapter.lastPage = 0;
         ChaptersDB.put(chapter).then(res => {}).catch(err => {console.log(err)})
     }
     loadHistory = () =>{
@@ -107,7 +86,6 @@ class HistoryScreen extends Component {
         })
     }  
     NavigateToDetail=(chapter)=>{
-        console.log(chapter.book_id);
         this.props.navigation.navigate('Details',{_id : chapter.book_id})
     }
     componentDidMount(){
@@ -142,12 +120,10 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
-        selectHeaderVisible: state.Downloader.selectHeaderVisible,
         Chapters : state.ChaptersReducer.Chapters,
     };
 };
 const mapDispatchToProps = {
     getChaptersFromLibrary,
-    
 };
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryScreen);

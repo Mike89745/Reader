@@ -33,7 +33,6 @@ class Reader extends Component {
         fromWeb: false, 
 
         lastScrollHeight: null,
-        hidden: true,
         Chapters : null,
         index : null,
         currentPage: 1,
@@ -127,13 +126,13 @@ class Reader extends Component {
     prevChapter = () =>{
         let index = this.state.index + 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
-            const chapter = this.state.Chapters[index + 1];
+            const chapter = this.state.Chapters[index - 1];
             chapter.lastRead = + new Date();
             chapter.lastPage = this.state.currentPage;
             this.saveChapter(chapter);
             this.scrollToStart(false);
             this.setState({index : index},()=>this.loadChapter());
-        }
+        }       
     }
     nextChapter = () =>{
         let index = this.state.index - 1;
@@ -153,13 +152,11 @@ class Reader extends Component {
         this.props.loadSettings();
         this.ChangeSettings(this.props.settings.ReaderLayout)
         this.setState({
-            uri :  this.props.navigation.getParam("uri",null) ,
-            fromWeb : this.props.navigation.getParam("downloaded",null),
             index : this.props.navigation.getParam("index",null),
             Chapters : this.props.Chapters,
         });
     }
-    componentDidMount(){
+    componentDidMount(){    
         this.loadChapter();
         StatusBar.setHidden(true);
     }
@@ -174,7 +171,6 @@ class Reader extends Component {
                         chapter.pages === response.length ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
                     }).catch(err => this.loadChapterFromWeb());
                 }else{
-                    console.log(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}/${chapterName}.${type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : null}`);
                     RNFS.exists(`${RNFS.DocumentDirectoryPath}/${title}/${chapterName}/${chapterName}.${type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : null}`).then(response => {
                         response ? this.loadChapterFromStorage() : this.loadChapterFromWeb();
                     }).catch(err => {
@@ -435,16 +431,18 @@ const styles = StyleSheet.create({
         backgroundColor: "black"
     },
 });
+
+
 const mapStateToProps = state => {
     return {
         Chapters : state.ChaptersReducer.Chapters,
         settings: state.Settings.Settings,
     };
-};
+}; // Data z Redux na props
 const mapDispatchToProps = {
     loadSettings,
     saveChapter,
     saveChapters,
     saveSettings
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Reader);
+}; // Použitelné Redux metody na props
+export default connect(mapStateToProps, mapDispatchToProps)(Reader); // (Reader) - Jmeno komponentu

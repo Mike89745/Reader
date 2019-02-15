@@ -18,9 +18,7 @@ export default class LibraryCategoriesModal extends Component {
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible,CategoryName:" "});
     }
-    componentWillReceiveProps(nextProps) {
-       this.state.modalVisible != nextProps.settingsVisible ? this.setState({ modalVisible: nextProps.settingsVisible}) : null;  
-    }
+
     render() {
         return (
         <Modal

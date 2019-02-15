@@ -6,20 +6,14 @@ export default class DownloaderSettings extends Component {
         DownloaderWiFiSettings : false,
     }
     SaveSettings(value,key){
-        this.setState({
-            DownloaderWiFiSettings: value,
-        });
+        this.setState({DownloaderWiFiSettings: value,});
         this.props.ReduxSaveSettings(value,key);
     }
     componentDidMount(){
-        this.setState({
-            DownloaderWiFiSettings:this.props.DownloaderWiFiSettings
-        });
+        this.setState({DownloaderWiFiSettings:this.props.DownloaderWiFiSettings});
     }
     componentWillReceiveProps(nextProps){
-        this.setState({
-            DownloaderWiFiSettings:nextProps.DownloaderWiFiSettings,
-        });
+        this.setState({DownloaderWiFiSettings:nextProps.DownloaderWiFiSettings,});
     }
     shouldComponentUpdate(nextProps, nextState){
         return nextState.DownloaderWiFiSettings != this.state.DownloaderWiFiSettings

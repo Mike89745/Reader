@@ -8,9 +8,6 @@ class Login extends Component {
         email:null,
         password:null,
     }
-    Login=()=>{
-        this.props.SignIn(this.state.email,this.state.password);
-    }
     render() {
         return (
             <Animated.View>
@@ -37,7 +34,7 @@ class Login extends Component {
                     <TouchableOpacity onPress={() => this.props.Hide()} style={{alignSelf:"flex-start"}}>
                         <Text style={styles.textSignIn}>Back</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.Login()} style={{alignSelf:"flex-end"}}>
+                    <TouchableOpacity onPress={() => this.props.SignIn(this.state.email,this.state.password)} style={{alignSelf:"flex-end"}}>
                         <Text style={styles.textSignIn}>Login</Text>
                     </TouchableOpacity>
                 </View>

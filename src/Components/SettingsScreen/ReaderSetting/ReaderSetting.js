@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RF from "react-native-responsive-fontsize";
-import ButtonIcon from '../../Icon/Icon';
 import RNPickerSelect from 'react-native-picker-select';
 export default class ReaderSettings extends Component {
     state = {
@@ -15,21 +13,14 @@ export default class ReaderSettings extends Component {
        
     }
     saveSettings(value,key){
-        console.log(value,key);
-        this.setState({
-            ReaderSettings: value,
-        });
+        this.setState({ReaderSettings: value,});
         this.props.ReduxSaveSettings(value,key);
     }
     componentDidMount(){
-        this.setState({
-            ReaderSettings:this.props.ReaderSettings,
-        });
+        this.setState({ReaderSettings:this.props.ReaderSettings,});
     }
     componentWillReceiveProps(nextProps){
-        this.setState({
-            ReaderSettings:nextProps.ReaderSettings,
-        });
+        this.setState({ReaderSettings:nextProps.ReaderSettings,});
     }
     shouldComponentUpdate(nextProps, nextState){
         return nextState.ReaderSettings != this.state.ReaderSettings

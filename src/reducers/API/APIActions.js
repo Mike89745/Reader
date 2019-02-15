@@ -68,8 +68,8 @@ export function GetBooksFromAPI(page) {
                 response.rows.map(el => data.push(el));
                 dispatch(GetBooks(data,false,page))
             }).catch(error => {
-                Toast.show(ENDPOINT +"getBooks/"+ page + "Error Loading data,please try again later", Toast.LONG);
-                dispatch(GetBooksError(true,error))
+                Toast.show("Error Loading data,please try again later", Toast.LONG);
+                dispatch(GetBooksError(true,error)) 
             })
         )
     }

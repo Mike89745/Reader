@@ -37,7 +37,7 @@ export default class ReaderImage extends Component {
             <ViewportAwareView  styles={styles.container} 
             onViewportEnter={() => this.onViewportChange()}
             onViewportLeave={() => this.onViewportChange()}
-            onLayout={() => this.calcImageSize()}>
+            onLayout={() => this.calcImageSize(true)}>
                 <View style={{width: this.state.width, height:this.state.height,flex: 1,backgroundColor: "black"}}>
                     {this.state.error ? 
                     <View styles={styles.retryButtoncontainer}>

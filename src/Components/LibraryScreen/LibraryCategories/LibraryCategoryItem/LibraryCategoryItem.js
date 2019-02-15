@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import RF from "react-native-responsive-fontsize"
-import { StyleSheet, View, Text,Button,Dimensions} from 'react-native';
+import { StyleSheet, View, Text} from 'react-native';
 import PopUpMenu from '../../../PopUpMenu/PopUpMenu';
 
 export default class LibraryCategoryItem extends Component {

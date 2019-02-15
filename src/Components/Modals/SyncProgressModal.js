@@ -60,6 +60,7 @@ class SyncProgressModal extends Component {
                     <Progress.Bar
                         height={12}
                         width={Math.round(Dimensions.get("screen").width*0.75) - 20}
+                        
                         progress={progress > 100 ? 100 : progress}
                         useNativeDriver={true}
                     />

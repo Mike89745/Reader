@@ -20,12 +20,10 @@ export default class LibraryCategories extends Component {
       };
     state = {
         categories : [],
-        changed : false
     }
-    addCategory = (name) =>{
-        db.put({_id : name}).then(res => console.log(res)).catch(err => console.log(err,"added category err"));
+    addCategory = (category) =>{
+        db.put({_id : category}).then(res => console.log(res)).catch(err => console.log(err,"added category err"));
         this.loadCategories();
-        this.setState({changed : true});
     }
     removeCategory = (category) =>{
         db.get(category.id).then(category => {
@@ -33,7 +31,6 @@ export default class LibraryCategories extends Component {
                 this.loadCategories();
             }).catch(err => console.log(err,"remove category err"))}
         ).catch(err => console.log(err,"get err"));
-        this.setState({changed : true});
     }
     loadCategories(){
         db.allDocs().then(res =>{

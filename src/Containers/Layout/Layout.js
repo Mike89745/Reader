@@ -171,9 +171,10 @@ Drawer.navigationOptions = ({ navigation }) => {
 }
 
 
-const RootStack = createDrawerNavigator(
+const RootStack = createDrawerNavigator( 
+    // vytváří navigaci s otevíracím menu, createStackNavigator vytváří navigaci bez menu
     {
-        Drawer: { screen: Drawer },
+        Drawer: { screen: Drawer }, // "Jméno stránky" : { screen : "Jméno komponentu"}
     },
     {
         contentComponent: ({ navigation }) => (

@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text,Button} from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import GridItems from '../../GridItems/GridItems';
 
@@ -18,11 +18,4 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,    
     },
-    textStyle:{
-        fontSize: RF(2.5),
-    },
-    textHeader:{
-        fontWeight: 'bold',
-        fontSize: RF(2.5),
-    }
 });

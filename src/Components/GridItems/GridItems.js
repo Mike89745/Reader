@@ -6,28 +6,20 @@ import InfiniteScroll from 'react-native-infinite-scroll';
 import Orientation from 'react-native-orientation';
 import Spinner from '../../../node_modules/react-native-gifted-spinner';
 import CategoriesModal from './CategoriesModal/CategoriesModal';
-import find from 'pouchdb-find';
 import { connect } from 'react-redux'
 import {
     GetBooksFromAPI,
     ClearBooks,
   } from '../../reducers/API/APIActions'
-import {
-    ToggleFilterDrawer,
-    ToggleMainDrawer
-} from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+
 import {
     loadSettings,
 } from '../../reducers/Settings/SettingsActions'
 import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/ToggleFilterDrawerButton';
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import { ENDPOINT } from '../../Values/Values';
-import PouchDB from 'pouchdb-adapters-rn';
 import RNFS from "react-native-fs";
-import GridItemsHeaderRight from './GridItemsHeaderRight/GridItemsHeaderRight';
-PouchDB.plugin(find)
-const db = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
-const chapters = new PouchDB('chapters', { adapter: 'pouchdb-adapters-rn'});
+
 //const ItemSpacing = 6;
 //const ItemsPerRow = 2;
 
@@ -62,6 +54,7 @@ class GridItems extends Component {
     RefreshComponent =() =>{
         this.setState({items : [],loading : true,page : 0,Book : null,error: false,},() => this.LoadItems());
     }
+    
     LoadItems = () => {
         let page = this.state.page + 1;
         if(!this.props.isLibrary){
@@ -94,14 +87,14 @@ class GridItems extends Component {
         }
        
     }
-    shouldComponentUpdate(nextProps, nextState){
+   /* shouldComponentUpdate(nextProps, nextState){
         if(this.props.category){
             if(nextState.items) return true
             return false
         }
         return true
      
-    }
+    }*/
     componentWillMount() {
         this.props.loadSettings();
         const initial = Orientation.getInitialOrientation();
@@ -122,11 +115,9 @@ class GridItems extends Component {
     }
     componentDidMount(){
         if(!this.props.isLibrary) this.props.ClearBooks();
-        
-        this.setState({items : []})
         this.LoadItems();
     }
-    showTagModal = (item) =>{
+    showCategoriesModal = (item) =>{
         if(this.props.isLibrary){
             this.setState({Book:item},() => this.CategoriesModal.toggleModal());
         }
@@ -149,7 +140,7 @@ class GridItems extends Component {
                             style={styles.gridView}
                             renderItem={items => (
                                 <TouchableHighlight  onPress={() => this.props.navigation.navigate('Details',{_id : items.doc._id})} 
-                                    onLongPress={() => this.showTagModal(items.doc)}
+                                    onLongPress={() => this.showCategoriesModal(items.doc)}
                                     delayLongPress={1000}>
                                     <View style={[styles.ItemContainer,{height: 250}]} >
                                         <GridItem 
@@ -237,8 +228,6 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     GetBooksFromAPI,
-    ToggleFilterDrawer,
-    ToggleMainDrawer,
     loadSettings,
     ClearBooks,
 };

@@ -4,7 +4,6 @@ import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
 import CheckBox from './Checkbox/CheckBox';
 import PouchDB from 'pouchdb-adapters-rn';
-import { nextDownload } from '../../../reducers/downloader/downloaderActions';
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const CategoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
 export default class CategoriesModal extends Component {
@@ -12,7 +11,7 @@ export default class CategoriesModal extends Component {
         modalVisible: false,
         categories: [],
         CheckBoxRefs: [],
-        currentCategories: [],
+        CheckedCategories : [],
     }
     SaveCategories=()=>{
         if(this.props.Book && this.state.modalVisible){
