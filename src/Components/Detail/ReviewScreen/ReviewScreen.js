@@ -6,6 +6,9 @@ import ButtonIcon from '../../Icon/Icon';
 import RNPickerSelect from 'react-native-picker-select';
 import { connect } from 'react-redux';
 import {CreateReview} from "../../../reducers/API/APIActions"
+/** 
+ * Obrazovka která slouží k vytvoření recenze
+ */
 class ReviewScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -33,13 +36,21 @@ class ReviewScreen extends Component {
         ReviewError:null,
         ReviewErrorMSG: null,
     }
-   
+    /** 
+     * Nastaví Redux state props na state.
+     */
     componentWillReceiveProps(NextProps){
         this.setState({user:NextProps.user,ReviewError:NextProps.ReviewError,ReviewErrorMSG: NextProps.ReviewErrorMSG})
     }
+    /** 
+     * Nastaví základní state props komponentu.
+     */
     componentDidMount(){
        this.setState({bookID : this.props.navigation.getParam("bookID",null),user:this.props.user})
     }
+    /** 
+     * Vytvoří objekt recenze a zavolá redux funkci CreateReview.
+     */
     CreateReview(){
         const Review = {
             book_id : this.state.bookID,

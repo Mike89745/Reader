@@ -3,6 +3,9 @@ import { StyleSheet,View,Text,TouchableOpacity,Animated,TextInput} from 'react-n
 import RF from "react-native-responsive-fontsize"
 import { connect } from 'react-redux'
 import {SignIn} from "../../../../reducers/User/UserActions"
+/**
+ * Slouží k přihlášení uživatele.
+ */
 class Login extends Component {
     state = {
         email:null,

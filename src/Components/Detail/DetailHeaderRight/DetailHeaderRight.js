@@ -7,6 +7,9 @@ import {
     UpdateTitles,
   } from '../../../reducers/Chapters/Chapters'
 import PopUpMenu from '../../PopUpMenu/PopUpMenu';
+/** 
+ * Přidává tlačítka na pravé straně Headeru.
+ */
 class Description extends Component {
     render() {
         return (

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-
+/**
+ * Zobrazuje všechny tagy dané knihy.
+ */
 export default class TagList extends Component {
     
     render() {

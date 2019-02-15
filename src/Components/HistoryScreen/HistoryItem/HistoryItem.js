@@ -3,16 +3,12 @@ import { StyleSheet, View,TouchableOpacity,Text,Dimensions } from 'react-native'
 import Thumbnail from "../../Detail/Thumbnail/Thumbnail"
 import RF from "react-native-responsive-fontsize" 
 import { ENDPOINT } from '../../../Values/Values';
+/**
+ * Zobrazuje informace o dané kapitole
+ */
 export default class HistoryItem extends Component  {
     render() {
       const date = new Date(this.props.chapter.lastRead).toISOString();
-      /*const date = 
-      RawDate.getFullYear() +"."
-      + ("0" + (RawDate.getMonth() + 1)).substr(-2) 
-      + "."+ RawDate.getDate() +" "
-      + RawDate.getHours() + ':' 
-      + ("0" + RawDate.getMinutes()).substr(-2) + ':' 
-      + ("0" + RawDate.getSeconds()).substr(-2);*/
       return (
         <View style={styles.container}>
           <View style={{flex:0.375}}>

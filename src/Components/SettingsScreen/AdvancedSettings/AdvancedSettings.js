@@ -9,7 +9,13 @@ PouchDB.plugin(find);
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const Chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
 const CategoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
+/**
+ * Pokročilá nastavení aplikace.
+ */
 export default class AdvancedSettings extends Component {
+    /**
+     * Smaže lokální databáze Library,Chapters a Categories.
+     */
     deleteDBs=()=>{
         Library.destroy().then(res =>{
             Chapters.destroy().then(res => {

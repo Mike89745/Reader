@@ -21,6 +21,9 @@ import {
     ToggleFilterDrawer,
     ToggleMainDrawer
   } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+/**
+ * Navigace v nastevení
+ */
 const SettingsStack = createStackNavigator(
     {
         Settings:{screen : Settings},
@@ -42,6 +45,9 @@ const SettingsStack = createStackNavigator(
         })
     }
 );
+/**
+ * Navigace ve stahování
+ */
 const DownloadStack = createStackNavigator(
     {
         DownloadsScreen: {screen : DownloadsScreen},
@@ -63,6 +69,9 @@ const DownloadStack = createStackNavigator(
         })
     }
 );
+/**
+ * Navigace v Historii
+ */
 const HistoryStack = createStackNavigator(
     {
         HistoryScreen: {screen : HistoryScreen},
@@ -87,7 +96,9 @@ const HistoryStack = createStackNavigator(
         })
     }
 );
-
+/**
+ * Navigace v Knihovně
+ */
 const LibraryStack = createStackNavigator(
     {
         LibraryScreen: {screen : LibraryScreen},
@@ -115,6 +126,9 @@ const LibraryStack = createStackNavigator(
         })
     }
 );
+/**
+ * Navigace v Katalogu
+ */
 const CatalogStack = createStackNavigator(
     {
         Catalog: {screen : GridItems},
@@ -139,6 +153,7 @@ const CatalogStack = createStackNavigator(
         })
     }
 );
+/**Hlavní navigace s menu */
 const Drawer = createDrawerNavigator(
     {
         Catalog: {screen : CatalogStack},
@@ -158,6 +173,7 @@ const Drawer = createDrawerNavigator(
         drawerCloseRoute: 'MainDrawerClose',
     }
 );
+/**Kontroluje zda*li se dá na dané cestě otevírat menu */
 Drawer.navigationOptions = ({ navigation }) => {
     let name = (navigation.state.index !== undefined ? navigation.state.routes[navigation.state.index] : navigation.state.routeName)
     let drawerLockMode = 'locked-closed'
@@ -170,7 +186,7 @@ Drawer.navigationOptions = ({ navigation }) => {
     };
 }
 
-
+/**Kořen celé navigace */
 const RootStack = createDrawerNavigator( 
     // vytváří navigaci s otevíracím menu, createStackNavigator vytváří navigaci bez menu
     {
@@ -199,7 +215,9 @@ RootStack.navigationOptions = ({ navigation }) => {
         drawerLockMode,
     };
 }
-
+/**
+ * Určen pro navigaci v aplikaci, říká co na jaké cestě má být.
+ */
 class Layout extends Component{
     render() {
         return (

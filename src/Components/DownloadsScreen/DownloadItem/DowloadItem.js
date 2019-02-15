@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text,Dimensions,Button} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import * as Progress from 'react-native-progress';
+/**
+ * Zobrazuje stahovanou kapitolu a postup stahování.
+ */
 export default class DowloadItem extends Component {
     state={
         value : 0,
         maxValue: 0,
         percentage : 0.01,
     }
+    /**
+     * Nastaví změněný postup na value a vypočítá nový procentuální postup ( state prop percentage).
+     */
     componentWillReceiveProps(nextProps) {
         this.setState({ 
             value: nextProps.value,maxValue : nextProps.maxValue, 
@@ -15,6 +21,9 @@ export default class DowloadItem extends Component {
             maxValue : nextProps.maxValue
         });  
     }
+    /**
+     * Kontroluje jestli se něco změnil stav postupu.
+     */
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue || nextProps.chapterName != this.props.chapterName || nextState.maxValue != this.state.maxValue;
     }

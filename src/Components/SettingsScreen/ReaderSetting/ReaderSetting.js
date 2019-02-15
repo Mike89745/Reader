@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize";
 import RNPickerSelect from 'react-native-picker-select';
+/**
+ * Nastavení čtečky.
+ */
 export default class ReaderSettings extends Component {
     state = {
         ReaderSettings: "Scroll",
@@ -12,16 +15,30 @@ export default class ReaderSettings extends Component {
         ],
        
     }
+    /**
+     * Nastaví state prop ReaderSettings na value a uloží nastavení pomocí prop metody ReduxSaveSettings.
+     * @param {*} value Nová hodnota nastavení
+     * @param {*} key Jméno atributu nastavení
+     */
     saveSettings(value,key){
         this.setState({ReaderSettings: value,});
         this.props.ReduxSaveSettings(value,key);
     }
+    /**
+     * Nastaví prop ReaderSettings na state prop ReaderSettings.
+     */
     componentDidMount(){
         this.setState({ReaderSettings:this.props.ReaderSettings,});
     }
+    /**
+     * Nastaví prop ReaderSettings na state prop ReaderSettings.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({ReaderSettings:nextProps.ReaderSettings,});
     }
+    /**
+     * Kontroluje zda-li se state prop ReaderSettings změnil.
+     */
     shouldComponentUpdate(nextProps, nextState){
         return nextState.ReaderSettings != this.state.ReaderSettings
     }

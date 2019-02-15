@@ -2,10 +2,17 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from '../../Icon/Icon';
+/**
+ * Zobrazuje popisný text knihy. 
+ */
+
 export default class Description extends Component {
     state = {
         Lines:7,
     }
+    /**  
+     * Mění state Lines bud na 7 nebo null, pokud je null ukazuje se celý text.
+     */
     ToggleLines(){
         if(this.state.Lines){
             this.setState({Lines : null})

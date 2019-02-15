@@ -2,17 +2,29 @@ import React, { Component } from 'react';
 import { StyleSheet,Dimensions,View,Text,TouchableOpacity} from 'react-native';
 import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
+/**
+ * Modal sloužící k potvrzení akce.
+ */
 export default class LibraryCategoriesModal extends Component {
     state = {
         modalVisible: false,
     }
+    /**
+     * Zobrazí modal.
+     */
     showModal(){
         this.setState({ modalVisible: true});
     }
+    /**
+     * Skryje nebo zobrazí modal.
+     */
     toggleModal(){
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible});
     }
+    /**
+     * Zavolá prop metodu yes a skryje modal.
+     */
     Agree=()=>{
         this.props.yes();
         this.toggleModal();

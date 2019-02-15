@@ -19,11 +19,9 @@ import ToggleFilterDrawerButton from '../HeaderButtons/ToggleFilterDrawerButton/
 import ToggleMainDrawerButton from '../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton';
 import { ENDPOINT } from '../../Values/Values';
 import RNFS from "react-native-fs";
-
-//const ItemSpacing = 6;
-//const ItemsPerRow = 2;
-
-
+/**
+ * Obrazovka sloužící k zobrazování knih v knihovně nebo v katalogu.
+ */
 class GridItems extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -51,10 +49,15 @@ class GridItems extends Component {
         error: false,
         prevLen: null,
     }
+    /**
+     * Resetuje komponent do iniciálního stavu
+     */
     RefreshComponent =() =>{
         this.setState({items : [],loading : true,page : 0,Book : null,error: false,},() => this.LoadItems());
     }
-    
+    /**
+     * Načte knihy z API pomocí redux metody GetBooksFromAPI.
+     */
     LoadItems = () => {
         let page = this.state.page + 1;
         if(!this.props.isLibrary){
@@ -62,6 +65,9 @@ class GridItems extends Component {
         }
       
     }
+    /**
+     * Nastaví nové Redux state props na state, pokud je prop isLibrary je true tak vyfiltruje knihy podle jejich prop category.
+     */
     componentWillReceiveProps(NextProps){
         if(this.props.isLibrary && NextProps.CatalogBooks){
             if(NextProps.length !== this.state.prevLen){
@@ -95,6 +101,9 @@ class GridItems extends Component {
         return true
      
     }*/
+    /** 
+     * Načte nastavení pomocí Redux metody loadSettings a vypočítá šířku obrázku podle nastavení.
+     */
     componentWillMount() {
         this.props.loadSettings();
         const initial = Orientation.getInitialOrientation();
@@ -113,10 +122,16 @@ class GridItems extends Component {
        
         this.setState({size : size,orientations:initial});
     }
+    /**
+     * Pokud prop isLibrary je false resetuje Redux state pro knihy a zavolá metodu LoadItems.
+     */
     componentDidMount(){
         if(!this.props.isLibrary) this.props.ClearBooks();
         this.LoadItems();
     }
+    /**
+     * @param {*} item  vybraná kniha
+     */
     showCategoriesModal = (item) =>{
         if(this.props.isLibrary){
             this.setState({Book:item},() => this.CategoriesModal.toggleModal());

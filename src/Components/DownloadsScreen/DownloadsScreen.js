@@ -12,6 +12,9 @@ import {
     clearDownloads,
   } from '../../reducers/downloader/downloaderActions'
 import ToggleDownloadButton from './ToggleDownloadButton/ToggleDownloadButton';
+/**
+ * Obrazovka, která zobrazuje současně stahované kapitoly a postup stahování.
+ */
 class DownloadsScreen extends Component {
     state={
         Downloads : [],
@@ -40,11 +43,16 @@ class DownloadsScreen extends Component {
             ),
         };
       };
-
+    /**
+     * Načte Downloads pomocí redux metody loadData, a nastaví redux metodu na navigační parametr.
+     */
     componentWillMount(){
         this.props.navigation.setParams({options: [{text: "Clear queue",onSelect:this.props.clearDownloads}]});
         this.props.loadData();
     }
+    /**
+     * Při změně v stahování změní state Downloads
+     */
     componentWillReceiveProps(nextProps) {
         this.setState({ Downloads: nextProps.Downloads ?  nextProps.Downloads : []});  
     }

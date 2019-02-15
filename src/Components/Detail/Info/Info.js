@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-
+/** 
+ * Zobrazuje informace o knize : titul,autora,ilustrátora,hodnocení a status.
+ */
 export default class Info extends Component {
     render() {
         return (

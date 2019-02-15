@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Animated,StatusBar} from 'react-native';
 import TopNav from './TopNav/TopNav';
 import BottomNav from './BottomNav/BottomNav';
-import * as Animatable from 'react-native-animatable';
+/**Nepoužíván */
 export default class ReaderNav extends Component {
     state={
         pages: null,

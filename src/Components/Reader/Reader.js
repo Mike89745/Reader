@@ -19,7 +19,10 @@ import {
 import { ENDPOINT } from '../../Values/Values';
 import TopNav from './ReaderNav/TopNav/TopNav';
 import BottomNav from './ReaderNav/BottomNav/BottomNav';
-const defHeight = Dimensions.get('window').height/2;
+/**
+ * Slouží ke čtení knih s navigací. Obstarava veškerou logiku čtečky.
+ */
+const defHeight = Dimensions.get('window').height/2; //Základní velikost obrázku
 class Reader extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -45,7 +48,7 @@ class Reader extends Component {
     _viewabilityConfig = {
         itemVisiblePercentThreshold: 50,
     }
-    openFileSelector () {
+   /* openFileSelector () {
         DocumentPicker.show({
             filetype: [DocumentPickerUtil.allFiles()],
           },(error,res) => {
@@ -64,11 +67,17 @@ class Reader extends Component {
                res.type, // mime type
                res.fileName,
                res.fileSize
-            );*/
+            );
             
            
           });
-    }
+    }*/
+    /** 
+     * Zkontroluje zda-li je kapitola komix, pokud ano tak se posune na pozici stránky. 
+     * Pozice se vypočítá podle výšky každého obrázku až k stránce, která je uloženo v state prop Images.
+     * @param {*} page Strana na kterou má posunout
+     * @param {*} animated Zda-li má být posun animovaný, Default true
+     */
     scrollToPage = (page,animated = true) =>{
         if(this.state.Chapters[this.state.index].type === "IMAGE"){
             let x = 0;
@@ -92,6 +101,10 @@ class Reader extends Component {
         }
         
     }
+     /** 
+     * Zkontroluje zda-li je kapitola komix, pokud ano sečte výšku všech obrázků a posune na vypočítanou která je uloženo v state prop Images.
+     * @param {*} animated Zda-li má být posun animovaný, Default true
+     */
     scrollToEnd=(animated = true)=>{
         if(this.state.Chapters[this.state.index].type === "IMAGE"){
             let x = 0;
@@ -115,7 +128,11 @@ class Reader extends Component {
             })
         }
     }
-    scrollToStart=(animated = true)=>{
+    /** 
+     * Zkontroluje zda-li je kapitola komix, pokud ano posune se na pozici 0.
+     * @param {*} animated Zda-li má být posun animovaný, Default true
+     */
+    scrollToStart = (animated = true) => {
         if(this.state.Chapters[this.state.index].type === "IMAGE"){
             this.ScrollRef.scrollToOffset({
                 offset: 0,
@@ -123,6 +140,10 @@ class Reader extends Component {
             });
         }
     }
+    /**
+     * Zkontroluje zda-li předchozí kapitola existuje, pokud ano uloží aktuální kapitolu pomocí metody saveChapter, posune se na začátek metodou scrollToStart, 
+     * nastaví state prop index na předchozí kapitolu a zavolá metodu loadChapter. 
+     */
     prevChapter = () =>{
         let index = this.state.index + 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
@@ -134,6 +155,10 @@ class Reader extends Component {
             this.setState({index : index},()=>this.loadChapter());
         }       
     }
+    /**
+     * Zkontroluje zda-li další kapitola existuje, pokud ano uloží aktuální kapitolu pomocí metody saveChapter, posune se na začátek metodou scrollToStart , 
+     * nastaví state prop index na další kapitolu a zavolá metodu loadChapter.
+     */
     nextChapter = () =>{
         let index = this.state.index - 1;
         if(index >= 0 && !this.state.isPrevChapter && index < this.state.Chapters.length){
@@ -145,9 +170,15 @@ class Reader extends Component {
             this.setState({index : index},()=>this.loadChapter());
         }
     }
+    /**
+     * Nastaví redux state props na state props.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({Chapters :  nextProps.Chapters})
     }
+    /**
+     * Nastaví state props index na danou kapitolu.
+     */
     componentWillMount(){
         this.props.loadSettings();
         this.ChangeSettings(this.props.settings.ReaderLayout)
@@ -156,10 +187,17 @@ class Reader extends Component {
             Chapters : this.props.Chapters,
         });
     }
+    /**
+     * Načte danou kapitolu pomocí metody loadChapter a skryje StatusBar.
+     */
     componentDidMount(){    
         this.loadChapter();
         StatusBar.setHidden(true);
     }
+    /**
+     * 	Zkontroluje zda-li nová kapitola je stažená v zařízením, pokud ano zavolá metodu loadChapterFromStorage, pokud ne zavolá metodu loadChapterFromWeb.
+     * @param {*} chapter Kaptila k načtení
+     */
     loadChapter(chapter = this.state.Chapters[this.state.index]){
         let title = chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapterName = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -183,6 +221,14 @@ class Reader extends Component {
             } 
         }).catch(err => {console.log(err)});
     }
+    /**
+     * Načte kapitolu z webu. 
+     * 
+     * Zkontroluje zda-li je kapitola komix, pokud ano podle počtu stránek vytvoří pole objektů images a 
+     * nastaví jim atribut path na cestu k dané stránce a atribut height na základní hodnotu poloviční velikost displeje. Poté nastaví pole images na state props Images a 
+     * state prop currentPage na 1. 
+     * Zda-li je kapitola kniha, tak nastaví state prop uri na cestu ke knize.
+     */
     loadChapterFromWeb(){
         const chapter = this.state.Chapters[this.state.index];
         if(chapter.type === "IMAGE"){
@@ -229,6 +275,14 @@ class Reader extends Component {
             })
         }
     }
+    /**
+     * Načte kapitolu ze zařízení. 
+     * 
+     * Přečte složku s kapitolou. Zda-li je kapitola komix, tak podle počtu stránek vytvoří pole objektů images a nastaví jim atribut path na 
+     * cestu k dané stránce a atribut height na základní hodnotu poloviční velikost displeje. 
+     * Poté nastaví pole images na state props Images a state prop currentPage na 1. 
+     * Zda-li je kapitola kniha, tak nastaví state prop uri na cestu k knize. 
+     */
     loadChapterFromStorage(){
         const chapter = this.state.Chapters[this.state.index];
         RNFS.readDir(`${RNFS.DocumentDirectoryPath}/${chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-')}/${chapter.number}-${chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-')}`).then((result) => {
@@ -259,7 +313,9 @@ class Reader extends Component {
             console.log(err.message, err.code);
         });
     }
-    
+    /**
+     * Zda-li je scroll na pozici 0 a poslední pozice je 0, tak načte předchozí kapitolu. Zda-li state prop horizontalInv je true, tak načte další kapitolu.
+     */
     startReached(e){
         let lastScrollHeight = this.state.lastScrollHeight
         let offset = this.state.horizontal ? e.nativeEvent.contentOffset.x : e.nativeEvent.contentOffset.y;
@@ -272,6 +328,9 @@ class Reader extends Component {
         this.setState({lastScrollHeight: offset})
 
     }
+    /**
+     * Zavolána při posunu čtečky. Kontroluje zda-li je změnila stránka, pokud ano  nastaví currentPage na aktuální stránku.
+     */
     onViewableItemsChanged = ({ viewableItems, changed }) => {
         if(viewableItems.length > 0){
             let index = viewableItems.length - 1;
@@ -282,14 +341,27 @@ class Reader extends Component {
         }
         
     }
+    /**
+     * Nastaví state prop currentPage na page.
+     * @param {*} page Aktuální stránka
+     */
     setCurrentPage =(page)=>{
         this.setState({currentPage: page});
     }
+    /**
+     * Nastvaví počet stran, pokud je kapitola PDF.
+     * @param {*} pages Počet stránek
+     */
     setPages = (pages) =>{
         let chapter = this.state.Chapters[this.state.index];
         chapter.pages = pages;
         this.setState({chapter: chapter});
     }
+    /**
+     * Nastvaví výšku obrázku na výšku načteného obrázku.
+     * @param {*} height Výška obrázku
+     * @param {*} index Pozice v poli state prop Images, číslo stránky
+     */
     setHeight=(height,index)=>{
         let images = this.state.Images;
         if(height){
@@ -300,9 +372,16 @@ class Reader extends Component {
       
         this.setState({images : images});
     }
+    /**
+     * Zobrazí modal s nastaveními čtečky.
+     */
     showSettings=()=>{
         this.SettingsModal.toggleModal();
     }
+    /**
+     * Změní nastavení čtečky a uloží je do lokální databáze pomocí redux metody saveSettings.
+     * @param {*} setting Nové nastavení čtečky
+     */
     ChangeSettings=(setting)=>{
         this.props.saveSettings(setting,"ReaderLayout")
         switch(setting) {
@@ -316,9 +395,16 @@ class Reader extends Component {
                 this.setState({horizontal:false,horizontalInv:false});
         }
     }
+    /**
+     * Uloží změny v kapitole do lokální databáze.
+     * @param {*} chapter Aktuální kapitola
+     */
     saveChapter(chapter){
         this.props.saveChapter(chapter);
     }
+    /**
+     * Uloží aktuální kapitolu pomocí metody saveChapter zobrazí StatusBar.
+     */
     componentWillUnmount(){
         const chapter = this.state.Chapters[this.state.index];
         chapter.lastPage = this.state.currentPage;
@@ -326,6 +412,9 @@ class Reader extends Component {
         this.saveChapter(chapter);
         StatusBar.setHidden(false);
     }
+    /**
+     * Kontroluje zda-li se změnila kapitola.
+     */
     shouldComponentUpdate(nextProps,nextState){
         if(this.state.Chapters && this.state.index && this.state.Images){
             const chapter = this.state.Chapters[this.state.index];
@@ -338,6 +427,9 @@ class Reader extends Component {
        
         return true;
     }
+    /**
+     * Zavolá metody z referencí na komponenty TopNav a BottomNav jejich metodu ToggleNav a skryje nebo zobrazí StatusBar.
+     */
     ToggleNav =()=>{
         let shown =this.state.shown;
         this.setState({shown : !shown});

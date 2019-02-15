@@ -4,6 +4,9 @@ import RF from "react-native-responsive-fontsize"
 import { connect } from 'react-redux'
 import {SyncDbs,SignOut} from "../../../../reducers/User/UserActions"
 import AreYouSureModal from "../../../Modals/AreYouSureModal"
+/**
+ * Slouží k zobrazování přihlášeného uživatele.
+ */
 class User extends Component {
     render() {
         return (

@@ -3,7 +3,9 @@ import { StyleSheet, Picker,Dimensions,View,Text,TouchableOpacity} from 'react-n
 import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
 import RNPickerSelect from 'react-native-picker-select';
-
+/**
+ * Modal s nastavením čtečky.
+ */
 export default class ReaderSettingsModal extends Component {
     state = {
         modalVisible: false,
@@ -14,6 +16,10 @@ export default class ReaderSettingsModal extends Component {
             {label:"Right to Left", value : "Hrtl"},
         ],
     }
+    /**
+     * Nastaví state prop ReaderSettings na vybrané nastavení a zavolá prop metodu ChangeSettings.
+     * @param value Vybrané nastavení
+     */
     saveSettings=(value)=>{
         this.setState({
             ReaderSettings: value,
@@ -21,6 +27,9 @@ export default class ReaderSettingsModal extends Component {
         this.setState({ modalVisible: false });
         this.props.ChangeSettings(value);
     }
+    /**
+     * Zobrazí nebo skryje modal.
+     */
     toggleModal=()=>{
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible });

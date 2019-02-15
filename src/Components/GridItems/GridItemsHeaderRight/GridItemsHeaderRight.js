@@ -11,10 +11,16 @@ import {
     MenuTrigger,
   } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/**
+ * Tlačítka na pravé straně Headeru viditelné pouze v knihovně.
+ */
 class GridItemsHeaderRight extends Component {
     state = {
         books : [],
     }
+    /**
+     * Nastaví Redux state prop CatalogBooks na state books pouze s titulami.
+     */
     componentWillReceiveProps(NextProps){
         let newbookTitles = [];
         NextProps.books.forEach(book => {

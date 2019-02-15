@@ -13,6 +13,7 @@ import {
     setFilterDrawer,
     ToggleFilterDrawer,
 } from '../../reducers/DrawerNavigation/DrawerNavigationActions'
+/**Pravé vytahovací menu sloužící k vyhledávání v katalogu a knihovně. */
 class FilterDrawer extends Component {
     state = {
         CheckboxRefs : [],
@@ -20,12 +21,24 @@ class FilterDrawer extends Component {
         ActiveRoute : null,
         tags : ["4-Koma","Action","Adventure","Award Winning","Comedy","Cooking","Doujinshi","Drama","Ecchi","Fanstasy","Gender Bender","Harem","Historical","Horror","Isekai","Josei","Martial Arts","Mecha","Medical","Music","Mystery","Oneshot","Psychological","Romance","School Life","Sci-Fi","Seinen","Shoujo","Shoujo Ai","Shounen","Slice of life","Smut","Sports","Supernatural","Tragedy","Webtoon","Yuri","Game"]
     }
+    /**
+     * Kontroluje jestli je text prázdný nebo jen mezery, pokud ano vrací true.
+     * @param {*} str Text k zkontrolování
+     */
     isEmptyOrSpaces(str){
         return str === null || str.match(/^ *$/) !== null;
     }
+    /**
+     * Nastavuje Redux state prop ActiveRoute na state prop.
+     */
     componentWillReceiveProps(NextProps){
         this.setState({ActiveRoute : NextProps.ActiveRoute});
     }
+    /**
+     * Zjistí jaké CheckBoxy jsou zaškrtlé a jaký je jeho typ zaškrtnutí  (checked,unchecked,indeterminate) 
+     * a podle ActiveRoute zjistí jestli se vyhledává v knihovně nebo v katalog 
+     * a zavolá Redux metodu SearchBooksFromLibrary nebo SearchBooksFromAPI.
+     */
     Search=()=>{
         let CheckedTags = [];
         let IndeterminateTags = [];
@@ -38,6 +51,9 @@ class FilterDrawer extends Component {
             this.props.SearchBooksFromAPI(this.state.text,CheckedTags,IndeterminateTags) : null;
         this.props.ToggleFilterDrawer();
     }
+    /**
+     * Nastaví Drawer (vytahovací menu) do Redux statu pomocí Redux metody setFilterDrawer.
+     */
     componentWillMount(){
         this.props.setFilterDrawer(this.props.navigation);
     }

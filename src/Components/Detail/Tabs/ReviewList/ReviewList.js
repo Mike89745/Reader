@@ -5,19 +5,31 @@ import ButtonIcon from '../../../Icon/Icon'
 import { connect } from 'react-redux';
 import {getReviewsFromAPI} from "../../../../reducers/API/APIActions"
 import Spinner from 'react-native-gifted-spinner';
+/**
+ * Zobrazuje posledních 10 recenzí dané knihy. 
+ */
 class ReviewList extends Component {
     state={
         Reviews : null,
         user:null,
         gettingReviews: false,
     }
+    /**
+     * Otevře obrazovku CreateReview.
+     */
     AddReview=()=>{
         this.props.screenProps.nav.navigate("ReviewScreen",{bookID : this.props.screenProps.bookID});
     }
+    /**
+     * Nastaví Redux state props na state.
+     */
     componentWillReceiveProps(NextProps){
         this.setState({user:NextProps.user,Reviews:NextProps.Reviews,gettingReviews: NextProps.gettingReviews})
         
     }
+    /**
+     * Načte recenze z API.
+     */
     LoadReviews=()=>{
         this.props.getReviewsFromAPI(this.props.screenProps.bookID);
     }

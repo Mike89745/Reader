@@ -6,6 +6,9 @@ import Spinner from '../../../../node_modules/react-native-gifted-spinner';
 import Login from "./Login/Login"
 import Register from "./Register/Register"
 import User from "./User/User"
+/**
+ * Zobrazuje přihlášení nebo registraci. Zda-li je uživatel přihlášen tak zobrazuje uživatele.
+ */
 class Auth extends Component {
     state = {
         signingIn : false,
@@ -17,17 +20,30 @@ class Auth extends Component {
         signIn: false,
         signUp: false,
     }
+    /**
+     * Skryje Login nebo Register komponent.
+     */
     Hide =()=>{
         this.setState({signIn:false,signUp:false});
     }
+    /**
+     * Zobrazí nebo skryje Login komponent.
+     */
     ToggleLogin =()=>{
         let signIn = this.state.signIn
         this.setState({signIn:!signIn});
     }
+    /**
+     * Zobrazí nebo skryje Register komponent.
+     */
     ToggleRegister=()=>{
         let signUp = this.state.signUp
         this.setState({signUp:!signUp});
     }
+    /**
+     * Nastaví Redux state props na state props.
+     * Kontroluje zda-li se uživatel registroval nebo přihlásil.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({user : nextProps.user,signingIn: nextProps.signingIn,signingInError : nextProps.signingInError,AuthMsg: nextProps.AuthMsg})
         if(!nextProps.signingInError && !nextProps.signingUp){

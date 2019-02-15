@@ -15,6 +15,9 @@ import {
   } from '../../../../reducers/Chapters/Chapters'
 import { ENDPOINT } from '../../../../Values/Values';
 import Spinner from 'react-native-gifted-spinner';
+/** 
+ * Zobrazuje všechny kapitoly dané knihy.
+ */
 class ChapterList extends Component {
     constructor(props) {
         super(props);
@@ -27,18 +30,34 @@ class ChapterList extends Component {
             loading : false,
         }
       }
+    /**
+     * Volá Redux metodu saveChapter.
+     * @param chapter Kapitola k uložení
+     */
     SaveChapter=(chapter) =>{
         this.props.saveChapter(chapter);
     }
+    /**
+     * Pokud selectHeaderVisible je neaktivní (false) tak se aktivuje (true) vybírání více kapitol.
+     */
     onToggleSelect = () =>{
         this.state.selectHeaderVisible ? null: this.props.toggleSelectHeader()
     }
+    /**
+     * Při vytvoření nového komponentu Chapter přidá se nová reference do pole chapterRefs. 
+     * Pokud byli vytvořené všechny reference nastaví se do Redux statu pomocí Redux metody setchapterRefs.
+     * @param ref Reference na Chapter komponent  
+     * @param index Index kam se má do pole chapterRefs přidat.
+     */
     addRef(ref,index){
         let refs = this.state.chapterRefs
         refs[index] = ref;
         refs.length === this.state.chapters.length ? this.props.setchapterRefs(refs) : null;
         this.setState({chapterRefs: refs});
     }
+    /**
+     * Nastaví redux state props na state props.
+     */
     componentWillReceiveProps(nextProps) {
         this.setState({ chapters: nextProps.Chapters ,
             Downloads: nextProps.Downloads,
@@ -46,6 +65,9 @@ class ChapterList extends Component {
             error : nextProps.ChaptersError,
             loading: nextProps.ChaptersLoading});  
     }
+    /**
+     * Kontroluje jestli se některý z state props změnil, pokud ano tak se komponent aktulizuje.
+     */
     shouldComponentUpdate(nextProps, nextState) {
         if(this.state.Downloads && nextState.Downloads){
             return nextState.chapters != this.state.chapters || nextState.Downloads.length != this.state.Downloads.length || nextState.selectHeaderVisible != this.state.selectHeaderVisible || nextState.loading != this.state.loading;
@@ -53,6 +75,12 @@ class ChapterList extends Component {
             return nextState.chapters != this.state.chapters || nextState.selectHeaderVisible != this.state.selectHeaderVisible || nextState.loading != this.state.loading;
         }
     }
+    /**
+     * Při vytvoření nového komponentu Chapter přidá se nová reference do pole chapterRefs. 
+     * Pokud byli vytvořené všechny reference nastaví se do Redux statu pomocí Redux metody setchapterRefs.
+     * @param chapterIndex Index reference v poli chapterRefs
+     * @param downloaded Zda-li je kapitola stažená
+     */
     navigateToReader = (chapterIndex,downloaded) =>{
         this.props.screenProps.nav.navigate('Reader',{
             index : chapterIndex,
@@ -63,6 +91,10 @@ class ChapterList extends Component {
                 ENDPOINT + "public/books/" + this.props.screenProps.bookID.replace(/[/\\?%*:|"<>. ]/g, '-') + "/"
         })
     }
+    /** 
+     * Kontroluje jestli je kapitola v tuto chvíli stahovan.Vrací true nebo false.
+     * @param chapter Objekt kapitoly.
+     */
     isChapterQueued =(chapter)=>{
         let chapterTitle = (chapter.number +"-"+chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
         const Downloads = this.state.Downloads ? this.state.Downloads : [];
@@ -71,6 +103,9 @@ class ChapterList extends Component {
         }
         return false;
     }
+    /**
+     * Zavolá redux metody loadData a getChaptersFromLibrary.
+     */
     componentDidMount(){
         this.props.loadData();
         this.props.getChaptersFromLibrary(this.props.screenProps.bookID);

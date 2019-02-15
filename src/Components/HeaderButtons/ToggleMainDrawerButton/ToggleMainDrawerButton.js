@@ -6,6 +6,9 @@ import {
     ToggleMainDrawer,
 } from '../../../reducers/DrawerNavigation/DrawerNavigationActions';
 import { connect } from 'react-redux';
+/**
+ * Tlačítko na Headeru sloužící k otevírání menu s navigací.
+ */
 class ToggleMainDrawerButton extends Component {
 
     render() {

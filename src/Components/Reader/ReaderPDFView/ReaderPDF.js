@@ -3,14 +3,23 @@ import { StyleSheet, Dimensions, View,TouchableWithoutFeedback} from 'react-nati
 
 import Pdf from 'react-native-pdf';
 import Toast from 'react-native-simple-toast';
+/**
+ * Načítá a zobrazuje pdf knihy.
+ */
 export default class ReaderPDF extends Component {
     state = {
         page : null,
         source : null,
     }
+    /**
+     * Nastvavý prop current page na state prop page a prop source na state prop source.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({page : nextProps.currentPage,source : nextProps.source})
     }
+    /**
+     * Kontroluje zda-li se změnily state props.
+     */
     shouldComponentUpdate(nextProps,nextState){
         const shouldUpdate = this.state.source && nextState.source ? 
         this.state.source.uri != nextState.source.uri : !this.state.source && nextState.source ? nextState.source.uri ? true : false : false;

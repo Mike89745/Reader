@@ -14,6 +14,9 @@ import {
     GetBooksFromLibrary,
 } from '../../reducers/API/APIActions';
 const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
+/**
+ * Obrazovka knihovny s kategoriemi.
+ */
 class LibraryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
@@ -51,15 +54,24 @@ class LibraryScreen extends Component {
         categories:null,
         syncing : false,
     }
+    /**
+     * Listener sloužící k obnovení komponentu při akci “WillFocus”. Akce se při navigaci na Library.
+     */
     reRender = this.props.navigation.addListener('willFocus', () => {
         this.RefreshComponent();
     });
+    /**
+     * Kontroluje jestli se dokončila synchronizace knihovny, pokud ano zavolá metodu RefreshComponent.
+     */
     componentWillReceiveProps(NextProps){
         if(!NextProps.syncing && this.state.syncing){
             this.RefreshComponent();
         } 
         this.setState({syncing : NextProps.syncing})
     }
+    /**
+     * Načte znovu kategorie z lokální databáze.
+     */
     RefreshComponent =() =>{
         this.props.GetBooksFromLibrary()
         this.setState({categories:null});
@@ -72,14 +84,19 @@ class LibraryScreen extends Component {
             this.setState({categories:temp})
         }).catch(error => console.log(error));
     }     
-
+    /**
+     * Vytváří kategorie a jejich cesty.
+     */
     CreateTabs(categories) {
         return categories.reduce((routes, category) => {
             routes[category] = this.CreateTab(category);
             return routes;
         }, {});
     }
-    
+    /**
+     * Vytváří obrazovky kategorie.
+     * @param {*} category Komponent LibraryTab
+     */
     CreateTab(category) {
         const screen = this.getTabForCategory(category);
         return {
@@ -90,13 +107,22 @@ class LibraryScreen extends Component {
             }
         }        
     }
-    
+    /**
+     * Vytváří komponent kategorie LibraryTab.
+     * @param {*} category Jméno kategorie
+     */
     getTabForCategory (category){
         return () => (<LibraryTab category={category} nav={this.props.navigation} />);
     }
+    /**
+     * Nastaví navigační parametr refresh na metodu RefreshComponent.
+     */
     componentWillMount(){
         this.props.navigation.setParams({refresh : () => this.RefreshComponent()});
     }
+    /**
+     * Odebere Listener reRender.
+     */
     componentWillUnmount(){
         this.reRender;
     }

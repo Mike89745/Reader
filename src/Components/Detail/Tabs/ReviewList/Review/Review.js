@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text,Button} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from "../../../../Icon/Icon"
+/**
+ * Zobrazuje recenzi.
+ */
 export default class Chapter extends Component {
     state = {
         visible : false,
     }
+    /**
+     * Mění viditelnost textu
+     */
     onPress = () =>{
         let visible = this.state.visible
         this.setState({visible : !visible});

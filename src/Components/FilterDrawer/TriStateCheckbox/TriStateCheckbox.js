@@ -2,21 +2,37 @@ import React, { Component } from 'react';
 import {View} from 'react-native';
 import CheckBox from 'react-native-check-box';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/**
+ * Checkbox se třemi stavy - Checked, Unchecked, isIndeterminate
+ */
 export default class TriStateCheckBox extends Component {
     state = {
         isChecked: false,
         isIndeterminate: false,
     }
+    /**
+     * vrací prop text.
+     */
     getID = () =>{
         return this.props.text;
     }
+    /**
+     * vrací jestli je zaškrtnutí.
+     */
     isChecked =()=>{
         if(this.state.isIndeterminate) return false;
         return this.state.isChecked;
     }
+    /**
+     * vrací jestli není zaškrtnutí.
+     */
     isIndeterminate = () => {
         return this.state.isIndeterminate;
     }
+    /**
+     * Volána při stisknutí CheckBoxu.
+     * Mění state isChecked a isIndeterminate.
+     */
     checkboxClick=()=>{
         let isChecked = this.state.isChecked;
         let isIndeterminate = this.state.isIndeterminate;

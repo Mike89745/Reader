@@ -4,6 +4,9 @@ import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
 import * as Progress from 'react-native-progress';
 import { connect } from 'react-redux';
+/**
+ * Modal sloužící k zobrazení postupu synchronizace.
+ */
 class SyncProgressModal extends Component {
     state = {
         modalVisible: false,
@@ -14,13 +17,24 @@ class SyncProgressModal extends Component {
         Downloads : null,
         downloadProgress : 0.01,
     }
+    /**
+     * Zobrazí modal, nastaví state prop modaVisible na true.
+     */
     showModal(){
         this.setState({ modalVisible: true});
     }
+    /**
+     * Skryje nebo zobrazí modal.
+     */
     toggleModal(){
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible});
     }
+    /**
+     * Kontroluje zda-li probíhá synchronizace, pokud ne schová Modal.
+     * Nastavuje Redux state props na state props
+     * Vypočítává postup procentuální postup stahování.
+     */
     componentWillReceiveProps(NextProps){
         if(NextProps.Syncing && !this.state.syncing){
             this.toggleModal();

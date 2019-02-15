@@ -13,6 +13,9 @@ import {
     saveSettings
   } from '../../reducers/Settings/SettingsActions'
 import AdvancedSettings from './AdvancedSettings/AdvancedSettings';
+/**
+ * Obrazovka se všemi nastaveními aplikace.
+ */
 class Settings extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -29,14 +32,25 @@ class Settings extends Component {
     state = {
         settings : null,
     }
+    /**
+     * Změní nastavení pomocí hodnoty key a setting. Potom nastavení uloží ho pomocí redux metody saveSettings.
+     * @param {*} setting Nová hodnota nastavení
+     * @param {*} key Jméno atributu nastavení
+     */
     ReduxSaveSettings=(setting,key)=>{
         let settings = this.state.settings;
         settings[key] = setting
         this.props.saveSettings(settings);
     }
+    /**
+     * Načte nastvení z lokální databáze pomocí redux metody loadSettings.
+     */
     componentWillMount(){
         this.props.loadSettings();
     }
+    /**
+     * Nastaví Redux state prop settings na state prop settings.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({settings:nextProps.settings})
     }

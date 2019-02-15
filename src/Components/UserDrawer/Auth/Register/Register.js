@@ -3,6 +3,9 @@ import { StyleSheet,View,Text,TouchableOpacity,Animated,TextInput} from 'react-n
 import RF from "react-native-responsive-fontsize"
 import { connect } from 'react-redux'
 import {SignUp} from "../../../../reducers/User/UserActions"
+/**
+ * Slouží k registraci uživatele.
+ */
 class Register extends Component {
     state = {
         email: null,
@@ -11,9 +14,15 @@ class Register extends Component {
         passwordMatch : false,
         emailMatch : false
     }
+    /**
+     * Kontroluje zda-li passwordMatch a emailMatch je true a zda-li je zadán nick, pokud ano tak zavolá Redux metodu SignUp.
+     */
     Register=()=>{
         if(this.state.emailMatch && this.state.passwordMatch && this.state.nick) this.props.SignUp(this.state.nick,this.state.password,this.state.email);
     }
+    /**
+     * Kontroluje zda-li je email a heslo ve správném tvaru.
+     */
     shouldComponentUpdate(nextProps, nextState) {
         if(this.state.email && nextState.email){
             if(this.state.email != nextState.email){

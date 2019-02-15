@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View,Image } from 'react-native';
 import Loading from 'react-native-gifted-spinner';
+/**
+ * Zobrazuje náhledový obrázek knihy.
+ */
 export default class Thumbnail extends Component  {
     state = { loaded: false }
     render() {

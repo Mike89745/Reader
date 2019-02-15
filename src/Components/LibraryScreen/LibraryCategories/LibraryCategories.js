@@ -6,6 +6,9 @@ import LibraryCategoriesModal from './LibraryCategoriesModal/LibraryCategoriesMo
 import ButtonIcon from '../../Icon/Icon';
 import PouchDB from 'pouchdb-adapters-rn';
 const db = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
+/**
+ * Obrazovka se všemi kategoriemi.
+ */
 export default class LibraryCategories extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -21,10 +24,18 @@ export default class LibraryCategories extends Component {
     state = {
         categories : [],
     }
+    /**
+     * Přidá kategorii a znova načte kategorie metodou loadCategories.
+     * @param category Jméno nové kategorie
+     */
     addCategory = (category) =>{
         db.put({_id : category}).then(res => console.log(res)).catch(err => console.log(err,"added category err"));
         this.loadCategories();
     }
+    /**
+     * Odebere kategorii a znova načte kategorie metodou loadCategories.
+     * @param category Jméno kategorie k smázání
+     */
     removeCategory = (category) =>{
         db.get(category.id).then(category => {
             db.remove(category).then(res =>{ 
@@ -32,14 +43,23 @@ export default class LibraryCategories extends Component {
             }).catch(err => console.log(err,"remove category err"))}
         ).catch(err => console.log(err,"get err"));
     }
+    /**
+     * Načte všechny kategorie z lokální databáze.
+     */
     loadCategories(){
         db.allDocs().then(res =>{
             this.setState({categories:res.rows});
         }).catch(err => console.log(err,"categories err"));
     }
+    /**
+     * Zobrazí modal LibraryCategoriesModal, sloužící k přidání kategorie.
+     */
     ShowModal=()=>{
         this.categoriesModal.toggleModal();
     }
+    /**
+     * Načte kategorie metodou loadCategories.
+     */
     componentWillMount(){
         this.loadCategories()
     }

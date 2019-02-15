@@ -9,6 +9,9 @@ import {
 import {LoadUser} from "../../reducers/User/UserActions"
 import NavOption from "./NavOption/NavOption"
 import Auth from './Auth/Auth';
+/**
+ * Menu sloužící k navigaci v aplikace a přihlašování a registraci.
+ */
 class UserDrawer extends Component {
     state = {
         navOptions :   [
@@ -19,11 +22,19 @@ class UserDrawer extends Component {
             {icon:"settings",RouteName:"Settings"}
         ],
     }
+    /**
+     * Vrátí se na nejnižší bod navigace, nastaví Redux state prop ActiveRoute na routeName pomocí redux metodou setActiveRoute a přejde na vybranou cestu.
+     * @param RouteName Jméno cesty
+     */
     navigateTo=(routeName)=>{
         this.props.navigation.dispatch(StackActions.popToTop());
         this.props.SetActiveRoute(routeName);
         this.props.navigation.navigate(routeName);
     }
+    /**
+     * Načte uživatele pomocí redux metody LoadUser, nastavý prop navigace redux state prop MainDrawer pomocí redux metody setMainDrawer a 
+     * nastavý Redux state prop ActiveRoute na aktuální cestu.
+     */
     componentDidMount(){
         this.props.LoadUser();
         this.props.setMainDrawer(this.props.navigation);

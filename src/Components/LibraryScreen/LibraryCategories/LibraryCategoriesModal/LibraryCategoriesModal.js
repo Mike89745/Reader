@@ -2,18 +2,31 @@ import React, { Component } from 'react';
 import { StyleSheet, TextInput,Dimensions,View,Text,TouchableOpacity} from 'react-native';
 import Modal from "react-native-modal";
 import RF from "react-native-responsive-fontsize"
+/**
+ * Modal sloužící k přidání kategorie.
+ */
 export default class LibraryCategoriesModal extends Component {
     state = {
         modalVisible: false,
         CategoryName: ""    
     }
+    /**
+     * Vrací zda-li je str prázdný nebo jemon mezery.
+     * @param {*} str String ke kontrole  
+     */
     isEmptyOrSpaces(str){
         return str === null || str.match(/^ *$/) !== null;
     }
+    /**
+     * Kontroluje zda-li je jméno kategorie validní, pokud ano zavolá prop metodu addCategory s jménem kategorie jako argument. Potom zavolá metodu toggleModal na skrytí modalu.	
+     */
     addCategory(){
         this.state.CategoryName === null || this.state.CategoryName.match(/^ *$/) !== null ? null : this.props.addCategory(this.state.CategoryName);;
         this.toggleModal();
     }
+    /**
+     * Skryje nebo zobrazí modal.
+     */
     toggleModal(){
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible,CategoryName:" "});

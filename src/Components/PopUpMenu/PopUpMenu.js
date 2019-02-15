@@ -8,6 +8,9 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/**
+ * Vytváří “pop up” menu s možnostmi podle nastavení.
+ */
 export default class PopUpMenu extends Component {
     render() {
         return (

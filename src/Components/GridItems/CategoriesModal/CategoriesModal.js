@@ -6,6 +6,9 @@ import CheckBox from './Checkbox/CheckBox';
 import PouchDB from 'pouchdb-adapters-rn';
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const CategoriesDB = new PouchDB('categories', { adapter: 'pouchdb-adapters-rn'});
+/**
+ * Modal zobrazující všechny kategorie a vybrané kategorie vybrané knihy.
+ */
 export default class CategoriesModal extends Component {
     state = {
         modalVisible: false,
@@ -13,6 +16,11 @@ export default class CategoriesModal extends Component {
         CheckBoxRefs: [],
         CheckedCategories : [],
     }
+    /**
+     * Najde vybrané kategorie projdutím polem CheckBoxRefs a voláním na metodu reference isChecked, 
+     * pokud vrátí true přidá do pole kategorií ID kategorie voláním na metodu reference getID. 
+     * Poté kategorie uloží.
+     */
     SaveCategories=()=>{
         if(this.props.Book && this.state.modalVisible){
             let categories = []
@@ -29,6 +37,9 @@ export default class CategoriesModal extends Component {
         }
         if(this.state.modalVisible) this.toggleModal();
     }
+    /**
+     * Zobrazí nebo skryje modal, podle toho zda-li je zobrazen nebo ne.
+     */
     toggleModal = () =>{
         let modalVisible = this.state.modalVisible
         this.setState({ modalVisible: !modalVisible });
@@ -36,24 +47,41 @@ export default class CategoriesModal extends Component {
             this.setState({currentCategories : []});
         }
     }
+    /**
+     * Přidá CheckBox referenci do pole CheckBoxRefs .
+     * @param {*} ref Reference na Komponent
+     * @param {*} index Index kam se má do pole CheckBoxRefs přidat.
+     */
     addRef(ref,index){
         let refs = this.state.CheckBoxRefs
         refs[index] = ref;
         this.setState({CheckBoxRefs: refs});
     }
+    /**
+     * Načte všechny kategorie z lokální databáze.
+     */
     loadCategories(){
         CategoriesDB.allDocs().then(res =>{
             res.rows.map(doc => console.log(doc));
             this.setState({categories:res.rows});
         }).catch(err => console.log(err,"categories err"));
     }
+    /**
+     * Načte všechny kategorie a nastaví prop currentCategories na state prop CheckedCategories.
+     */
     componentDidMount() {
         this.loadCategories()
         this.setState({CheckedCategories:this.props.currentCategories});
     }
+    /**
+     * Nastaví prop currentCategories na state prop CheckedCategories.
+     */
     componentWillReceiveProps(NextProps){
         this.setState({CheckedCategories:NextProps.currentCategories});
     }
+    /**
+     * Kontroluje jestli se kategorie změnily.
+     */
     shouldComponentUpdate(NextState,NextProps){
         if(NextProps.currentCategories){
             return true

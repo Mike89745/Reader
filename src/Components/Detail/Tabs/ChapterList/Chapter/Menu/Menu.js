@@ -10,6 +10,9 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { DownloadSingle } from "../../../../../../reducers/downloader/downloaderActions";
+/**
+ *  PopUpMenu pro kapitolu
+ */
 class ChapterPopUp extends Component {
     render() {
         return (

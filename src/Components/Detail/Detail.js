@@ -23,7 +23,9 @@ import { ENDPOINT } from '../../Values/Values';
 import DetailHeaderRight from './DetailHeaderRight/DetailHeaderRight';
 PouchDB.plugin(find)
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
-
+/**
+ * Slouží k zobrazování všech informací o zvolené knize a její kapitoly a recenze a přidávání knize do knihovny.
+ */
 class Detail extends Component {
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;

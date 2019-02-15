@@ -2,11 +2,18 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions,Text,Animated} from 'react-native';
 import ButtonIcon from '../../../Icon/Icon';
+/**
+ * Horní navigace s titulem knihy a jménem kapitoly.
+ */
 export default class TopNav extends Component {
     state={
         height:Dimensions.get("screen").height - 74,
         opacity: new Animated.Value(0),
     }
+    /**
+     * Spustí animaci, která mění state prop opacity z 0 na 1 nebo naopak.
+     * @param {*} shown Zda-li je Komponent vidět, Default false
+     */
     ToggleNav =(shown=false)=>{
         if(shown){
             Animated.timing(this.state.opacity, { toValue: 0,duration:300,useNativeDriver:true }).start();
@@ -15,6 +22,9 @@ export default class TopNav extends Component {
         }
         
     }
+    /**
+     * Zavolána při změně orientace zařízení. Přepočítá offset od vrcholu dispaleje.
+     */
     onLayout(){
         this.setState({height:Dimensions.get("screen").height - 74});
     }

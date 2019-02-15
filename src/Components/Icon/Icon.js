@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/**
+ * Tlačítko s ikonou.
+ */
 export default class ButtonIcon extends Component {
     state = {
         icon : null,
     }
+    /**
+     * Nastaví prop icon na state prop icon.
+     */
     componentWillReceiveProps(nextProps) {
         this.setState({ icon: nextProps.name});  
     }
+    /**
+     * Kontroluje jestli se state prop icon změnila.
+     */
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.icon != this.state.icon;
     }
+    /**
+     * Nastaví základní hodnotu state prop icon
+     */
     componentWillMount(){
         this.setState({ icon: this.props.name});  
     }

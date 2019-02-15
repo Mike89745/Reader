@@ -3,12 +3,19 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text,Slider,Animated} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ButtonIcon from '../../../Icon/Icon';
+/**
+ * Spodní navigace s zobrazením strany knihy a sliderem k měnění aktuální stránky.
+ */
 export default class BottomNav extends Component {
     state = {
         value: 1,
         maxValue : 1,
         opacity : new Animated.Value(0)
     }
+    /**
+     * Spustí animaci, která mění state prop opacity z 0 na 1 nebo naopak.
+     * @param {*} shown Zda-li je Komponent vidět, Default false
+     */
     ToggleNav = (shown) =>{
         if(shown){
             Animated.timing(this.state.opacity, { toValue: 0,duration:300,useNativeDriver:true }).start();
@@ -17,16 +24,31 @@ export default class BottomNav extends Component {
         }
         
     }
+    /**
+     * Nastaví stránku, když uživatel posune slider pomocí prop metody setPage a nastaví state prop value na aktuální stránku.
+
+     * @param {*} value Aktuální stránka
+     */
     setPage(value){
         this.props.setPage(value-1);
         this.setState({value:value});
     }
+    /**
+     * Nastaví state prop value na aktuální stránku.
+     * @param {*} value Nová stránka
+     */
     setValue(value){
         this.setState({value:value});
     }
+    /**
+     * Nastaví props pages a currentPage na state props maxValue a value.
+     */
     componentWillReceiveProps(nextProps) {
         this.setState({ maxValue: nextProps.pages,value:nextProps.currentPage});  
     }
+    /**
+     * Kontroluje zda-li se změnil state prop value.
+     */
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.value != this.state.value;
     }

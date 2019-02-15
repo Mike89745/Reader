@@ -3,6 +3,9 @@ import { StyleSheet, View, Text,TouchableHighlight} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import ChapterPopUp from './Menu/Menu';
 import RNFS from "react-native-fs";
+/**
+ * Jedna zobrazená kapitola v ChapterListu.
+ */
 export default class Chapter extends Component {
     state = {
         downloaded : false,
@@ -13,40 +16,69 @@ export default class Chapter extends Component {
         queued: false,
         downloading : false,
     }
+    /**
+     * Změní kapitoly atribut MarkedAsRead na stávající state MarkedAsRead a zavolá metodu prop SaveChapter.
+     */
     saveChapter = () =>{
         const chapter = this.props.chapter;
         chapter.MarkedAsRead = this.state.MarkedAsRead;
         this.props.SaveChapter(chapter);
     }
-    
+    /**
+     * Vrací state selected
+     */
     getSelect = () =>{
         return this.state.selected;
     }
+    /**
+     * Vrací state Downloaded
+     */
     getDownloaded = () => {
         return this.state.downloaded;
     }
+    /**
+     * Nastaví state selected na true.
+     */
     select = () =>{
         this.setState({selected: true});
         this.props.onToggleSelect();
     }
+    /**
+     * Nastaví state selected na false.
+     */
     deselect = () =>{
         this.setState({selected: false});
     }
+    /**
+     * Nastaví state selected na na jeho opak. Pokud true tak na false.
+     */
     toggleSelect= () => {
         let selected = this.state.selected;
         this.setState({selected: !selected});
         this.props.onToggleSelect();
     }
+    /**
+     * Nastaví state MarkedAsRead na na jeho opak. Pokud true tak na false.
+     */
     toggleMark = () => {
         let marked = this.state.MarkedAsRead;
         this.setState({MarkedAsRead: !marked},()=>this.saveChapter());
     }
+    /**
+     * Nastaví state MarkedAsRead na true.
+     */
     markAsRead = () => {
         this.setState({MarkedAsRead: true},()=>this.saveChapter());
     }
+    /**
+     * Nastaví state MarkedAsRead na false.
+     */
     unmarkAsRead = () => {
         this.setState({MarkedAsRead: false},()=>this.saveChapter());
     }
+    /**
+     * Smaže kapitolu z zařízení
+     */
     deleteChapter= () =>{
         let title = this.props.bookID.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -55,6 +87,10 @@ export default class Chapter extends Component {
             alert(`Deleted`);
         }).catch(err => console.log(err,"Delete error"));
     }
+    /**
+     * Kontroluje jestli existuje složka pro kapitolu pokud ano tak zkontroluje jestli má stejní počet souborů jako počet stránek. 
+     * Podle toho nastaví state error a downloaded.
+     */
     isDownloaded(){
         let title = this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-');
         let chapter = (this.props.chapter.number +"-"+this.props.chapter.title).replace(/[/\\?%*:|"<>. ]/g, '-');
@@ -78,7 +114,9 @@ export default class Chapter extends Component {
             } 
         }).catch(err => {console.log(err)});
     }
-    
+    /**
+     * Zda-li má se má otevřít Reader, zavolat prop metodu nav (navigateToReader), nebo označit komponent (selected = true).
+     */
     shouldNavigate =()=>{
         if(this.props.selectHeaderVisible){
             this.toggleSelect();
@@ -86,12 +124,21 @@ export default class Chapter extends Component {
             this.props.nav(this.props.index,this.state.downloaded)
         }
     }
+    /**
+     * Nastaví změněné props na state props.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({pages : this.props.chapter.lastPage,MarkedAsRead : this.props.chapter.MarkedAsRead,queued: nextProps.queued,downloading: nextProps.downloading})
     }
+    /**
+     * Zavolá metodu is Downloaded.
+     */
     componentWillMount(){
         this.isDownloaded();
     }
+    /**
+     * Nastaví měnitelné props na state props.
+     */
     componentDidMount(){
         this.setState({pages : this.props.chapter.lastPage,MarkedAsRead : this.props.chapter.MarkedAsRead})
     }

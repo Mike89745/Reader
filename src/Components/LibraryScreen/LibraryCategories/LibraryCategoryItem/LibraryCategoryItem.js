@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import RF from "react-native-responsive-fontsize"
 import { StyleSheet, View, Text} from 'react-native';
 import PopUpMenu from '../../../PopUpMenu/PopUpMenu';
-
+/**
+ * Zobrazuje jednotlivou kategorii.
+ */
 export default class LibraryCategoryItem extends Component {
     state = {
     }
-   
+    /**
+     * Odstraní danou kategorii
+     */
     removeCategory =( )=>{
         this.props.removeCategory(this.props.item);
     }

@@ -1,20 +1,37 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text,Switch} from 'react-native';
 import RF from "react-native-responsive-fontsize"
+/**
+ * Nastavení pro stahování s aplikací
+ */
 export default class DownloaderSettings extends Component {
     state = {
         DownloaderWiFiSettings : false,
     }
+    /**
+     * Nastaví state prop DownloaderWiFiSettings na value a uloží nastavení pomocí prop metody ReduxSaveSettings.
+     * @param {*} value Nová hodnota nastavení
+     * @param {*} key Jméno atributu nastavení
+     */
     SaveSettings(value,key){
         this.setState({DownloaderWiFiSettings: value,});
         this.props.ReduxSaveSettings(value,key);
     }
+    /**
+     * Nastaví prop DownloaderWiFiSettings na state prop DownloaderWiFiSettings.
+     */
     componentDidMount(){
         this.setState({DownloaderWiFiSettings:this.props.DownloaderWiFiSettings});
     }
+    /**
+     * Nastaví prop DownloaderWiFiSettings na state prop DownloaderWiFiSettings.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({DownloaderWiFiSettings:nextProps.DownloaderWiFiSettings,});
     }
+    /**
+     * Kontroluje zda-li se state prop DownloaderWiFiSettings změnil.
+     */
     shouldComponentUpdate(nextProps, nextState){
         return nextState.DownloaderWiFiSettings != this.state.DownloaderWiFiSettings
     }

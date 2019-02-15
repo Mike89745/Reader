@@ -3,10 +3,16 @@ import { StyleSheet,View,Text,TouchableOpacity} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/**
+ * Zobrazuje možnost (cestu)  v menu navigace.
+ */
 class NavOption extends Component {
     state = {
         ActiveRoute : null
     }
+    /**
+     * Nastaví Redux state prop ActiveRoute na state prop ActiveRoute.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({ActiveRoute:nextProps.ActiveRoute});
     }

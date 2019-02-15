@@ -4,6 +4,9 @@ import PhotoView from 'react-native-photo-view-ex';
 import { Viewport } from '@skele/components'
 import GiftedSpinner from '../../../../node_modules/react-native-gifted-spinner';
 const ViewportAwareView = Viewport.Aware(View)
+/**
+ * Jedna stránka komixu.
+ */
 export default class ReaderImage extends Component {
     state = {
         width: Dimensions.get('window').width,
@@ -12,10 +15,12 @@ export default class ReaderImage extends Component {
         error : false,
         Loading : true,
     }
-   
-    calcImageSize(inView){
-        let isInView = inView ? inView : this.state.inView;
-        if(isInView){
+    /**
+     * Vypočítá poměr velikosti obrázku k velikosti displeje a podle poměru nastaví state props width a height.
+     * @param {*} inView zda-li je obrázek viděť Default state inView
+     */
+    calcImageSize(inView = this.state.inView){
+        if(inView){
             Image.getSize(this.props.fromWeb ? this.props.source : "file://" + this.props.source, (width, height) => {
                 const maxWidth = Dimensions.get('window').width;
                 const ratio = maxWidth / width;
@@ -24,9 +29,15 @@ export default class ReaderImage extends Component {
             },(err)=>{console.log(err)});
         }
     }
+    /**
+     * Kontroluje jestli se změnila výška nebo šířka obrázku nebo zda-li se stala chyba.
+     */
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.width != this.state.width || nextState.height != this.state.height || nextState.error != this.state.error;
     }
+    /**
+     * Zavolána při posunu čtečky. Kontroluje zda-li obrázek vidět, pokud ano přepočítá jeho velikost.
+     */
     onViewportChange(){
         let inView = this.state.inView;
         this.setState({inView : !inView});

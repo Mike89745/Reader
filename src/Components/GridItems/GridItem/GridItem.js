@@ -6,8 +6,14 @@ import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
 PouchDB.plugin(find)
 const chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
+/**
+ * Zobrazuje jednotlivou knihu.
+ */
 export default class GridItem extends Component  {
     state = { loaded: false,unReadChapters: null }
+    /**
+     * Pokud je prop isLibrary = true najde všechny  kapitoly knihy podle prop title a zjistí počet nepřečtených kapitol.
+     */
     componentWillMount(){
       if(this.props.isLibrary){
         chapters.createIndex({

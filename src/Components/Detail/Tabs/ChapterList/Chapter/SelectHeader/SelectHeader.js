@@ -14,6 +14,7 @@ import {
     markAsRead,
     unmarkAsRead,
   } from '../../../../../../reducers/downloader/downloaderActions'
+  /**UI pro vybírání kapitol */
 class SelectHeader extends Component {
     render() {
         return (

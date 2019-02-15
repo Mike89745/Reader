@@ -12,6 +12,9 @@ import {getChaptersFromLibrary} from "../../reducers/Chapters/Chapters"
 import RNFS from "react-native-fs";
 PouchDB.plugin(find)
 const ChaptersDB = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});
+/**
+ * Obrazovka zobrazující historii čtení
+ */
 class HistoryScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -33,14 +36,22 @@ class HistoryScreen extends Component {
     reRender = this.props.navigation.addListener('willFocus', () => {
         this.RefreshComponent();
     });
+    /**
+     * Metoda volaná při zavolání eventu reRender. Znovu načte historii pomocí metody loadHistory a nastaví state prop udate na false.
+     */
     RefreshComponent =() =>{
         this.setState({chapters : [], chapterToLoad: null,update : false},() => this.loadHistory());
     }
-   
+    /**
+     * Zabraňuje nekonečnému načítání Readeru.
+     */
     componentWillReceiveProps(nextProps){
         this.state.update ? null : this.resumeReading();
         this.setState({update : true});
     }
+    /**
+     * Otevře Reader na s vybranou kapitolou.
+     */
     resumeReading =() =>{
         const chapter = this.state.chapterToLoad;
         if(chapter){
@@ -52,10 +63,18 @@ class HistoryScreen extends Component {
             });
         }
     }
+    /**
+     * Před otevřením Readeru načte všechny kapitoly daného titulu.
+     * @param {*} chapter  daná kapitola
+     */
     LoadBookChapters =(chapter)=>{
         this.setState({chapterToLoad : chapter});
         this.props.getChaptersFromLibrary(chapter.book_id);
     } 
+    /**
+     * Vyresetuje kapitolu, smaže lastRead datum a lastPage, uloží ji zpátky do lokální databáze a Odebere jí z aktuálně načtených kapitol (state prop Chapters).
+     * @param {*} chapter  daná kapitola
+     */
     RemoveChapter = (chapter) =>{
         let chapters =  this.state.chapters
         const chapterIndex = chapters.findIndex(x => x._id == chapter._id);
@@ -65,6 +84,9 @@ class HistoryScreen extends Component {
         chapter.lastPage = 0;
         ChaptersDB.put(chapter).then(res => {}).catch(err => {console.log(err)})
     }
+    /**
+     * Načte posledních 10 čteních kapitol z lokální databáze.
+     */
     loadHistory = () =>{
         ChaptersDB.createIndex({
             index: {
@@ -85,12 +107,22 @@ class HistoryScreen extends Component {
 //            SimpleToast.show("Error creating chapters indexes",SimpleToast.LONG);
         })
     }  
+    /**
+     * Otevře Detail vybrané knihy.
+     * @param {*} chapter  daná kapitola
+     */
     NavigateToDetail=(chapter)=>{
         this.props.navigation.navigate('Details',{_id : chapter.book_id})
     }
+    /**
+     * Načte historii pomocí metody loadHistory.
+     */
     componentDidMount(){
         this.loadHistory();
     }
+    /**
+     * Odebere Listener reRender.
+     */
     componentWillUnmount(){
         this.reRender;
     }

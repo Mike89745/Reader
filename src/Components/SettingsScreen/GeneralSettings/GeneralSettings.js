@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import RF from "react-native-responsive-fontsize"
 import RNPickerSelect from 'react-native-picker-select';
+/**
+ * Obecná nastavení aplikace.
+ */
 export default class GeneralSettings extends Component {
     state = {
        
@@ -18,16 +21,30 @@ export default class GeneralSettings extends Component {
             {label:"8", value : "8"},
         ],
     }
+    /**
+     * Nastaví state prop LibraryLayoutSettings na value a uloží nastavení pomocí prop metody ReduxSaveSettings.
+     * @param {*} value Nová hodnota nastavení
+     * @param {*} key Jméno atributu nastavení
+     */
     saveSettings(value,key){
         this.setState({LibraryLayoutSettings: value});
         this.props.ReduxSaveSettings(value,key);
     }
+    /**
+     * Nastaví prop LibraryLayoutSettings na state prop LibraryLayoutSettings.
+     */
     componentDidMount(){
         this.setState({LibraryLayoutSettings:this.props.LibraryLayoutSettings});
     }
+    /**
+     * Nastaví prop LibraryLayoutSettings na state prop LibraryLayoutSettings.
+     */
     componentWillReceiveProps(nextProps){
         this.setState({LibraryLayoutSettings:nextProps.LibraryLayoutSettings});
     }
+    /**
+     * Kontroluje zda-li se state prop LibraryLayoutSettings změnil.
+     */
     shouldComponentUpdate(nextProps, nextState){
         return nextState.LibraryLayoutSettings != this.state.LibraryLayoutSettings
     }
