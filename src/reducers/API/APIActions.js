@@ -56,6 +56,10 @@ function GetBooksError(error,errormsg){
         errormsg: errormsg
     }
 }
+/**
+ * Slouží k načítání knížek z API na cestu getBooks s GET metodou s parametrem 
+ * @param {*} page Strana paginace
+ */
 export function GetBooksFromAPI(page) {
     return function(dispatch,getState) {
         let data = getState().Booker.CatalogBooks;
@@ -74,6 +78,9 @@ export function GetBooksFromAPI(page) {
         )
     }
 }
+/**
+ * Slouží k načítání knížek z lokální databáze
+ */
 export function GetBooksFromLibrary() {
     return function(dispatch,getState) {
         let data = getState().Booker.CatalogBooks;
@@ -89,6 +96,9 @@ export function GetBooksFromLibrary() {
         )
     }
 }
+/**
+ * Resetuje stav načtených knih
+ */
 export function ClearBooks() {
     return function(dispatch,getState) {
        getState().Booker.CatalogBooks = [];
@@ -121,6 +131,13 @@ function SearchBooksError(error,errormsg){
         errormsg: errormsg
     }
 }
+/**
+ * Slouží k načítání knížek z API se vyhledávacími parametry na cestu Search POST metodou.
+
+ * @param {*} text Titul knihy
+ * @param {*} INtags Tagy, které kniha musí mít
+ * @param {*} NINtags Tagy, které kniha nesmí mít
+ */
 export function SearchBooksFromAPI(text,INtags,NINtags) {
     return function(dispatch,getState) {
         dispatch(SearchingBooks("Getting Books from API"))
@@ -146,6 +163,12 @@ export function SearchBooksFromAPI(text,INtags,NINtags) {
         )
     }
 }
+/**
+ * Slouží k načítání knížek z lokální databáze se vyhledávacími parametry
+ * @param {*} text Titul knihy
+ * @param {*} INtags Tagy, které kniha musí mít
+ * @param {*} NINtags Tagy, které kniha nesmí mít
+ */
 export function SearchBooksFromLibrary(text,INtags,NINtags) {
     return function(dispatch,getState) {
         dispatch(SearchingBooks("Getting Books from Library"))
@@ -176,6 +199,10 @@ export function SearchBooksFromLibrary(text,INtags,NINtags) {
         )
     }
 }
+/**
+ * Vytvoří Recenzi pomocí POST metodou
+ * @param {*} Review Objekt recenze
+ */
 export function CreateReview(Review){
     return function(dispatch){
         fetch(`${ENDPOINT}addReview`, {
@@ -193,6 +220,10 @@ export function CreateReview(Review){
         });
     }
 }
+/**
+ * Načte 10 recenzí knihy.
+ * @param {*} book_id ID knihy
+ */
 export function getReviewsFromAPI(book_id){
     return function(dispatch){
         dispatch(gettingReviews());

@@ -114,6 +114,9 @@ function togglingSelectHeader() {
     res: "Toggling",
   }
 }
+/**
+ * Načte data stahování z zařízení.
+ */
 export function loadData() {
   return function(dispatch) {
       dispatch(requestDownloads())
@@ -125,6 +128,10 @@ export function loadData() {
       )
   }
 }
+/**
+ * Uloží data stahování do zařízení.
+ * @param {*} data Data k uložení
+ */
 export function saveData(data) {
   return function(dispatch,getState) {
     dispatch(savingDownloads())
@@ -136,6 +143,9 @@ export function saveData(data) {
       )
   }
 }
+/**
+ * Při spuštění aplikace dokončí nedodělané stahování. Stane se pouze pokud aplikace byla neočekávaně ukončena.
+ */
 export function ReattachDownloads() {
   return async function(dispatch) {
     dispatch(startingDownloads())
@@ -162,6 +172,9 @@ export function ReattachDownloads() {
       )
   }
 }
+/**
+ * Při dokončení stahování obrázku začne stahovat další ve frontě a vytovří notifikaci.
+ */
 export function nextDownload() {
   return function(dispatch,getState) {
     dispatch(startingDownloads())
@@ -306,6 +319,9 @@ export function nextDownload() {
     } 
   }
 }
+/**
+ * Smaže všechny aktuálně stahováné kapitoly z fronty.
+ */
 export function clearDownloads() {
   return function(dispatch) {
     dispatch(savingDownloads())
@@ -318,6 +334,10 @@ export function clearDownloads() {
       )
   }
 }
+/**
+ * Pozastavý nebo spustí stahování.
+ * @param {*} toggle Zda-li se má kontrolovat jestli je stahování spuštěné
+ */
 export function toggleDownloads(toggle = false) {
   return function(dispatch,getState) {
       dispatch(togglingDownloads())
@@ -337,7 +357,9 @@ export function toggleDownloads(toggle = false) {
       
   }
 }
-
+/**
+ * Zobrazí nebo skryje UI pro vybírání kapitol
+ */
 export function toggleSelectHeader() {
   return function(dispatch,getState) {
     dispatch(togglingSelectHeader())
@@ -349,6 +371,10 @@ export function toggleSelectHeader() {
       )
   }
 }
+/**
+ * Nastavý reference polý komponentů kapitol do statu
+ * @param {*} refs Pole referencí na komponenty kapitoly
+ */
 export function setchapterRefs(refs) {
   return function(dispatch) {
       dispatch(settingChaptersRefs())
@@ -383,7 +409,9 @@ function getChaptersRefs(refs) {
     chaptersRefs: refs,
   }
 }
-
+/**
+ * Vrací pole kapitol
+ */
 export function getchapterRefs() {
   return function(dispatch,getState) {
     dispatch(gettingChaptersRefs())
@@ -400,6 +428,9 @@ function selectedAll(refs) {
     chaptersRefs: refs,
   }
 }
+/**
+ * Vybyre všechny kapitoly
+ */
 export function selectAll() {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
@@ -418,6 +449,9 @@ function deselectedAll(refs) {
     chaptersRefs: refs,
   }
 }
+/**
+ * Odznačí všechny kapitoly
+ */
 export function deselectAll() {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
@@ -436,6 +470,9 @@ function deletedSelected(refs) {
     chaptersRefs: refs,
   }
 }
+/**
+ * Smaže vybrané kapitoly
+ */
 export function deleteSelected() {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
@@ -453,11 +490,18 @@ function donwloadSelected() {
     res: "donwload All selected Chapters Refs",
   }
 }
+/**
+ * Přidá do fronty všechny kapitoly dané knihy
+ */
 export function downloadAll(){
   return function(dispatch) {
     return (dispatch(donwloadSelectedChapters(true)))
   }
 }
+/**
+ * Přidá do fronty všechny vybrané kapitoly dané knihy
+ * @param {*} all Zda-li má přidat všechny kapitoly do fronty
+ */
 export function donwloadSelectedChapters(all = false) {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
@@ -506,6 +550,10 @@ export function donwloadSelectedChapters(all = false) {
       )
   }
 }
+/**
+ * Stáhne jednu vybranou kapitolu
+ * @param {*} chapterToDowload Kapitola k přidání do fronty
+ */
 export function DownloadSingle(chapterToDowload){
   return function(dispatch,getState){
     let queueData = getState().Downloader.downloads;
@@ -549,6 +597,9 @@ function markedAsRead(refs) {
     chaptersRefs: refs,
   }
 }
+/**
+ * Označí vybrané kapitoly jako přečtené
+ */
 export function markAsRead() {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
@@ -567,6 +618,9 @@ function unmarkedAsRead(refs) {
     chaptersRefs: refs,
   }
 }
+/**
+ * Označí vybrané kapitoly jako nepřečtené
+ */
 export function unmarkAsRead() {
   return function(dispatch,getState) {
       let refs = getState().Downloader.chaptersRefs
@@ -578,6 +632,9 @@ export function unmarkAsRead() {
       )
   }
 }
+/**
+ * Resetuje pole kapitol
+ */
 export function clearChapters() {
   return function(dispatch,getState) {
       let refs = []

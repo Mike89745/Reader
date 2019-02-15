@@ -8,7 +8,10 @@ export const SAVE_SETTINGS = "SAVE_SETTINGS";
 export const ERROR_SAVING_SETTINGS = "ERROR_SAVING_SETTINGS";
 export const LOAD_SETTINGS = "LOAD_SETTINGS";
 export const ERROR_LOADING_SETTINGS = "ERROR_LOADING_SETTINGS";
-
+/**
+ * Uloží nastavení
+ * @param {*} Settings Objekt Settings
+ */
 export function saveSettings(Settings) {
     return function(dispatch,getState) {
         db.put({
@@ -24,6 +27,9 @@ export function saveSettings(Settings) {
         }).catch(err => dispatch(errorSavingSettings(err)));
     }
 }
+/**
+ * Načte nastavení
+ */
 export function loadSettings() {
     return function(dispatch,getState) {
         db.get("Settings").then(res => {

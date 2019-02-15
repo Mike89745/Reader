@@ -72,6 +72,10 @@ function savedUserError(err){
         savingRes : err,
     }
 }
+/**
+ * Uloží uživatele
+ * @param {*} user Objekt uživatele 
+ */
 export function saveUser(user){
     return function(dispatch) {
         User.allDocs({include_docs:true}).then(res =>{
@@ -99,6 +103,11 @@ export function saveUser(user){
         }).catch(err => dispatch(savedUserError(err)))
     }
 }
+/**
+ * Přihlásí uživatele
+ * @param {*} email Email
+ * @param {*} password Heslo
+ */
 export function SignIn(email,password){
     return function(dispatch) {
         dispatch(signingIn());
@@ -147,6 +156,12 @@ function signingUpError(err){
         msg : err
     }
 }
+/**
+ * Registrace
+ * @param {*} nick Nick 
+ * @param {*} password Heslo
+ * @param {*} email Email
+ */
 export function SignUp(nick,password,email){
     return function(dispatch) {
         dispatch(signingUp());
@@ -168,6 +183,9 @@ export function SignUp(nick,password,email){
         }).catch(err => {dispatch(signingUpError(err))});
     }
 }
+/**
+ * Odhlášení
+ */
 export function SignOut(){
     return function(dispatch) {
         User.allDocs({include_docs:true}).then(res =>{
@@ -196,6 +214,9 @@ function loadedUserError(err){
         user : null,
     }
 }
+/**
+ * Načtení uživatele
+ */
 export function LoadUser(){
     return function(dispatch) {
         User.allDocs({include_docs:true}).then(res =>{
@@ -229,7 +250,10 @@ function syncingError(err){
         errorMsg: err,
     }
 }
-export function syncingComplete(info){
+/**
+ * Zavolána při dokončení synchronizace
+ */
+export function syncingComplete(){
     return{
         type : SYNCING_COMPLETE,
         syncing : false,
@@ -245,6 +269,10 @@ function syncingProgress(progress,msg){
         SyncMSG : msg
     }
 }
+/**
+ * Vytvoří nové kategorie při synchronizaci
+ * @param {*} newBooks 
+ */
 function CreateCategories(newBooks){
     return function(dispatch){
         dispatch(syncingProgress(50,"Creating Categories..."))
@@ -285,6 +313,9 @@ function CreateCategories(newBooks){
       
     }
 }
+/**
+ * Synchronizuje lokální databázi s databází uživatele
+ */
 export function SyncDbs(){
     return function(dispatch,getState) {
         const user = getState().UserReducer.user;

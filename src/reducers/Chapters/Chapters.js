@@ -41,6 +41,10 @@ function getChaptersError(error){
     errormsg : error
   }
 }
+/**
+ * Načte kapitoly z API podle dané knihy POST metodou na cestu getChapters/book_id.
+ * @param {*} book_id ID knihy
+ */
 export function getChaptersFromAPI(book_id) {
     return function(dispatch,getState) {
       dispatch(gettingChapters())
@@ -75,6 +79,10 @@ export function getChaptersFromAPI(book_id) {
         )
     }
   }
+/**
+ * Načte kapitoly z lokální databáze podle dané knihy 
+ * @param {*} book_id ID knihy
+ */
 export function getChaptersFromLibrary(book_id) {
   return function(dispatch) {
       dispatch(gettingChapters())
@@ -121,6 +129,10 @@ function logMSG(MSG){
     errormsg : MSG
   }
 }
+/**
+ * Uloží pole kapitol do lokální databáze.
+ * @param {*} chapters Pole kapitol
+ */
 export function saveChapters(chapters) {
   return function(dispatch) {
       return  (
@@ -132,6 +144,10 @@ export function saveChapters(chapters) {
       )
   }
 }
+/**
+ * Uloží kapitolu do lokální databáze.
+ * @param {*} chapter Kapitola
+ */
 export function saveChapter(chapter) {
   return function(dispatch) { 
     const NewChapter =  {
@@ -163,6 +179,10 @@ function comparer(otherArray){
     }).length == 0;
   }
 }
+/**
+ * Aktualizuje kapitoly pro dané tituly a vytvoří notifkaci.
+ * @param {*} Titles Dané tituly
+ */
 export function UpdateTitles(Titles) {
   return function(dispatch) {
     let notificationMessage = ``
