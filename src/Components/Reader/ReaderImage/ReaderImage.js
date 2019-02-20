@@ -43,6 +43,14 @@ export default class ReaderImage extends Component {
         this.setState({inView : !inView});
         this.calcImageSize(!inView);
     }
+    reload(){
+        console.log(this.props.source);
+        this.setState({error:false,Loading:true});
+    }
+    _onLoadStart(e){
+        console.log(e);
+        this.setState({error : false,Loading : false}) 
+    }
     render() {
         return (
             <ViewportAwareView  styles={styles.container} 
@@ -53,30 +61,30 @@ export default class ReaderImage extends Component {
                     {this.state.error ? 
                     <View styles={styles.retryButtoncontainer}>
                         <View style={styles.retryButton}>
-                            <Button title="retry" onPress={() => this.Test()} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>
+                            <Button title="retry" onPress={() => this.reload()} color="#3b424c" styles={{ backgroundColor: "#3b424c",color:"white"}}/>
                         </View>
                     </View> 
-                    : null} 
+                    :   <PhotoView
+                    onTap={() => this.props.showNav()}
+                    loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
+                    source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
+                    minimumZoomScale={1}
+                    maximumZoomScale={3}
+                    androidScaleType="fitCenter"
+                    fadeDuration = {200}
+                    resizeMethod ={'resize'}
+                    style={{width: this.state.width, height:this.state.height,flex: 1}}
+                    onLoadStart =  {(e) => this._onLoadStart(e)}
+                    onLoadEnd = {(e) => this.setState({error : false,Loading : false})}
+                    onError={(e) => this.setState({error : true,Loading : false})}
+                />} 
                     {this.state.Loading ? 
                         <View styles={styles.retryButtoncontainer}>
                             <View style={styles.retryButton}>
                                 <GiftedSpinner styles={styles.Spinner}/>
                             </View>
                         </View> : null}
-                    <PhotoView
-                        onTap={() => this.props.showNav()}
-                        loadingIndicatorSource = {<GiftedSpinner styles={styles.Spinner}/>}
-                        source={{uri: this.props.fromWeb ? this.props.source : "file://" + this.props.source}}
-                        minimumZoomScale={1}
-                        maximumZoomScale={3}
-                        androidScaleType="fitCenter"
-                        fadeDuration = {200}
-                        resizeMethod ={'resize'}
-                        style={{width: this.state.width, height:this.state.height,flex: 1}}
-                        onLoadStart =  {(e) => this.setState({error : false,Loading : false})}
-                        onLoadEnd = {(e) => this.setState({error : false,Loading : false})}
-                        onError={(e) => this.setState({error : true,Loading : false})}
-                    />
+                  
                 </View> 
             </ViewportAwareView>
         )

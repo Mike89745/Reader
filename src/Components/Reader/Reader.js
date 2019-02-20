@@ -251,6 +251,7 @@ class Reader extends Component {
             this.setState({
                 Images: images,
                 currentPage:1,
+                fromWeb: true,
             });
         }
         else if(chapter.type === "PDF"){
@@ -260,7 +261,8 @@ class Reader extends Component {
                 + "public/books/"
                 + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
                 + chapter.number + "-" + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
-                + chapter.number + "-" +chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + ".pdf"
+                + chapter.number + "-" +chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + ".pdf",
+                fromWeb: true,
             })
             this.setCurrentPage(chapter.lastPage);
         }else if(chapter.type === "EPUB"){
@@ -271,7 +273,8 @@ class Reader extends Component {
                 + chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') +"/"
                 + chapter.number + "-" 
                 + chapter.title.replace(/[/\\?%*:|"<>. ]/g, '-') + "/" 
-                + index + ".epub"
+                + index + ".epub",
+                fromWeb: true,
             })
         }
     }

@@ -40,6 +40,7 @@ class FilterDrawer extends Component {
      * a zavolá Redux metodu SearchBooksFromLibrary nebo SearchBooksFromAPI.
      */
     Search=()=>{
+       
         let CheckedTags = [];
         let IndeterminateTags = [];
         this.state.tags.map(tag => {

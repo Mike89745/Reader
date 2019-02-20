@@ -152,14 +152,14 @@ export function ReattachDownloads() {
       let lostTasks = await RNBackgroundDownloader.checkForExistingDownloads();
       if(lostTasks.length > 0){
         for (let task of lostTasks) {
-          console.log(`Task ${task.id} was found!`);
+          //console.log(`Task ${task.id} was found!`);
           task.progress((percent) => {
-            console.log(`Downloaded: ${percent * 100}%`);
+           // console.log(`Downloaded: ${percent * 100}%`);
           }).done(() => {
             dispatch(getTask("task",task));
             dispatch(nextDownload());
           }).error((error) => {
-            console.log('Download canceled due to error: ', error);
+            //console.log('Download canceled due to error: ', error);
           });
         }
       }else{

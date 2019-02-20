@@ -161,9 +161,9 @@ class GridItems extends Component {
                                         <GridItem 
                                         isLibrary ={this.props.isLibrary}
                                         source={this.props.isLibrary ? 
-                                        {uri : `file://${RNFS.DocumentDirectoryPath}/Thumbnails/${items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
+                                        {uri : `file://${RNFS.DocumentDirectoryPath}/thumbnails/${items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
                                         : 
-                                        {uri: ENDPOINT + "public/Thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}} 
+                                        {uri: ENDPOINT + "public/thumbnails/" + items.doc._id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}} 
                                         title={items.doc._id}/>
                                     </View>
                                 </TouchableHighlight>

@@ -86,8 +86,10 @@ class Detail extends Component {
     componentWillReceiveProps(nextProps){
         this.setState({selectHeaderVisible : nextProps.selectHeaderVisible})
     }
-    componentDidMount(){
+    componentWillMount(){
         this.props.clearChapters();
+    }
+    componentDidMount(){
         this.props.selectHeaderVisible ? this.props.toggleSelectHeader() : null;
         this.getInfo();
         let size = this.state.size;
@@ -100,6 +102,7 @@ class Detail extends Component {
         this.setState({size : size, height: height});
     }
     componentWillUnmount(){
+        this.props.clearChapters();
         this.state.selectHeaderVisible ? this.props.toggleSelectHeader() : null;
     }
     addToLibrary = () => {
@@ -113,8 +116,7 @@ class Detail extends Component {
             });
         }).catch((error) => {
             if(error.status == 404){
-                
-                const book ={
+                const newBook ={
                     _id :book._id, 
                     author :  book.author,
                     artist :  book.artist,
@@ -125,9 +127,9 @@ class Detail extends Component {
                     categories: [],
                     lastRead: null,
                 }
-                Library.put(book).then((response) => {
+                Library.put(newBook).then((response) => {
                     this.CategoriesModal.toggleModal();
-                    this.saveThumbnail(book._id.replace(/[/\\?%*:|"<>. ]/g, '-')) 
+                    this.saveThumbnail(newBook._id.replace(/[/\\?%*:|"<>. ]/g, '-')) 
                     this.setState({added : true,error:false});
                 }).catch((err) => {
                     SimpleToast.show("Error saving book, this shouldnt happen",SimpleToast.LONG);
@@ -136,19 +138,19 @@ class Detail extends Component {
         });
     }
     saveThumbnail(bookID){
-        RNFS.exists(`${RNFS.DocumentDirectoryPath}/Thumbnails`).then(response => {
+        RNFS.exists(`${RNFS.DocumentDirectoryPath}/thumbnails`).then(response => {
             if(!response) { 
-                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/Thumbnails`);
+                RNFS.mkdir(`${RNFS.DocumentDirectoryPath}/thumbnails`);
             }
         });
         let task = RNBackgroundDownloader.download({
-            id: "//"+ bookID + "//Thumbnail",
-            url: `${ENDPOINT}public/Thumbnails/${bookID}`,
-            destination: `${RNFS.DocumentDirectoryPath}/Thumbnails/${bookID}.jpg`
+            id: "//"+ bookID + "//thumbnail",
+            url: `${ENDPOINT}public/thumbnails/${bookID}`,
+            destination: `${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`
           }).begin((expectedBytes) => {
           }).progress((percent) => {
           }).done(() => {
-              console.log(`${RNFS.DocumentDirectoryPath}/Thumbnails/${bookID}.jpg`)
+              console.log(`${RNFS.DocumentDirectoryPath}/thumbnails/${bookID}.jpg`)
           }).error((error) => {
               
           });
@@ -164,9 +166,9 @@ class Detail extends Component {
                             <View style={{width : this.state.size,paddingRight: 10}}>
                                 <Thumbnail 
                                 source={this.state.added ? 
-                                {uri : `file://${RNFS.DocumentDirectoryPath}/Thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
+                                {uri : `file://${RNFS.DocumentDirectoryPath}/thumbnails/${this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}.jpg`}
                                 :
-                                {uri: (ENDPOINT + "public/Thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-')}}
+                                {uri: (ENDPOINT + "public/thumbnails/") + this.state.info[0]._id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
                                 />
                             </View>
                             <Info style={styles.Info} info={this.state.info[0]}/>

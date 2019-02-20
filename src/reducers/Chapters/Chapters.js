@@ -279,3 +279,11 @@ export function UpdateTitles(Titles) {
       
   }
 }
+/**
+ * Resetuje načtené kapitoly
+ */
+export function ClearChapters() {
+  return function(dispatch,getState) {
+    getState().ChaptersReducer.Chapters = null;
+  }
+}

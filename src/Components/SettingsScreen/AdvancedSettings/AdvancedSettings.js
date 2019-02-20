@@ -4,7 +4,7 @@ import RF from "react-native-responsive-fontsize";
 import AreYouSureModal from "../../Modals/AreYouSureModal"
 import PouchDB from 'pouchdb-adapters-rn';
 import find from 'pouchdb-find';
-import SimpleToast from '../../../node_modules/react-native-simple-toast';
+import SimpleToast from 'react-native-simple-toast';
 PouchDB.plugin(find);
 const Library = new PouchDB('Library', { adapter: 'pouchdb-adapters-rn'});
 const Chapters = new PouchDB('Chapters', { adapter: 'pouchdb-adapters-rn'});

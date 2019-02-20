@@ -12,6 +12,7 @@ import {
     getChaptersFromAPI,
     getChaptersFromLibrary,
     saveChapter,
+    ClearChapters
   } from '../../../../reducers/Chapters/Chapters'
 import { ENDPOINT } from '../../../../Values/Values';
 import Spinner from 'react-native-gifted-spinner';
@@ -92,7 +93,7 @@ class ChapterList extends Component {
         })
     }
     /** 
-     * Kontroluje jestli je kapitola v tuto chvíli stahovan.Vrací true nebo false.
+     * Kontroluje jestli je kapitola v tuto chvíli stahovana.Vrací true nebo false.
      * @param chapter Objekt kapitoly.
      */
     isChapterQueued =(chapter)=>{
@@ -109,6 +110,12 @@ class ChapterList extends Component {
     componentDidMount(){
         this.props.loadData();
         this.props.getChaptersFromLibrary(this.props.screenProps.bookID);
+    }
+    /**
+     * Zavolá redux metodu ClearChapters
+     */
+    componentWillMount(){
+        this.props.ClearChapters()
     }
     render() {
         return (
@@ -183,5 +190,6 @@ const mapDispatchToProps = {
     getChaptersFromAPI,
     getChaptersFromLibrary,
     saveChapter,
+    ClearChapters
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ChapterList);
