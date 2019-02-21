@@ -6,9 +6,6 @@ import Loading from 'react-native-gifted-spinner';
  */
 export default class Thumbnail extends Component  {
     state = { loaded: false }
-    componentDidMount(){
-      console.log(this.props.source);
-    }
     render() {
       return (
         <View style={{flex: 1}}>

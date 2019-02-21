@@ -10,6 +10,7 @@ export default class DowloadItem extends Component {
         value : 0,
         maxValue: 0,
         percentage : 0.01,
+        width : Dimensions.get("screen").width - 65,
     }
     /**
      * Nastaví změněný postup na value a vypočítá nový procentuální postup ( state prop percentage).
@@ -25,19 +26,23 @@ export default class DowloadItem extends Component {
      * Kontroluje jestli se něco změnil stav postupu.
      */
     shouldComponentUpdate(nextProps, nextState) {
-        return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue || nextProps.chapterName != this.props.chapterName || nextState.maxValue != this.state.maxValue;
+        return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue || nextProps.chapterName != this.props.chapterName || nextState.maxValue != this.state.maxValue || this.state.width != nextState.width;
+    }
+    _onLayout =()=>{
+        this.setState({width:Dimensions.get("screen").width - 65});
     }
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} onLayout={() => this._onLayout()}>
                 <Text style={styles.textHeader}>{this.props.title ? this.props.title.replace("-"," ") : null}</Text>
                 <Text style={styles.textStyle}>{this.props.chapterName ? this.props.chapterName.replace("-"," ") : null}</Text>
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center'}}>
                     <Progress.Bar
+                        color= {"#3b424c"}
                         height={12}
-                        width={Dimensions.get("screen").width - 65}
+                        width={this.state.width}
                         progress={this.state.percentage}
                         useNativeDriver={true}
                     />

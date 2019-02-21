@@ -158,6 +158,7 @@ repositories {
     maven { url "https://maven.google.com" }
 }
 dependencies {
+    compile project(':react-native-splash-screen')
     compile project(':react-native-photo-view-ex')
     compile project(':react-native-push-notification')
     compile project(':react-native-sqlite-2')

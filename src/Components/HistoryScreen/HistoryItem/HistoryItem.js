@@ -8,14 +8,14 @@ import { ENDPOINT } from '../../../Values/Values';
  */
 export default class HistoryItem extends Component  {
     render() {
-      const date = new Date(this.props.chapter.lastRead).toISOString();
+      const date = new Date(this.props.chapter.lastRead).toLocaleString();
       return (
         <View style={styles.container}>
           <View style={{flex:0.375}}>
             <TouchableOpacity onPress={() => this.props.NavigateToDetail(this.props.chapter)} style={{width:"100%",height:"100%"}}>
               <Thumbnail
                 style={{alignSelf:"flex-start"}}
-                source={{uri : ENDPOINT + "public/Thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
+                source={{uri : ENDPOINT + "public/thumbnails/" + this.props.chapter.book_id.replace(/[/\\?%*:|"<>. ]/g, '-') + "_s"}}
               />
             </TouchableOpacity>
           </View>
@@ -24,7 +24,7 @@ export default class HistoryItem extends Component  {
               <Text style={styles.textHeader} numberOfLines={2}>{this.props.chapter.book_id}</Text>
               <Text style={styles.textStyle} numberOfLines={2}>Chapter : {this.props.chapter.number} - {this.props.chapter.title}</Text>
               <Text style={styles.dateStyle} numberOfLines={2}>{date} </Text>
-              <Text style={styles.dateStyle} numberOfLines={1}>page: {this.props.chapter.lastPage} </Text>
+              <Text style={styles.dateStyle} numberOfLines={1}>Page: {this.props.chapter.lastPage} </Text>
             </View>
             <View style={{position: "absolute", bottom: 10, flexDirection:"row",flex: 1}}>
                 <TouchableOpacity onPress={() => this.props.resumeReading(this.props.chapter)} style={{alignItems:"flex-start",left:30}}>

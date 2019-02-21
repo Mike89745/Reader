@@ -40,6 +40,7 @@
     "react-native-responsive-fontsize": "^0.1.2",
     "react-native-responsive-styles": "^0.2.2",
     "react-native-simple-toast": "0.0.8",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-sqlite-2": "^1.7.0",
     "react-native-super-grid": "^2.4.3",
     "react-native-vector-icons": "^6.0.2",

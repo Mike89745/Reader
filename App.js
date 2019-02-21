@@ -34,6 +34,7 @@ import {createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import {loadSettings} from "./src/reducers/Settings/SettingsActions";
 import RootReducer from './src/reducers/MainReducer';
+import SplashScreen from 'react-native-splash-screen';
 const loggerMiddleware = createLogger();
 const store = createStore(RootReducer,applyMiddleware(
   thunkMiddleware, // pro async metody
@@ -41,6 +42,7 @@ const store = createStore(RootReducer,applyMiddleware(
 ));
 export default class ReaderApp extends Component {
   componentDidMount(){
+    SplashScreen.hide();
     store.dispatch(loadSettings());
     StatusBar.setBackgroundColor("#30353d");
   }

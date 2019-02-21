@@ -1,15 +1,16 @@
 package com.readerapp;
 
 import android.app.Application;
-
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import io.amarcruz.photoview.PhotoViewPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import dog.craftz.sqlite_2.RNSqlite2Package;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import org.wonday.pdf.RCTPdfView;
-import com.oblador.vectoricons.VectorIconsPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+
 import com.walmartreact.ReactOrientationListener.ReactOrientationListener;
 import com.github.yamill.orientation.OrientationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -37,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new ReactNativePushNotificationPackage(),
             new RNSqlite2Package(),
             new RNFetchBlobPackage(),

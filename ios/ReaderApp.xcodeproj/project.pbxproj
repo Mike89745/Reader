@@ -69,6 +69,8 @@
 		3F7C23AF694943B5972213A7 /* libRCTPdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5C14BC947DB4947987CDDB7 /* libRCTPdf.a */; };
 		DB475DE6E05D42A9AE5F6E85 /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D87411A95243487A81ACD319 /* libFastImage.a */; };
 		45D3879774C34270AFD18C8D /* libRNSqlite2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 681FEE3D603D4AB18B84A161 /* libRNSqlite2.a */; };
+		FFA643BABD964C94903D93AD /* libRNPhotoView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 306C8C4074D64AB08546E328 /* libRNPhotoView.a */; };
+		449E8A2EADD842B5B29017C2 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F08ABBE27E4E7C93A7347C /* libSplashScreen.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -420,6 +422,10 @@
 		D87411A95243487A81ACD319 /* libFastImage.a */ = {isa = PBXFileReference; name = "libFastImage.a"; path = "libFastImage.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		DB404664ABA24DB885DB0C7F /* RNSqlite2.xcodeproj */ = {isa = PBXFileReference; name = "RNSqlite2.xcodeproj"; path = "../node_modules/react-native-sqlite-2/ios/RNSqlite2.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		681FEE3D603D4AB18B84A161 /* libRNSqlite2.a */ = {isa = PBXFileReference; name = "libRNSqlite2.a"; path = "libRNSqlite2.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		A34891A2DC274BEEBF197790 /* RNPhotoView.xcodeproj */ = {isa = PBXFileReference; name = "RNPhotoView.xcodeproj"; path = "../node_modules/react-native-photo-view-ex/ios/RNPhotoView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		306C8C4074D64AB08546E328 /* libRNPhotoView.a */ = {isa = PBXFileReference; name = "libRNPhotoView.a"; path = "libRNPhotoView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		C8FACDE73293409B8A793BF9 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; name = "SplashScreen.xcodeproj"; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		C6F08ABBE27E4E7C93A7347C /* libSplashScreen.a */ = {isa = PBXFileReference; name = "libSplashScreen.a"; path = "libSplashScreen.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -463,6 +469,8 @@
 				3F7C23AF694943B5972213A7 /* libRCTPdf.a in Frameworks */,
 				DB475DE6E05D42A9AE5F6E85 /* libFastImage.a in Frameworks */,
 				45D3879774C34270AFD18C8D /* libRNSqlite2.a in Frameworks */,
+				FFA643BABD964C94903D93AD /* libRNPhotoView.a in Frameworks */,
+				449E8A2EADD842B5B29017C2 /* libSplashScreen.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,6 +674,8 @@
 				25A36144D4454D4FA4F09522 /* RCTPdf.xcodeproj */,
 				5763309FA6294E5D83D451EE /* FastImage.xcodeproj */,
 				DB404664ABA24DB885DB0C7F /* RNSqlite2.xcodeproj */,
+				A34891A2DC274BEEBF197790 /* RNPhotoView.xcodeproj */,
+				C8FACDE73293409B8A793BF9 /* SplashScreen.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1332,6 +1342,8 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReaderApp.app/ReaderApp";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1349,6 +1361,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1370,6 +1384,8 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReaderApp.app/ReaderApp";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1387,6 +1403,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1423,6 +1441,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1458,6 +1478,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1487,6 +1509,8 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1504,6 +1528,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1533,6 +1559,8 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1550,6 +1578,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1578,6 +1608,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1595,6 +1627,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1623,6 +1657,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1640,6 +1676,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-pdf\ios\RCTPdf/**",
 					"$(SRCROOT)\..\node_modules\react-native-fast-image\ios\FastImage/**",
 					"$(SRCROOT)\..\node_modules\react-native-sqlite-2\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-view-ex\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;

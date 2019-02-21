@@ -54,6 +54,7 @@ class DownloadsScreen extends Component {
      * Při změně v stahování změní state Downloads
      */
     componentWillReceiveProps(nextProps) {
+        console.log(nextProps.Downloads);
         this.setState({ Downloads: nextProps.Downloads ?  nextProps.Downloads : []});  
     }
 
