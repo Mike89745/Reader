@@ -55,6 +55,7 @@ export function getChaptersFromAPI(book_id) {
             let chapters = [];
             response.docs.map((chapter) =>{
                 chapters.push({
+                  _id : chapter._id,
                   book_id : chapter.book_id,
                   number : chapter.number,
                   title : chapter.title,
