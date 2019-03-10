@@ -21,11 +21,13 @@ export default class DowloadItem extends Component {
             percentage : nextProps.value/nextProps.maxValue < 0.01 ? 0.01 : nextProps.value/nextProps.maxValue,
             maxValue : nextProps.maxValue
         });  
+        console.log("hello:");
     }
     /**
      * Kontroluje jestli se něco změnil stav postupu.
      */
     shouldComponentUpdate(nextProps, nextState) {
+
         return nextState.value != this.state.value || nextState.maxValue != this.state.maxValue || nextProps.chapterName != this.props.chapterName || nextState.maxValue != this.state.maxValue || this.state.width != nextState.width;
     }
     _onLayout =()=>{
@@ -34,8 +36,8 @@ export default class DowloadItem extends Component {
     render() {
         return (
             <View style={styles.container} onLayout={() => this._onLayout()}>
-                <Text style={styles.textHeader}>{this.props.title ? this.props.title.replace("-"," ") : null}</Text>
-                <Text style={styles.textStyle}>{this.props.chapterName ? this.props.chapterName.replace("-"," ") : null}</Text>
+                <Text style={styles.textHeader}>{this.props.title ? this.props.title.replace((/[-]/g)," ") : null}</Text>
+                <Text style={styles.textStyle}>{this.props.chapterName ? this.props.chapterName.replace((/[-]/g)," ") : null}</Text>
                 <View style={{flexDirection : "row",flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center'}}>

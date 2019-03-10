@@ -16,12 +16,6 @@ Commads
   $ cd android
   $ ./gradlew assembleRelease
 */
-/*
-Main Colors
-  #FFFFFF
-  #51A3A3
-  #505050
-*/
 
 import React, {Component} from 'react';
 import {StyleSheet, View,Button,StatusBar} from 'react-native';

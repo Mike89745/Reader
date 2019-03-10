@@ -183,7 +183,7 @@ function comparer(otherArray){
  * Aktualizuje kapitoly pro dané tituly a vytvoří notifkaci.
  * @param {*} Titles Dané tituly
  */
-export function UpdateTitles(Titles) {
+export function UpdateTitles(Titles) {  
   return function(dispatch) {
     let notificationMessage = ``
     let NewAdded = false;

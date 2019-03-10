@@ -177,7 +177,7 @@ export function ReattachDownloads() {
  */
 export function nextDownload() {
   return function(dispatch,getState) {
-    dispatch(startingDownloads())
+    dispatch(loadData())
     const isPaused = getState().Downloader.isPaused ? true : false;
     let data = getState().Downloader.downloads ? getState().Downloader.downloads : [];
     if(data.length > 0 && isPaused){
@@ -202,11 +202,11 @@ export function nextDownload() {
         let task = RNBackgroundDownloader.download({
           id: title + "//"+ chapter + "//" + page,
           url: data[0].Thumbnails ? 
-          `${ENDPOINT}public/Thumbnails/${data[0].booksIDs[page]}` : 
+          `${ENDPOINT}public/thumbnails/${data[0].booksIDs[page]}` : 
           `${ENDPOINT}public/books/${title}/${chapter}/${type === "IMAGE" ? page + 1 : chapter + `${type === "PDF" ? ".pdf" : ".epub"}`}` ,
           destination: 
           data[0].Thumbnails ? 
-          `${RNFS.DocumentDirectoryPath}/Thumbnails/${data[0].booksIDs[page]}.jpg` 
+          `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` 
           : 
           `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${type === "IMAGE" ? page + 1 :chapter}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`
         }).begin((expectedBytes) => {
@@ -219,7 +219,7 @@ export function nextDownload() {
             let pages = data[0].pageStatus;
             if(data.length < 2 && pages.filter(el => {return el.status === 1 ?  el : null}).length === pages.length){
               PushNotification.localNotification({
-                id: "7726", // jakékoli string číslo
+                id: "69420", // jakékoli string číslo
                 title: "Download Complete",
                 message: "",
                 ongoing: false,
@@ -233,18 +233,19 @@ export function nextDownload() {
               PushNotification.localNotification({
                 id: "69420", 
                 title: "Downloading....",
-                message : data[0].title.replace("-"," ") +" "+data[0].chapter.replace("-"," ") +": "+pages.filter(el => {return el.status === 1 ?  el : null}).length + "/"  +pages.length.toString(),
+                message : data[0].title.replace((/[-]/g)," ") +" "+data[0].chapter.replace((/[-]/g)," ") +": "+pages.filter(el => {return el.status === 1 ?  el : null}).length + "/"  +pages.length.toString(),
                 priority:"default",
                 importance : "default",
                 ongoing: false,
                 vibrate: false,
+                vibration: 0,
               });
             }
             dispatch(getTask("task",task));
             dispatch(saveData(data));
             dispatch(nextDownload());
         }).error((error) => {
-            RNFS.exists(data[0].Thumbnails ? `${RNFS.DocumentDirectoryPath}/Thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`).then(response => {
+            RNFS.exists(data[0].Thumbnails ? `${RNFS.DocumentDirectoryPath}/thumbnails/${data[0].booksIDs[page]}.jpg` : `${RNFS.DocumentDirectoryPath}/${title}/${chapter}/${page + 1}.${type === "IMAGE" ? "jpg" : type === "PDF" ? "pdf" : type ==="EPUB" ? "epub" : "jpg"}`).then(response => {
                 if(response) { 
                   data[0].pageStatus[page].status = 1;
                   dispatch(saveData(data));
@@ -279,6 +280,7 @@ export function nextDownload() {
             title: "Download Paused",
             message: "",
             ongoing: false,
+            vibrate: false,
           });
         }else{
           PushNotification.localNotification({
@@ -306,6 +308,7 @@ export function nextDownload() {
           title: "Download Paused",
           message: "",
           ongoing: false,
+          vibrate: false,
         });
       }else{
         PushNotification.localNotification({

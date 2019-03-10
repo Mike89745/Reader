@@ -1,16 +1,15 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, Text,Button,Dimensions,View} from 'react-native';
+import { StyleSheet, ScrollView, View} from 'react-native';
 import RF from "react-native-responsive-fontsize"
-import { DrawerActions } from 'react-navigation';
 import { connect } from 'react-redux'
-import ButtonIcon from '../Icon/Icon';
 import DowloadItem from './DownloadItem/DowloadItem';
 import PopUpMenu from "../PopUpMenu/PopUpMenu"
 import {
     loadData,
     clearDownloads,
   } from '../../reducers/downloader/downloaderActions'
+import ToggleMainDrawerButton from "../HeaderButtons/ToggleMainDrawerButton/ToggleMainDrawerButton"
 import ToggleDownloadButton from './ToggleDownloadButton/ToggleDownloadButton';
 /**
  * Obrazovka, která zobrazuje současně stahované kapitoly a postup stahování.
@@ -27,11 +26,7 @@ class DownloadsScreen extends Component {
             },
             headerMode: 'float',
             headerLeft: (
-                <ButtonIcon
-                    onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                    name="menu"
-                    Color="#ffffff"
-                />
+                <ToggleMainDrawerButton/>
             ),
             headerRight :(
                <View style={{flexDirection : "row",flex: 1,
@@ -54,7 +49,7 @@ class DownloadsScreen extends Component {
      * Při změně v stahování změní state Downloads
      */
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps.Downloads);
+        console.log("Hail");
         this.setState({ Downloads: nextProps.Downloads ?  nextProps.Downloads : []});  
     }
 
